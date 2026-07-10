@@ -2,1060 +2,567 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐱 萌寵旅遊分帳手帳 終極主控版</title>
-    <!-- 引入中文手寫圓潤字體 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&display=swap" rel="stylesheet">
-
-    <!-- 📱 加到主畫面時顯示的圖示 -->
-    <link rel="icon" href="icon-192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="browser-tab-title">艾姍的微甜生活 APP</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#fff176">
-
-    <!-- 🔥 Firebase：讓資料存在雲端，旅伴輸入的資料才能同步到你這邊 -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-    
+    <meta name="theme-color" content="#8A7A80">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="微甜生活">
+    <meta name="mobile-web-app-capable" content="yes">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Huninn:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #fefbf4;
-            --main-yellow: #fff176;
-            --main-green: #a5d6a7;
-            --main-blue: #81d4fa;
-            --main-pink: #ffab91;
-            --main-purple: #e1bee7;
-            --main-orange: #ffe082;
-            --border-color: #2b2b2b;
-            --box-shadow: 5px 5px 0px #2b2b2b;
-            --active-shadow: 1px 1px 0px #2b2b2b;
+        @font-face {
+            font-family: 'NaikaiFont';
+            src: url(https://cdn.jsdelivr.net/gh/max32002/naikaifont@1.0/webfont/NaikaiFont-Regular-Lite.woff2) format("woff2");
+            font-display: swap;
         }
-
-        html, body {
-            background-color: #dad5cb;
-            background-image: radial-gradient(#b8b5aa 15%, transparent 15%);
-            background-size: 16px 16px;
-            margin: 0;
-            padding: 0;
-            font-family: 'Kiwi Maru', 'Segoe UI', "Microsoft JhengHei", sans-serif;
-            color: #2b2b2b;
-            display: flex;
-            justify-content: center;
+        :root, [data-theme="mauve"] {
+            --c-bg: #F8F5F5; --c-text: #4A3E43; --c-border: #E1D9D9; --c-accent: #8A7A80;
+            --c-accent-dark: #796A70; --c-text-muted: #8C7E83; --c-border-strong: #D5C9C9;
+            --c-card-alt: #EAE1E1; --c-label: #6B5E63; --c-list-bg: #F9F6F6;
+            --c-grad: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);
         }
-
-        /* 👑 核心外殼：鎖死 650px 完美大手機版面 */
-        .app-phone-container {
-            width: 650px; 
-            max-width: 100vw;
-            min-height: 100vh;
-            background-color: var(--bg-color);
-            border-left: 4px solid var(--border-color);
-            border-right: 4px solid var(--border-color);
-            box-sizing: border-box;
-            position: relative;
-            padding-bottom: 110px; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
+        [data-theme="lavender"] {
+            --c-bg: #F6EAF3; --c-text: #4A3E52; --c-border: #E4D6E9; --c-accent: #B4A9D2;
+            --c-accent-dark: #A88DC0; --c-text-muted: #A88DC0; --c-border-strong: #CDC7E3;
+            --c-card-alt: #E4D6E9; --c-label: #A88DC0; --c-list-bg: #F6EAF3;
+            --c-grad: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);
         }
-
-        .header-box {
-            background: var(--main-yellow);
-            border-bottom: 4px solid var(--border-color);
-            padding: 20px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 99;
+        [data-theme="plumjam"] {
+            --c-bg: #F5E0DF; --c-text: #303030; --c-border: #E9B9C5; --c-accent: #DC7090;
+            --c-accent-dark: #303030; --c-text-muted: #DC7090; --c-border-strong: #E9B9C5;
+            --c-card-alt: #E9B9C5; --c-label: #DC7090; --c-list-bg: #F5E0DF;
+            --c-grad: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);
         }
-        .header-title { font-size: 24px; font-weight: bold; }
-        .edit-btn { background: none; border: none; font-size: 18px; cursor: pointer; }
-
-        .page { 
-            display: none; 
-            width: 100%; 
-            box-sizing: border-box; 
-            padding: 15px; 
+        [data-theme="iceblue"] {
+            --c-bg: #B3D2EE; --c-text: #4B6775; --c-border: #86ACC3; --c-accent: #7790AC;
+            --c-accent-dark: #4B6775; --c-text-muted: #7790AC; --c-border-strong: #86ACC3;
+            --c-card-alt: #86ACC3; --c-label: #4B6775; --c-list-bg: #D9E9F7;
+            --c-grad: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);
         }
-        .page.active { display: block; }
-
-        .comic-card {
-            background: white;
-            border: 3px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 20px;
-            padding: 20px;
-            box-sizing: border-box;
+        [data-theme="mocha"] {
+            --c-bg: #F3E9E3; --c-text: #4A3E38; --c-border: #D7CEC7; --c-accent: #9C8B79;
+            --c-accent-dark: #6E5F4E; --c-text-muted: #9C9090; --c-border-strong: #9C9090;
+            --c-card-alt: #D7CEC7; --c-label: #9C9090; --c-list-bg: #F3E9E3;
+            --c-grad: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);
         }
-        .card-title {
-            font-size: 19px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-bottom: 2px dashed var(--border-color);
-            padding-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        [data-theme="cloudmilk"] {
+            --c-bg: #F5EEEE; --c-text: #3A3A3A; --c-border: #DBDBDB; --c-accent: #A7A3A2;
+            --c-accent-dark: #6B6B6B; --c-text-muted: #8B8B8B; --c-border-strong: #A7A3A2;
+            --c-card-alt: #DBDBDB; --c-label: #8B8B8B; --c-list-bg: #F5EEEE;
+            --c-grad: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);
         }
-
-        .dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .dash-item {
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            padding: 10px;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            box-sizing: border-box;
-            border: 3px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 16px;
-            font-family: 'Kiwi Maru', sans-serif;
-            background: #fff;
-        }
-        
-        .row-flex { display: flex; gap: 8px; }
-
-        .comic-btn {
-            background-color: var(--main-yellow);
-            border: 3px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 20px;
-            font-weight: bold;
-            font-size: 16px;
-            font-family: 'Kiwi Maru', sans-serif;
-            cursor: pointer;
-            box-shadow: var(--box-shadow);
-            display: inline-block;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .comic-btn:active { transform: translate(3px, 3px); box-shadow: var(--active-shadow); }
-        .btn-green { background-color: var(--main-green); }
-        .btn-pink { background-color: var(--main-pink); }
-        .btn-blue { background-color: var(--main-blue); }
-        .btn-orange { background-color: var(--main-orange); }
-
-        /* 底部固定導覽列 */
-        .nav-bar {
-            position: fixed;
-            bottom: 0; 
-            width: 642px; 
-            max-width: calc(100vw - 8px);
-            height: 80px;
-            background: white;
-            border-top: 4px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-        }
-        .nav-item {
-            flex: 1;
-            text-align: center;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .nav-item.active { background-color: var(--main-yellow); }
-        .nav-icon { font-size: 24px; margin-bottom: 2px; }
-
-        .trip-scroll-box, .day-scroll-box {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 5px 2px;
-            margin-bottom: 15px;
-        }
-        .trip-tag, .day-tag {
-            background: white;
-            border: 2px solid var(--border-color);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            white-space: nowrap;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .trip-tag.active { background: var(--main-pink); font-weight: bold; box-shadow: 3px 3px 0px var(--border-color); }
-        .day-tag.active { background: var(--main-orange); font-weight: bold; box-shadow: 2px 2px 0px var(--border-color); }
-        
-        .delete-trip-btn { background: none; border: none; color: #cc0000; cursor: pointer; font-weight: bold; padding: 0 2px; }
-        .history-item { border-bottom: 2px dashed #ccc; padding: 12px 0; font-size: 15px; position: relative; }
-        .timeline-item { border-left: 3px solid var(--border-color); padding-left: 15px; margin-left: 10px; position: relative; padding-bottom: 15px; }
-        .timeline-item::before { content: '📍'; position: absolute; left: -11px; top: 0; background: var(--bg-color); font-size: 14px; }
-        
-        .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
-        .checkbox-label {
-            display: flex; align-items: center; gap: 4px; background: #fff;
-            padding: 6px 12px; border: 2px solid var(--border-color); border-radius: 20px; cursor: pointer; font-size: 14px;
-        }
-        .checkbox-label input { width: auto; margin: 0; }
-        .type-badge { font-size: 11px; padding: 2px 6px; border-radius: 6px; color: white; font-weight: bold; margin-left: 5px; }
-        .delete-btn { background: none; border: none; color: #cc0000; cursor: pointer; font-weight: bold; float: right; font-size: 16px; }
-
-        /* 🔒 旅伴鎖死模式：前4頁的按鈕/輸入框全部變灰，無法點擊 */
-        .guest-mode #page-trip button,
-        .guest-mode #page-pre button,
-        .guest-mode #page-local button,
-        .guest-mode #page-schedule button {
-            opacity: .35;
-            filter: grayscale(1);
-            cursor: not-allowed !important;
-            box-shadow: none !important;
-        }
-        .guest-mode #page-trip input,
-        .guest-mode #page-trip select,
-        .guest-mode #page-pre input,
-        .guest-mode #page-pre select,
-        .guest-mode #page-local input,
-        .guest-mode #page-local select,
-        .guest-mode #page-schedule input,
-        .guest-mode #page-schedule select,
-        .guest-mode #page-schedule textarea {
-            pointer-events: none;
-            opacity: .5;
-            background: #eee;
-        }
-        .guest-banner {
-            background: var(--main-purple);
-            border-bottom: 3px solid var(--border-color);
-            padding: 8px 15px;
-            font-size: 13px;
-            text-align: center;
-            font-weight: bold;
-        }
+        html { font-size: 121%; }
+        body { font-family: 'NaikaiFont', 'Huninn', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text); -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; transition: background-color .3s ease, color .3s ease; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn .35s ease; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-4deg);} 50% { transform: translateY(-7px) rotate(4deg);} }
+        .deco-float { animation: floaty 3.2s ease-in-out infinite; display: inline-block; pointer-events: none; }
+        .deco-float.d2 { animation-delay: .6s; }
+        .deco-float.d3 { animation-delay: 1.2s; }
+        @keyframes popIn { 0% { transform: scale(.8); } 60% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        .nav-btn.active-nav i { animation: popIn .35s ease; }
+        .theme-swatch { transition: transform .15s ease; }
+        .theme-swatch:active { transform: scale(0.9); }
+        .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px white, 0 0 0 5px var(--c-accent); }
+        button, .btn-pop { transition: transform .12s ease; }
+        button:active, .btn-pop:active { transform: scale(0.96); }
     </style>
 </head>
-<body>
-
-<div class="app-phone-container">
-    
-    <!-- 頂部大標題 -->
-    <div class="header-box">
-        <span class="header-title" id="appTitle">🦊 我的萌寵五星旅遊手帳</span>
-        <button class="edit-btn" onclick="editAppTitle()">✏️</button>
-    </div>
-
-    <!-- ================= 頁面 1：🏕️ 旅遊分類與成員 ================= -->
-    <div id="page-trip" class="page active">
-        <div class="comic-card">
-            <div class="card-title">🏕️ 旅遊項目切換</div>
-            <div class="trip-scroll-box" id="tripTagsContainer"></div>
-            <div style="display: flex; gap: 8px; margin-top: 15px;">
-                <input type="text" id="newTripInput" placeholder="加新行程分類（如：2025泰國 🇹🇭）">
-                <button class="comic-btn btn-blue" onclick="createNewTrip()" style="width:90px; box-shadow:none; padding:5px;">新增</button>
-            </div>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">🐱 成員小隊</div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="newMemberInput" placeholder="輸入成員名字（如：小兔、熊大、喵喵）">
-                <button class="comic-btn" onclick="addMember()" style="width:90px; box-shadow:none; padding:5px;">加入</button>
-            </div>
-            <div style="margin-top: 20px; font-size:15px; line-height: 1.6;">
-                <b>🎯 當前查看專案：</b> <span id="curTripName" style="color:#ff5722; font-weight:bold;">請先建立行程</span><br><br>
-                <b>🐾 成員名單：</b> 
-                <div id="curTripMembers" style="background:#fff; padding:10px; border:2px solid #333; border-radius:12px; margin-top: 8px; min-height: 30px;">無成員</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= 頁面 2：🎟️ 行前花費 ================= -->
-    <div id="page-pre" class="page">
-        <!-- 數據統計看板 -->
-        <div class="comic-card" style="background: #fafafa;">
-            <div class="card-title">📊 【行前】花費錢包統計</div>
-            <div class="dashboard">
-                <div class="dash-item" style="background: #ffecb3;">總花費<br><span id="preTotalSum" style="color:red;">$0</span></div>
-                <div class="dash-item" style="background: #c8e6c9;">他人代墊<br><span id="preShareSum" style="color:green;">$0</span></div>
-                <div class="dash-item" style="background: #e1f5fe;">個人自付<br><span id="preOwnSum" style="color:blue;">$0</span></div>
-            </div>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">🎟️ 登記行前開銷 (台幣)</div>
-            <label>🍨 支出模式</label>
-            <select id="preCostType" onchange="togglePreCostUI()">
-                <option value="share">🤝 大家代墊 (代墊幫大家付，事後拆帳)</option>
-                <option value="personal">👤 個人自付 (自己花自己的，透明展示不拆帳)</option>
-            </select>
-
-            <div class="row-flex">
-                <div style="flex:1.2;">
-                    <label>📅 花錢日期</label>
-                    <input type="date" id="preDate" value="2026-07-10">
+<body class="bg-[var(--c-bg)]" data-theme="mauve">
+    <div id="app" class="max-w-md mx-auto min-h-screen bg-[var(--c-bg)] shadow-lg relative flex flex-col pb-32" style="background-image: radial-gradient(var(--c-border-strong) 1px, transparent 1px); background-size: 20px 20px;">
+        
+        <header class="bg-white px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden">
+            <span class="deco-float absolute top-1 right-24 text-sm opacity-25 select-none">✨</span>
+            <span class="deco-float d2 absolute top-6 right-14 text-xs opacity-20 select-none">💕</span>
+            <span class="deco-float d3 absolute top-2 right-6 text-xs opacity-20 select-none">🌸</span>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full border border-[var(--c-border-strong)] overflow-hidden bg-gray-100 flex items-center justify-center relative">
+                    <img id="app-avatar-img" src="" class="w-full h-full object-cover hidden">
+                    <i id="app-avatar-icon" class="fa-solid fa-dog text-lg text-[var(--c-accent)]"></i>
                 </div>
-                <div style="flex:1;">
-                    <label>🕒 時間</label>
-                    <input type="time" id="preTime" value="12:00">
+                <div>
+                    <h1 id="app-title-display" class="font-bold text-base text-[var(--c-text)]">艾姍的微甜生活 APP</h1>
                 </div>
             </div>
+            <div id="sync-indicator" class="text-[10px] px-2 py-1 rounded bg-amber-100 text-amber-700 font-bold animate-pulse">☁️ 連線中</div>
+        </header>
 
-            <label>🎈 項目名稱</label>
-            <input type="text" id="preTitle" placeholder="買機票、訂房、買網卡...">
+        <main class="flex-1 p-5 z-10">
             
-            <label>💰 金額 (台幣 TWD)</label>
-            <input type="number" id="preAmount" placeholder="請輸入台幣金額">
+            <div id="tab-jars" class="tab-content active space-y-4">
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">本月個人預估總收入 (NT$)</label>
+                    <input type="number" id="total-income" value="80000" class="w-full text-xl font-bold p-2 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)]" oninput="calcJars()">
+                    <p class="text-[10px] text-amber-600 mt-1 font-medium">🔒 可自訂屬於自己的六帳戶分配%數，另一半看不到唷</p>
+                </div>
+                <div id="jars-container" class="space-y-4"></div>
+            </div>
 
-            <!-- 👑 聯動核心精修：依據模式切換顯示 -->
-            <div id="prePayerBlock">
-                <label>👑 誰先代墊這筆錢？</label>
-                <select id="prePayerSelect"></select>
+            <div id="tab-bills" class="tab-content space-y-4">
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</h2>
+                    <input type="text" id="bill-desc" placeholder="項目說明（如：買保健食品、7月基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                    <input type="number" id="bill-amount" placeholder="金額 (NT$)" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                    
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢代墊？</label>
+                            <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
+                            <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
+                                <option value="half">👥 共同花費</option>
+                                <option value="full">👤 幫對方買</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button onclick="addBill()" class="w-full py-2.5 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-white rounded-xl text-sm font-bold transition shadow-sm">送出記帳 (秒同步☁️)</button>
+                </div>
+
+                <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm">
+                    <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-1">雙人即時對帳計算機</h3>
+                    <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)]">雲端帳目載入中...</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-sm text-[var(--c-text)]">近期共同帳目明細</h3>
+                        <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
+                    </div>
+                    <div id="bills-list" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar text-sm"></div>
+                </div>
+            </div>
+
+            <div id="tab-chores" class="tab-content space-y-4">
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
+                    <h2 class="font-bold text-sm mb-3 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>雲端家務點數爭霸賽</h2>
+                    <div class="flex justify-around items-center border-t border-b border-gray-100 py-3">
+                        <div class="text-center">
+                            <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
+                            <p id="score-a" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
+                        </div>
+                        <div class="w-px h-8 bg-gray-200"></div>
+                        <div class="text-center">
+                            <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
+                            <p id="score-b" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
+                        </div>
+                    </div>
+                    <button onclick="resetChoresScore()" class="text-xs text-gray-400 hover:text-gray-600 mt-2 block mx-auto underline">點數重新歸零</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h3 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>點擊完成工作 (積分換獎勵 ⚡️)</h3>
+                    <div id="chores-list" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar"></div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增/管理家務項目 (兩端秒同步)</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                    </div>
+                    <button onclick="addChore()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                    <p class="text-[10px] text-[var(--c-text-muted)]">上方清單裡每個項目後面都有 ✏️ 修改 / 🗑️ 刪除 按鈕，可自由調整。</p>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="tab-content space-y-4">
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-palette mr-2 text-[var(--c-accent)]"></i>外觀主題色彩 🎨（本機獨立）</h2>
+                    <p class="text-[11px] text-[var(--c-text-muted)]">挑一個喜歡的莫蘭迪漸層色系，只會套用在您自己的手機上喔！</p>
+                    <div class="grid grid-cols-3 gap-3" id="theme-swatch-list">
+                        <button onclick="applyTheme('mauve')" data-theme-btn="mauve" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">藕粉霧</span>
+                        </button>
+                        <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
+                        </button>
+                        <button onclick="applyTheme('plumjam')" data-theme-btn="plumjam" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">梅子果醬</span>
+                        </button>
+                        <button onclick="applyTheme('iceblue')" data-theme-btn="iceblue" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">冰藍玫瑰</span>
+                        </button>
+                        <button onclick="applyTheme('mocha')" data-theme-btn="mocha" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">摩卡杏仁</span>
+                        </button>
+                        <button onclick="applyTheme('cloudmilk')" data-theme-btn="cloudmilk" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-user-gear mr-2 text-[var(--c-accent)]"></i>共同基本設定 (兩端秒同步)</h2>
+                    <div>
+                        <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">共同 APP 大標題</label>
+                        <input type="text" id="setting-app-title" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 A 暱稱</label>
+                            <input type="text" id="setting-name-a" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 B 暱稱</label>
+                            <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        </div>
+                    </div>
+                    <button onclick="saveCloudSettings()" class="w-full py-2.5 bg-[var(--c-accent)] text-white rounded-xl text-sm font-bold hover:bg-[var(--c-accent-dark)] transition">儲存基本設定 (雙向同步 ☁️)</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-image mr-2 text-[var(--c-accent)]"></i>個人頭像設定</h2>
+                    <div>
+                        <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">自訂個人頭像照片 (本機獨立)</label>
+                        <input type="file" id="setting-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-200">
+                    </div>
+                    <button onclick="saveAvatarOnly()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">儲存照片頭像</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-percentage mr-2 text-[var(--c-accent)]"></i>個人六帳戶百分比 (%) 調配自訂</h2>
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">🏠 生活必需 (%)</label>
+                            <input type="number" id="pct-nec" class="w-full p-1.5 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">📈 財務自由 (%)</label>
+                            <input type="number" id="pct-ffa" class="w-full p-1.5 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">🥐 盡情玩樂 (%)</label>
+                            <input type="number" id="pct-play" class="w-full p-1.5 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">🏖️ 長期儲蓄 (%)</label>
+                            <input type="number" id="pct-ltss" class="w-full p-1.5 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">📚 教育成長 (%)</label>
+                            <input type="number" id="pct-edu" class="w-full p-1.5 border rounded">
+                        </div>
+                        <div>
+                            <label class="block text-[var(--c-text-muted)] font-bold mb-1">💖 貢獻付出 (%)</label>
+                            <input type="number" id="pct-give" class="w-full p-1.5 border rounded">
+                        </div>
+                    </div>
+                    <button onclick="saveLocalPcts()" class="w-full py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-xl text-xs font-bold transition">💾 儲存並更新個人預算比例</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-folder-plus mr-2 text-[var(--c-accent)]"></i>個人六帳戶細項管理 (本機獨立)</h2>
+                    <div class="space-y-2">
+                        <label class="block text-xs text-[var(--c-text-muted)] font-bold">選擇歸屬大分類</label>
+                        <select id="manage-jar-select" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white" onchange="renderLocalJarItems()">
+                            <option value="nec">🏠 生活必需</option>
+                            <option value="ffa">📈 財務自由</option>
+                            <option value="play">🥐 盡情玩樂</option>
+                            <option value="ltss">🏖️ 長期儲蓄</option>
+                            <option value="edu">📚 教育成長</option>
+                            <option value="give">💖 貢獻付出</option>
+                        </select>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="manage-item-name" placeholder="細項" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <input type="number" id="manage-item-cost" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        </div>
+                        <button onclick="addLocalJarItem()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">加入我的個人預算盤</button>
+                    </div>
+                    <div id="manage-jar-items-list" class="space-y-1 text-xs border-t pt-2 max-h-48 overflow-y-auto no-scrollbar"></div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bg-white border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg">
+            <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>預算沙盤</span></button>
+            <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
+            <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-gear text-lg"></i><span>設定</span></button>
+        </nav>
+    </div>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDn2t1hswzLk3SsvbJ3mB8DYknG8J8Fwe0",
+            authDomain: "lys3-c0cba.firebaseapp.com",
+            databaseURL: "https://lys3-c0cba-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "lys3-c0cba",
+            storageBucket: "lys3-c0cba.firebasestorage.app",
+            messagingSenderId: "904983619353",
+            appId: "1:904983619353:web:6f3ef66a7a1a3c0342c788"
+        };
+        firebase.initializeApp(firebaseConfig);
+        // 專屬於你們兩人的雲端房間代號（不易被猜到）
+        const db = firebase.database().ref("room_x7k2q9v_shanshan_yunchen");
+
+        let localState = JSON.parse(localStorage.getItem('shanshan_local_v70')) || {
+            income: 80000, avatar: "", theme: "mauve",
+            pcts: { nec: 55, ffa: 10, play: 10, ltss: 10, edu: 10, give: 5 },
+            jarItems: { nec: [], ffa: [], play: [], ltss: [], edu: [], give: [] }
+        };
+        if (!localState.theme) localState.theme = "mauve";
+
+        let cloudState = {
+            appTitle: "艾姍的微甜生活 APP", nameA: "姍姍", nameB: "昀辰",
+            bills: [], scoreA: 0, scoreB: 0,
+            chores: [
+                { name: "洗碗盤 🍽️", pts: 1 }, { name: "倒垃圾/廚餘 🗑️", pts: 1 },
+                { name: "洗衣服/曬衣服 🧺", pts: 2 }, { name: "吸地拖地 ✨", pts: 2 },
+                { name: "清理狗大便/尿尿 🐾", pts: 1 }
+            ]
+        };
+
+        function saveLocal() { localStorage.setItem('shanshan_local_v70', JSON.stringify(localState)); }
+
+        function applyTheme(themeName) {
+            localState.theme = themeName;
+            saveLocal();
+            document.body.setAttribute('data-theme', themeName);
+            document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+                btn.classList.toggle('selected', btn.getAttribute('data-theme-btn') === themeName);
+            });
+        }
+
+        // 雲端實時監聽
+        db.on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) { 
+                if(!data.appTitle) data.appTitle = "艾姍的微甜生活 APP";
+                if(!data.nameA) data.nameA = "姍姍";
+                if(!data.nameB) data.nameB = "昀辰";
+                cloudState = data; 
+            } else { 
+                db.set(cloudState); 
+            }
+            // 連線成功！立刻定格為好看的綠色，徹底告別閃爍！
+            const indicator = document.getElementById('sync-indicator');
+            if(indicator) {
+                indicator.className = "text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 font-bold";
+                indicator.innerText = "☁️ 雲端同步中";
+            }
+            applyDisplay();
+        }, (error) => {
+            console.error("Firebase連線失敗：", error);
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            ['jars', 'bills', 'chores', 'settings'].forEach(t => {
+                const btn = document.getElementById('nav-' + t);
+                if (t === tabId) { btn.classList.replace('text-gray-400', 'text-[var(--c-accent)]'); btn.classList.add('font-bold', 'active-nav'); }
+                else { btn.classList.replace('text-[var(--c-accent)]', 'text-gray-400'); btn.classList.remove('font-bold', 'active-nav'); }
+            });
+            if(tabId === 'settings') renderLocalJarItems();
+            window.scrollTo(0, 0);
+        }
+
+        function calcJars() {
+            const inc = document.getElementById('total-income').value || 0;
+            localState.income = Number(inc); saveLocal();
+            const p = localState.pcts;
+            const jarConfigs = [
+                { id: 'nec', name: '🏠 生活必需', pct: (p.nec || 0) / 100 }, { id: 'ffa', name: '📈 財務自由', pct: (p.ffa || 0) / 100 },
+                { id: 'play', name: '🥐 盡情玩樂', pct: (p.play || 0) / 100 }, { id: 'ltss', name: '🏖️ 長期儲蓄', pct: (p.ltss || 0) / 100 },
+                { id: 'edu', name: '📚 教育成長', pct: (p.edu || 0) / 100 }, { id: 'give', name: '💖 貢獻付出', pct: (p.give || 0) / 100 }
+            ];
+            const container = document.getElementById('jars-container'); container.innerHTML = '';
+            jarConfigs.forEach(config => {
+                const totalBudget = Math.round(inc * config.pct);
+                const items = localState.jarItems[config.id] || [];
+                const spentSum = items.reduce((sum, item) => sum + item.cost, 0); const remain = totalBudget - spentSum;
+                let itemsHtml = '';
+                items.forEach(item => { itemsHtml += `<div class="flex justify-between text-xs text-gray-500 border-b border-dashed border-gray-100 py-1 pl-4"><span>• ${item.name}</span><span>NT$ ${item.cost.toLocaleString()}</span></div>`; });
+                if(items.length === 0) itemsHtml = `<p class="text-[11px] text-gray-400 italic pl-4">目前暫無設定子開銷項目</p>`;
+                const jarDiv = document.createElement('div'); jarDiv.className = "bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-2";
+                jarDiv.innerHTML = `<div class="flex justify-between items-center pb-1 border-b border-gray-100"><span class="font-bold text-sm text-[var(--c-text)]">${config.name} (${(config.pct*100).toFixed(0)}%)</span><span class="text-xs font-bold text-gray-400">總預算: NT$ ${totalBudget.toLocaleString()}</span></div><div class="space-y-1">${itemsHtml}</div><div class="flex justify-between items-center text-xs pt-1 border-t border-dotted border-gray-100 font-medium"><span class="text-gray-400">已規劃扣除: NT$ ${spentSum.toLocaleString()}</span><span class="${remain >= 0 ? 'text-emerald-600' : 'text-red-500'} font-bold">可用賸餘: NT$ ${remain.toLocaleString()}</span></div>`;
+                container.appendChild(jarDiv);
+            });
+        }
+
+        function saveLocalPcts() {
+            localState.pcts = {
+                nec: Number(document.getElementById('pct-nec').value) || 0, ffa: Number(document.getElementById('pct-ffa').value) || 0,
+                play: Number(document.getElementById('pct-play').value) || 0, ltss: Number(document.getElementById('pct-ltss').value) || 0,
+                edu: Number(document.getElementById('pct-edu').value) || 0, give: Number(document.getElementById('pct-give').value) || 0
+            };
+            saveLocal(); calcJars(); alert("個人理財百分比更新成功！");
+        }
+
+        function renderLocalJarItems() {
+            const jarId = document.getElementById('manage-jar-select').value;
+            const container = document.getElementById('manage-jar-items-list'); container.innerHTML = '';
+            const items = localState.jarItems[jarId] || [];
+            items.forEach((item, index) => {
+                const div = document.createElement('div'); div.className = "flex justify-between items-center p-1.5 bg-gray-50 rounded mb-1 text-gray-700";
+                div.innerHTML = `<span>${item.name} (NT$ ${item.cost.toLocaleString()})</span><button onclick="deleteLocalJarItem('${jarId}', ${index})" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button>`;
+                container.appendChild(div);
+            });
+        }
+
+        function addLocalJarItem() {
+            const jarId = document.getElementById('manage-jar-select').value; const name = document.getElementById('manage-item-name').value.trim(); const cost = Number(document.getElementById('manage-item-cost').value);
+            if(!name || !cost || cost <= 0) return alert("請填寫細項與金額！");
+            if(!localState.jarItems[jarId]) localState.jarItems[jarId] = []; localState.jarItems[jarId].push({ name, cost });
+            saveLocal(); calcJars(); renderLocalJarItems(); document.getElementById('manage-item-name').value = ''; document.getElementById('manage-item-cost').value = '';
+        }
+        function deleteLocalJarItem(jarId, index) { localState.jarItems[jarId].splice(index, 1); saveLocal(); calcJars(); renderLocalJarItems(); }
+
+        function renderBills() {
+            const listEl = document.getElementById('bills-list'); listEl.innerHTML = ''; 
+            let netOwedToA = 0; 
+            const billsArr = cloudState.bills || [];
+            
+            billsArr.forEach((bill, index) => {
+                const amount = Number(bill.amount) || 0;
+                const splitType = bill.splitType || 'half'; 
+                let textType = '';
                 
-                <label>💞 誰要共同平分這筆錢？</label>
-                <div id="preShareGroup" class="checkbox-group"></div>
-            </div>
-
-            <div id="prePersonalBlock" style="display:none;">
-                <label>👤 這是「誰」自付的個人費用？(可多選，會為每個人各自記一筆)</label>
-                <div id="prePersonalGroup" class="checkbox-group"></div>
-            </div>
-
-            <button class="comic-btn btn-green" onclick="addExpense('pre')" style="margin-top:15px;">🍓 儲存行前花費</button>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">📋 行前明細歷史 (公帳自付全公開)</div>
-            <div id="preHistoryList"></div>
-        </div>
-
-        <div class="comic-card" style="background: #e1f5fe; border: 3px solid #333;">
-            <div class="card-title">🧮 行前大算盤單獨結算</div>
-            <button class="comic-btn btn-blue" onclick="calculateDebts('pre')">🔮 計算行前誰該給誰錢</button>
-            <div id="preSettlementDisplay" style="margin-top: 15px;"></div>
-        </div>
-    </div>
-
-    <!-- ================= 頁面 3：🍜 當地消費 ================= -->
-    <div id="page-local" class="page">
-        <div class="comic-card" style="background: #fafafa;">
-            <div class="card-title">📊 【當地】花費錢包統計 (換算台幣)</div>
-            <div class="dashboard">
-                <div class="dash-item" style="background: #ffd1dc;">總花費<br><span id="localTotalSum" style="color:red;">$0</span></div>
-                <div class="dash-item" style="background: #c8e6c9;">代墊平分<br><span id="localShareSum" style="color:green;">$0</span></div>
-                <div class="dash-item" style="background: #dfb2f4;">個人私物<br><span id="localOwnSum" style="color:purple;">$0</span></div>
-            </div>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">🍜 當地日常消費記錄</div>
-            <label>🍨 支出模式</label>
-            <select id="localCostType" onchange="toggleLocalCostUI()">
-                <option value="share">🤝 大家代墊 (日常公帳，事後平分)</option>
-                <option value="personal">👤 個人私物 (買伴手禮、個人藥妝，不拆帳)</option>
-            </select>
-
-            <div class="row-flex">
-                <div style="flex:1.2;">
-                    <label>📅 花錢日期</label>
-                    <input type="date" id="localDate" value="2026-07-11">
-                </div>
-                <div style="flex:1;">
-                    <label>🕒 時間</label>
-                    <input type="time" id="localTime" value="18:30">
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <div style="flex:2">
-                    <label>外幣金額</label>
-                    <input type="number" id="localAmount" placeholder="輸入金額">
-                </div>
-                <div style="flex:1.8">
-                    <label>🌐 目的地幣別</label>
-                    <select id="localCurrency" onchange="updateExchangeHint()">
-                        <option value="TWD">🇹🇼 台幣 TWD</option>
-                        <option value="JPY">🇯🇵 日圓 JPY</option>
-                        <option value="THB">🇹🇭 泰銖 THB</option>
-                        <option value="KRW">🇰🇷 韓元 KRW</option>
-                        <option value="USD">🇺🇸 美元 USD</option>
-                        <option value="EUR">🇪🇺 歐元 EUR</option>
-                        <option value="CNY">🇨🇳 人民幣 CNY</option>
-                        <option value="VND">🇻🇳 越南盾 VND</option>
-                        <option value="HKD">🇭🇰 港幣 HKD</option>
-                        <option value="SGD">🇸🇬 新幣 SGD</option>
-                        <option value="MYR">🇲🇾 馬幣 MYR</option>
-                    </select>
-                </div>
-            </div>
-            <p id="twdLiveHint" style="margin:0 0 12px 0; font-size:15px; color:#ff5722; font-weight:bold;">🍦 換算台幣：約 $0 元</p>
-
-            <label>🍡 消費項目</label>
-            <input type="text" id="localTitle" placeholder="吃拉麵、泰式按摩、買伴手禮...">
-
-            <!-- 👑 聯動核心精修：當地自付也隱藏選單 -->
-            <div id="localPayerBlock">
-                <label>👑 誰先代墊的？</label>
-                <select id="localPayerSelect"></select>
-                <label>💞 誰要共同分攤？</label>
-                <div id="localShareGroup" class="checkbox-group"></div>
-            </div>
-
-            <div id="localPersonalBlock" style="display:none;">
-                <label>👤 這是「誰」買的個人私物？(可多選)</label>
-                <div id="localPersonalGroup" class="checkbox-group"></div>
-            </div>
-
-            <button class="comic-btn btn-pink" onclick="addExpense('local')" style="margin-top:15px;">🥞 儲存當地日常</button>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">📋 當地明細歷史 (可刪除)</div>
-            <div id="localHistoryList"></div>
-        </div>
-
-        <div class="comic-card" style="background: #fffde7; border: 3px solid #333;">
-            <div class="card-title">🧮 當地日常獨立結算</div>
-            <button class="comic-btn btn-orange" onclick="calculateDebts('local')">🔮 計算當地誰該給誰錢</button>
-            <div id="localSettlementDisplay" style="margin-top: 15px;"></div>
-        </div>
-    </div>
-
-    <!-- ================= 頁面 4：📅 本次行程表 ================= -->
-    <div id="page-schedule" class="page">
-        <div class="comic-card">
-            <div class="card-title">📅 行程日期設定</div>
-            <div class="row-flex">
-                <div style="flex:1;">
-                    <label style="font-size: 13px;">📅 出發日期</label>
-                    <input type="date" id="tripStartDate" value="2026-07-10" onchange="updateTripDates()">
-                </div>
-                <div style="flex:1;">
-                    <label style="font-size: 13px;">📅 回程日期</label>
-                    <input type="date" id="tripEndDate" value="2026-07-14" onchange="updateTripDates()">
-                </div>
-            </div>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">🗺️ 本次每日行程時間軸</div>
-            <div class="day-scroll-box" id="dayTagsContainer"></div>
-            
-            <div style="background: #fffdf5; padding: 12px; border: 2px solid var(--border-color); border-radius: 12px;">
-                <b style="font-size:14px;">➕ 新增規劃與備忘錄：</b>
-                <div class="row-flex" style="margin-top: 5px;">
-                    <input type="time" id="schedTime" value="12:00" style="flex:1;">
-                    <input type="text" id="schedDesc" placeholder="活動項目 (如：出發至那霸機場 ✈️)" style="flex:2.5;">
-                </div>
-                <textarea id="schedMemo" placeholder="補充備忘小筆記 (如：酷航訂單編號 AX123)" rows="2" style="margin-top:5px; border-radius:8px;"></textarea>
-                <button class="comic-btn btn-blue" onclick="addScheduleItem()" style="padding: 8px; margin-top: 5px; font-size:14px; box-shadow: 2px 2px 0px #333;">填入時間軸</button>
-            </div>
-
-            <div id="timelineDisplayList" style="margin-top: 20px;"></div>
-        </div>
-    </div>
-
-    <!-- ================= 頁面 5：👤 個人記帳（旅伴專用） ================= -->
-    <div id="page-personal" class="page">
-        <div class="comic-card" style="background: #f3e5f5;">
-            <div class="card-title">👤 個人記帳（旅伴自由填寫）</div>
-            <p style="font-size:13px; color:#666; margin-top:0;">選自己的名字，記下自己買的伴手禮、私人花費，不會影響大家的公帳結算唷！</p>
-
-            <label>🙋 我是誰？</label>
-            <select id="personalNameSelect"></select>
-
-            <div class="row-flex">
-                <div style="flex:1.2;">
-                    <label>📅 日期</label>
-                    <input type="date" id="personalDate" value="2026-07-10">
-                </div>
-                <div style="flex:1;">
-                    <label>🕒 時間</label>
-                    <input type="time" id="personalTime" value="12:00">
-                </div>
-            </div>
-
-            <label>🍡 買了什麼？</label>
-            <input type="text" id="personalTitle" placeholder="伴手禮、藥妝、自己吃的下午茶...">
-
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <div style="flex:2">
-                    <label>金額</label>
-                    <input type="number" id="personalAmount" placeholder="輸入金額">
-                </div>
-                <div style="flex:1.8">
-                    <label>🌐 幣別</label>
-                    <select id="personalCurrency" onchange="updatePersonalExchangeHint()">
-                        <option value="TWD">🇹🇼 台幣 TWD</option>
-                        <option value="JPY">🇯🇵 日圓 JPY</option>
-                        <option value="THB">🇹🇭 泰銖 THB</option>
-                        <option value="KRW">🇰🇷 韓元 KRW</option>
-                        <option value="USD">🇺🇸 美元 USD</option>
-                        <option value="EUR">🇪🇺 歐元 EUR</option>
-                        <option value="CNY">🇨🇳 人民幣 CNY</option>
-                        <option value="VND">🇻🇳 越南盾 VND</option>
-                        <option value="HKD">🇭🇰 港幣 HKD</option>
-                        <option value="SGD">🇸🇬 新幣 SGD</option>
-                        <option value="MYR">🇲🇾 馬幣 MYR</option>
-                    </select>
-                </div>
-            </div>
-            <p id="personalLiveHint" style="margin:0 0 12px 0; font-size:15px; color:#7b1fa2; font-weight:bold;">🍦 換算台幣：約 $0 元</p>
-
-            <button class="comic-btn" style="background-color: var(--main-purple);" onclick="addPersonalExpense()">🎁 記下這筆花費</button>
-        </div>
-
-        <div class="comic-card">
-            <div class="card-title">📋 大家的個人私物紀錄</div>
-            <div id="personalHistoryList"></div>
-        </div>
-    </div>
-
-    <!-- 底部固定五大導覽列按鈕 -->
-    <div class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('trip', this)">
-            <div class="nav-icon">🏕️</div><div>專案成員</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('pre', this)">
-            <div class="nav-icon">🎟️</div><div>行前花費</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('local', this)">
-            <div class="nav-icon">🍜</div><div>當地日常</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('schedule', this)">
-            <div class="nav-icon">📅</div><div>本次行程</div>
-        </div>
-        <div class="nav-item" onclick="switchTab('personal', this)">
-            <div class="nav-icon">👤</div><div>個人記帳</div>
-        </div>
-    </div>
-</div>
-
-<script>
-    const rates = { 
-        TWD: 1.0, JPY: 0.22, THB: 0.90, KRW: 0.024, USD: 32.5, 
-        EUR: 35.2, CNY: 4.5, VND: 0.0013, HKD: 4.15, SGD: 24.2, MYR: 7.3 
-    };
-    
-    // 多專案資料庫結構
-    let db = {
-        title: "🦊 我的萌寵五星旅遊手帳",
-        currentIdx: -1,
-        trips: []
-    };
-
-    // 🔒 判斷這是不是「旅伴連結」打開的（網址後面加 ?guest=1）
-    const urlParams = new URLSearchParams(window.location.search);
-    const isGuest = urlParams.get('guest') === '1';
-
-    // 🔥 貼上你自己在 Firebase 專案設定頁拿到的那段 config
-    const firebaseConfig = {
-        apiKey: "AIzaSyCe-YiHRMnTFRCW750ZUCS7HAfeE4rymAg",
-        authDomain: "travel33-e9116.firebaseapp.com",
-        projectId: "travel33-e9116",
-        storageBucket: "travel33-e9116.firebasestorage.app",
-        messagingSenderId: "13508819301",
-        appId: "1:13508819301:web:34b5ef264b31a58376498c"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const cloudDoc = firebase.firestore().collection('travelApp').doc('sharedData');
-
-    window.onload = function() {
-        if (isGuest) {
-            document.body.classList.add('guest-mode');
-            const banner = document.createElement('div');
-            banner.className = 'guest-banner';
-            banner.innerText = '👋 你是用旅伴連結打開的，只能在「個人記帳」頁輸入自己的花費喔！';
-            document.querySelector('.app-phone-container').insertBefore(banner, document.querySelector('.header-box').nextSibling);
-        }
-        document.getElementById('localAmount').addEventListener('input', updateExchangeHint);
-        document.getElementById('personalAmount').addEventListener('input', updatePersonalExchangeHint);
-
-        // 🔥 即時監聽雲端資料，只要有人（包含旅伴）新增資料，這裡會自動更新畫面
-        cloudDoc.onSnapshot((docSnap) => {
-            if (docSnap.exists) {
-                db = docSnap.data();
-            } else {
-                // 第一次使用，把初始資料寫上雲端
-                cloudDoc.set(db);
-            }
-            document.getElementById('appTitle').innerText = db.title;
-            refreshAll();
-        }, (err) => {
-            console.error('讀取雲端資料失敗：', err);
-            alert('連線雲端資料庫失敗，請檢查網路或 Firebase 設定 🥲');
-        });
-    };
-
-    function save() {
-        cloudDoc.set(db).catch(err => {
-            console.error('存檔失敗：', err);
-            alert('存檔失敗，請檢查網路連線 🥲');
-        });
-    }
-
-    // 🔒 旅伴鎖死防呆：前4頁的新增/刪除/結算功能，旅伴一律不能執行
-    function guestGuard() {
-        if (isGuest) {
-            alert('這裡只有你（記帳的人）能操作唷，旅伴請到「個人記帳」頁輸入自己的花費 🙏');
-            return true;
-        }
-        return false;
-    }
-
-    function editAppTitle() {
-        const t = prompt("修改新手帳標題：", db.title);
-        if (t) { db.title = t; document.getElementById('appTitle').innerText = t; save(); }
-    }
-
-    function createNewTrip() {
-        const input = document.getElementById('newTripInput');
-        const name = input.value.trim();
-        if (guestGuard()) return;
-        if (!name) return alert('請輸入分類名稱！🌻');
-        db.trips.push({ 
-            name, startDate: "2026-07-10", endDate: "2026-07-14", currentDayTab: 1,
-            scheduleData: {}, members: [], expenses: [] 
-        });
-        db.currentIdx = db.trips.length - 1;
-        input.value = "";
-        refreshAll(); save();
-    }
-
-    function deleteTrip(idx, event) {
-        event.stopPropagation();
-        if (guestGuard()) return;
-        if(confirm(`確定刪除整趟行程分類嗎？🦊`)) {
-            db.trips.splice(idx, 1);
-            if(db.currentIdx >= db.trips.length) db.currentIdx = db.trips.length - 1;
-            refreshAll(); save();
-        }
-    }
-
-    function selectTrip(idx) {
-        db.currentIdx = idx;
-        refreshAll(); save();
-    }
-
-    function addMember() {
-        if (guestGuard()) return;
-        if (db.currentIdx === -1 || db.trips.length === 0) return alert('請先新增並點選一個行程分類！🎒');
-        const input = document.getElementById('newMemberInput');
-        const name = input.value.trim();
-        if (!name) return alert('請輸入組員名字！🌸');
-        
-        let trip = db.trips[db.currentIdx];
-        if (trip.members.includes(name)) return alert('小夥伴重複囉！');
-        trip.members.push(name);
-        input.value = "";
-        refreshAll(); save();
-    }
-
-    function deleteMember(name) {
-        if (guestGuard()) return;
-        let trip = db.trips[db.currentIdx];
-        if(confirm(`確定要移除 ${name} 嗎？`)) {
-            trip.members = trip.members.filter(m => m !== name);
-            refreshAll(); save();
-        }
-    }
-
-    // 👑 聯動精修：行前模式切換
-    function togglePreCostUI() {
-        const type = document.getElementById('preCostType').value;
-        document.getElementById('prePayerBlock').style.display = (type === 'personal') ? 'none' : 'block';
-        document.getElementById('prePersonalBlock').style.display = (type === 'personal') ? 'block' : 'none';
-    }
-
-    // 👑 聯動精修：當地模式切換
-    function toggleLocalCostUI() {
-        const type = document.getElementById('localCostType').value;
-        document.getElementById('localPayerBlock').style.display = (type === 'personal') ? 'none' : 'block';
-        document.getElementById('localPersonalBlock').style.display = (type === 'personal') ? 'block' : 'none';
-    }
-
-    function updateTripDates() {
-        if (guestGuard()) return;
-        if (db.currentIdx === -1) return;
-        let trip = db.trips[db.currentIdx];
-        trip.startDate = document.getElementById('tripStartDate').value;
-        trip.endDate = document.getElementById('tripEndDate').value;
-        generateDayTags();
-        save();
-    }
-
-    function generateDayTags() {
-        if (db.currentIdx === -1 || db.trips.length === 0) return;
-        let trip = db.trips[db.currentIdx];
-        const start = new Date(trip.startDate);
-        const end = new Date(trip.endDate);
-        const diffDays = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24)) + 1;
-        const container = document.getElementById('dayTagsContainer');
-        container.innerHTML = "";
-        for(let i=1; i<= (isNaN(diffDays)? 1 : diffDays); i++) {
-            const activeClass = (i === trip.currentDayTab) ? 'active' : '';
-            container.innerHTML += `<div class="day-tag ${activeClass}" onclick="switchDayTab(${i})">🐾 Day ${i}</div>`;
-        }
-        renderTimeline();
-    }
-
-    function switchDayTab(dayNum) {
-        let trip = db.trips[db.currentIdx];
-        trip.currentDayTab = dayNum;
-        generateDayTags();
-        save();
-    }
-
-    function addScheduleItem() {
-        if (guestGuard()) return;
-        let trip = db.trips[db.currentIdx];
-        const time = document.getElementById('schedTime').value;
-        const desc = document.getElementById('schedDesc').value.trim();
-        const memo = document.getElementById('schedMemo').value.trim();
-        if(!desc) return alert('請輸入活動項目規劃唷！');
-        if(!trip.scheduleData[trip.currentDayTab]) trip.scheduleData[trip.currentDayTab] = [];
-        trip.scheduleData[trip.currentDayTab].push({ time, desc, memo });
-        trip.scheduleData[trip.currentDayTab].sort((a,b) => a.time.localeCompare(b.time));
-        document.getElementById('schedDesc').value = "";
-        document.getElementById('schedMemo').value = "";
-        renderTimeline(); save();
-    }
-
-    function deleteScheduleItem(idx) {
-        if (guestGuard()) return;
-        let trip = db.trips[db.currentIdx];
-        trip.scheduleData[trip.currentDayTab].splice(idx, 1);
-        renderTimeline(); save();
-    }
-
-    function renderTimeline() {
-        const listDiv = document.getElementById('timelineDisplayList');
-        listDiv.innerHTML = "";
-        if (db.currentIdx === -1 || db.trips.length === 0) return;
-        let trip = db.trips[db.currentIdx];
-        const items = trip.scheduleData[trip.currentDayTab] || [];
-        if(items.length === 0) {
-            listDiv.innerHTML = "<p style='color:gray; font-size:14px;'>今天空空如也，快把出發班機、景點填上來！🌸</p>";
-            return;
-        }
-        items.forEach((item, idx) => {
-            let memoStr = item.memo ? `<br><small style="color:#777; background:#fff9c4; padding:2px 6px; border-radius:4px; display:inline-block; margin-top:3px;">📝 備忘：${item.memo}</small>` : '';
-            listDiv.innerHTML += `
-                <div class="timeline-item">
-                    <button class="delete-btn" onclick="deleteScheduleItem(${idx})">❌</button>
-                    <b style="color:#ff5722; font-size:16px;">${item.time}</b> &nbsp;&nbsp; 
-                    <span style="font-weight:bold;">${item.desc}</span>${memoStr}
-                </div>`;
-        });
-    }
-
-    function updateExchangeHint() {
-        const amt = parseFloat(document.getElementById('localAmount').value) || 0;
-        const cur = document.getElementById('localCurrency').value;
-        const twd = Math.round(amt * rates[cur]);
-        document.getElementById('twdLiveHint').innerText = `🍦 換算台幣：約 $${twd} 元`;
-        return twd;
-    }
-
-    // 👤 個人記帳頁（旅伴專用）：匯率換算提示
-    function updatePersonalExchangeHint() {
-        const amt = parseFloat(document.getElementById('personalAmount').value) || 0;
-        const cur = document.getElementById('personalCurrency').value;
-        const twd = Math.round(amt * rates[cur]);
-        document.getElementById('personalLiveHint').innerText = `🍦 換算台幣：約 $${twd} 元`;
-        return twd;
-    }
-
-    // 👤 個人記帳頁：新增自己的個人花費（旅伴也可使用，不受鎖死限制）
-    function addPersonalExpense() {
-        if (db.currentIdx === -1 || db.trips.length === 0) return alert('目前還沒有任何行程分類，請等記帳的人先建立行程！');
-        let trip = db.trips[db.currentIdx];
-        if (trip.members.length === 0) return alert('目前沒有任何隊員，請等記帳的人先加入成員！🎒');
-
-        const payer = document.getElementById('personalNameSelect').value;
-        const title = document.getElementById('personalTitle').value.trim();
-        const rawAmount = parseFloat(document.getElementById('personalAmount').value) || 0;
-        const currency = document.getElementById('personalCurrency').value;
-        const amount = updatePersonalExchangeHint();
-        const date = document.getElementById('personalDate').value;
-        const time = document.getElementById('personalTime').value;
-
-        if (!payer) return alert('請先選擇你是誰！🙋');
-        if (!title || amount <= 0 || !date || !time) return alert('請完整填寫項目與金額！⭐');
-
-        trip.expenses.push({ type: 'local', costType: 'personal', title, payer, amount, rawAmount, currency, participants: [], date, time });
-
-        document.getElementById('personalTitle').value = "";
-        document.getElementById('personalAmount').value = "";
-        document.getElementById('personalLiveHint').innerText = "🍦 換算台幣：約 $0 元";
-        refreshAll(); save();
-        alert('記錄好囉，感謝你幫忙記帳！🎉');
-    }
-
-    // 👤 個人記帳頁：刷新姓名下拉選單與大家的個人私物歷史
-    function refreshPersonalPage() {
-        if (db.currentIdx === -1 || db.trips.length === 0) return;
-        let trip = db.trips[db.currentIdx];
-
-        const nameSelect = document.getElementById('personalNameSelect');
-        const prevVal = nameSelect.value;
-        nameSelect.innerHTML = "";
-        trip.members.forEach(m => nameSelect.add(new Option(m, m)));
-        if (trip.members.includes(prevVal)) nameSelect.value = prevVal;
-
-        const hist = document.getElementById('personalHistoryList');
-        hist.innerHTML = "";
-        const personalItems = trip.expenses.filter(e => e.costType === 'personal');
-        if (!personalItems.length) {
-            hist.innerHTML = "<p style='color:gray; font-size:14px;'>目前還沒有人記錄個人花費唷～</p>";
-            return;
-        }
-        personalItems.forEach(e => {
-            const currencyHint = e.currency && e.currency !== 'TWD' ? ` <small style="color:gray;">(原幣:${e.rawAmount} ${e.currency})</small>` : '';
-            const div = document.createElement('div');
-            div.className = "history-item";
-            div.innerHTML = `<small style="color:gray;">📅 ${e.date} ${e.time}</small><br>🎁 <b>${e.payer}</b> [${e.title}]<br><b>$${e.amount} 元</b>${currencyHint}`;
-            hist.appendChild(div);
-        });
-    }
-
-    function refreshAll() {
-        const container = document.getElementById('tripTagsContainer');
-        container.innerHTML = "";
-        db.trips.forEach((t, i) => {
-            const active = (i === db.currentIdx) ? 'active' : '';
-            container.innerHTML += `
-                <div class="trip-tag ${active}" onclick="selectTrip(${i})">
-                    🎈 ${t.name}
-                    <button class="delete-trip-btn" onclick="deleteTrip(${i}, event)">❌</button>
-                </div>`;
-        });
-
-        if (db.currentIdx === -1 || db.trips.length === 0) {
-            document.getElementById('curTripName').innerText = "未選定專案";
-            document.getElementById('curTripMembers').innerText = "無成員";
-            return;
-        }
-
-        let trip = db.trips[db.currentIdx];
-        document.getElementById('curTripName').innerText = trip.name;
-
-        const memDiv = document.getElementById('curTripMembers');
-        memDiv.innerHTML = "";
-        if(trip.members.length === 0) memDiv.innerText = "暫無成員，請立刻在上方加人！";
-        trip.members.forEach(m => {
-            const delX = isGuest ? '' : ` <span style="color:red; cursor:pointer; font-weight:bold; margin-left:5px;" onclick="deleteMember('${m}')">x</span>`;
-            memDiv.innerHTML += `<span style="display:inline-block; background:#fff3e0; border:2px solid #333; padding:4px 10px; margin:4px; border-radius:15px; font-size:14px;">
-                ${m}${delX}
-            </span>`;
-        });
-
-        // 刷新所有多選與選單
-        const preSelect = document.getElementById('prePayerSelect');
-        const localSelect = document.getElementById('localPayerSelect');
-        preSelect.innerHTML = ""; localSelect.innerHTML = "";
-        
-        const preGroup = document.getElementById('preShareGroup');
-        const localGroup = document.getElementById('localShareGroup');
-        const prePersonalGroup = document.getElementById('prePersonalGroup');
-        const localPersonalGroup = document.getElementById('localPersonalGroup');
-        
-        preGroup.innerHTML = ""; localGroup.innerHTML = "";
-        prePersonalGroup.innerHTML = ""; localPersonalGroup.innerHTML = "";
-
-        trip.members.forEach(m => {
-            preSelect.add(new Option(m, m));
-            localSelect.add(new Option(m, m));
-            preGroup.innerHTML += `<label class="checkbox-label"><input type="checkbox" name="preCb" value="${m}" checked>${m}</label>`;
-            localGroup.innerHTML += `<label class="checkbox-label"><input type="checkbox" name="localCb" value="${m}" checked>${m}</label>`;
-            prePersonalGroup.innerHTML += `<label class="checkbox-label"><input type="checkbox" name="preOwnCb" value="${m}">${m}</label>`;
-            localPersonalGroup.innerHTML += `<label class="checkbox-label"><input type="checkbox" name="localOwnCb" value="${m}">${m}</label>`;
-        });
-
-        // 渲染明細歷史與加總
-        trip.expenses.sort((a,b) => (a.date + " " + a.time).localeCompare(b.date + " " + b.time));
-        
-        let preTotalSum = 0, preShareSum = 0, preOwnSum = 0;
-        let localTotalSum = 0, localShareSum = 0, localOwnSum = 0;
-        
-        const preHist = document.getElementById('preHistoryList');
-        const localHist = document.getElementById('localHistoryList');
-        preHist.innerHTML = ""; localHist.innerHTML = "";
-
-        trip.expenses.forEach((e, index) => {
-            const div = document.createElement('div');
-            div.className = "history-item";
-            const delBtn = `<button class="delete-btn" onclick="deleteExpenseItem(${index})">❌</button>`;
-
-            if (e.type === 'pre') {
-                preTotalSum += e.amount;
-                if (e.costType === 'personal') {
-                    preOwnSum += e.amount;
-                    div.innerHTML = `${delBtn} <small style="color:gray;">📅 ${e.date} ${e.time}</small><br>👤 <b>${e.payer}</b> 自付 [${e.title}] <span class="type-badge" style="background:#0288d1">個人自付</span><br><b>$${e.amount} 元</b>`;
+                if (bill.payer === 'A') {
+                    if (splitType === 'half') { netOwedToA += (amount / 2); textType = '👥 共同平分'; }
+                    else { netOwedToA += amount; textType = '👤 幫對方全額代墊'; }
                 } else {
-                    preShareSum += e.amount;
-                    div.innerHTML = `${delBtn} <small style="color:gray;">📅 ${e.date} ${e.time}</small><br>🤝 <b>${e.payer}</b> 代墊 [${e.title}] <span class="type-badge" style="background:#2e7d32">大家平分</span><br><b>$${e.amount} 元</b><br><small style="color:#555;">分攤: ${e.participants.join(',')}</small>`;
+                    if (splitType === 'half') { netOwedToA -= (amount / 2); textType = '👥 共同平分'; }
+                    else { netOwedToA -= amount; textType = '👤 幫對方全額代墊'; }
                 }
-                preHist.appendChild(div);
-            } else {
-                localTotalSum += e.amount;
-                if (e.costType === 'personal') {
-                    localOwnSum += e.amount;
-                    div.innerHTML = `${delBtn} <small style="color:gray;">📅 ${e.date} ${e.time}</small><br>👤 <b>${e.payer}</b> 私物 [${e.title}] <span class="type-badge" style="background:#7b1fa2">個人私物</span><br><b>$${e.amount} 元 (NTD)</b> <small style="color:gray;">(原幣:${e.rawAmount} ${e.currency})</small>`;
-                } else {
-                    localShareSum += e.amount;
-                    div.innerHTML = `${delBtn} <small style="color:gray;">📅 ${e.date} ${e.time}</small><br>🍜 <b>${e.payer}</b> 代墊 [${e.title}] <span class="type-badge" style="background:#e65100">大家平分</span><br><b>$${e.amount} 元 (NTD)</b> <small style="color:gray;">(原幣:${e.rawAmount} ${e.currency})</small><br><small style="color:#555;">分攤: ${e.participants.join(',')}</small>`;
-                }
-                localHist.appendChild(div);
-            }
-        });
 
-        document.getElementById('preTotalSum').innerText = `$${preTotalSum}`;
-        document.getElementById('preShareSum').innerText = `$${preShareSum}`;
-        document.getElementById('preOwnSum').innerText = `$${preOwnSum}`;
-        document.getElementById('localTotalSum').innerText = `$${localTotalSum}`;
-        document.getElementById('localShareSum').innerText = `$${localShareSum}`;
-        document.getElementById('localOwnSum').innerText = `$${localOwnSum}`;
-        
-        generateDayTags();
-        refreshPersonalPage();
-    }
-
-    function addExpense(type) {
-        if (guestGuard()) return;
-        let trip = db.trips[db.currentIdx];
-        if (trip.members.length === 0) return alert('目前沒有任何隊員，請回第一頁加入！🎒');
-        
-        let title, amount, date, time, costType;
-        let rawAmount = 0, currency = 'TWD';
-
-        if (type === 'pre') {
-            costType = document.getElementById('preCostType').value;
-            title = document.getElementById('preTitle').value.trim();
-            amount = parseFloat(document.getElementById('preAmount').value) || 0;
-            date = document.getElementById('preDate').value;
-            time = document.getElementById('preTime').value;
+                const payerLabel = bill.payer === 'A' ? cloudState.nameA : cloudState.nameB;
+                const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100";
+                div.innerHTML = `<div><p class="font-bold text-[var(--c-text)]">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)]">${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill(${index})" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
+                listEl.appendChild(div);
+            });
             
-            if (!title || amount <= 0 || !date || !time) return alert('請完整填寫項目與金額！⭐');
-
-            if (costType === 'personal') {
-                // 👑 核心精修：個人自付直接遍歷勾選的人，為每個人建立獨立名目
-                let ownCbs = document.querySelectorAll('input[name="preOwnCb"]:checked');
-                if(!ownCbs.length) return alert('請勾選這是誰的個人費用！');
-                ownCbs.forEach(cb => {
-                    trip.expenses.push({ type, costType, title, payer: cb.value, amount, participants: [], date, time });
-                });
+            const statusTextEl = document.getElementById('bill-status-text');
+            if (netOwedToA > 0) {
+                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameB}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameA}</span> <span class="text-lg font-black">NT$ ${Math.round(netOwedToA).toLocaleString()}</span>`;
+            } else if (netOwedToA < 0) {
+                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
             } else {
-                let payer = document.getElementById('prePayerSelect').value;
-                let cbs = document.querySelectorAll('input[name="preCb"]:checked');
-                if(!cbs.length) return alert('平分開銷至少需要勾選一個人！');
-                let participants = []; cbs.forEach(cb => participants.push(cb.value));
-                trip.expenses.push({ type, costType, title, payer, amount, participants, date, time });
-            }
-        } else {
-            costType = document.getElementById('localCostType').value;
-            title = document.getElementById('localTitle').value.trim();
-            rawAmount = parseFloat(document.getElementById('localAmount').value) || 0;
-            currency = document.getElementById('localCurrency').value;
-            amount = updateExchangeHint();
-            date = document.getElementById('localDate').value;
-            time = document.getElementById('localTime').value;
-
-            if (!title || amount <= 0 || !date || !time) return alert('請完整填寫項目與金額！⭐');
-
-            if (costType === 'personal') {
-                let ownCbs = document.querySelectorAll('input[name="localOwnCb"]:checked');
-                if(!ownCbs.length) return alert('請勾選這是誰的個人費用！');
-                ownCbs.forEach(cb => {
-                    trip.expenses.push({ type, costType, title, payer: cb.value, amount, rawAmount, currency, participants: [], date, time });
-                });
-            } else {
-                let payer = document.getElementById('localPayerSelect').value;
-                let cbs = document.querySelectorAll('input[name="localCb"]:checked');
-                if(!cbs.length) return alert('大家平分開銷至少需要勾選一個人！');
-                let participants = []; cbs.forEach(cb => participants.push(cb.value));
-                trip.expenses.push({ type, costType, title, payer, amount, rawAmount, currency, participants, date, time });
+                statusTextEl.innerHTML = "🎉 帳目目前完全平分，誰也不欠誰！";
             }
         }
 
-        // 清空輸入
-        if (type === 'pre') {
-            document.getElementById('preTitle').value = ""; document.getElementById('preAmount').value = "";
-        } else {
-            document.getElementById('localTitle').value = ""; document.getElementById('localAmount').value = "";
-            document.getElementById('twdLiveHint').innerText = "🍦 換算台幣：約 $0 元";
+        function addBill() {
+            const desc = document.getElementById('bill-desc').value.trim(); 
+            const amount = Number(document.getElementById('bill-amount').value); 
+            const payer = document.getElementById('bill-payer').value;
+            const splitType = document.getElementById('bill-split-type').value;
+            
+            if (!desc || !amount || amount <= 0) return alert("請填寫項目與金額！"); 
+            if(!cloudState.bills) cloudState.bills = []; 
+            cloudState.bills.unshift({ desc, amount, payer, splitType }); 
+            db.set(cloudState);
+            document.getElementById('bill-desc').value = ''; 
+            document.getElementById('bill-amount').value = '';
         }
-        refreshAll(); save();
-    }
+        function deleteBill(index) { cloudState.bills.splice(index, 1); db.set(cloudState); }
+        function clearAllBills() { if (confirm("確定一鍵清空所有雲端記帳？")) { cloudState.bills = []; db.set(cloudState); } }
 
-    function deleteExpenseItem(idx) {
-        if (guestGuard()) return;
-        db.trips[db.currentIdx].expenses.splice(idx, 1);
-        refreshAll(); save();
-    }
-
-    function calculateDebts(targetType) {
-        if (guestGuard()) return;
-        let trip = db.trips[db.currentIdx];
-        let balances = {};
-        trip.members.forEach(m => balances[m] = 0);
-
-        trip.expenses.forEach(e => {
-            if (e.type !== targetType) return;
-            if (e.costType === 'personal') return;
-
-            balances[e.payer] += e.amount;
-            let share = e.amount / e.participants.length;
-            e.participants.forEach(p => balances[p] -= share);
-        });
-
-        let creditors = [], debtors = [];
-        for (let m in balances) {
-            let bal = Math.round(balances[m]);
-            if (bal > 0) creditors.push({ name: m, amount: bal });
-            else if (bal < 0) debtors.push({ name: m, amount: -bal });
+        function renderChores() {
+            document.getElementById('score-a').innerText = cloudState.scoreA || 0; document.getElementById('score-b').innerText = cloudState.scoreB || 0;
+            const listEl = document.getElementById('chores-list'); listEl.innerHTML = ''; const choresArr = cloudState.chores || [];
+            choresArr.forEach((chore, index) => {
+                const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
+                itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${chore.name}</span><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">+${chore.pts} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="addChorePoints('A', ${chore.pts})" class="px-2.5 py-1 bg-white hover:bg-gray-100 text-xs font-bold rounded-xl border text-gray-700 shadow-sm">${cloudState.nameA}</button><button onclick="addChorePoints('B', ${chore.pts})" class="px-2.5 py-1 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-xs font-bold rounded-xl text-white shadow-sm">${cloudState.nameB}</button></div><div class="flex items-center space-x-2"><button onclick="editChore(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChore(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                listEl.appendChild(itemDiv);
+            });
         }
 
-        const out = document.getElementById(targetType === 'pre' ? 'preSettlementDisplay' : 'localSettlementDisplay');
-        out.innerHTML = "";
-
-        if (!creditors.length && !debtors.length) {
-            out.innerHTML = "🎉 太棒了！此區帳目都算得剛剛好，互不相欠！"; return;
+        function addChore() {
+            const nameInput = document.getElementById('chore-new-name');
+            const ptsInput = document.getElementById('chore-new-pts');
+            const name = nameInput.value.trim();
+            const pts = Number(ptsInput.value) || 1;
+            if (!name) return alert("請輸入家務名稱！");
+            if (!cloudState.chores) cloudState.chores = [];
+            cloudState.chores.push({ name, pts });
+            db.set(cloudState);
+            nameInput.value = ''; ptsInput.value = '1';
+        }
+        function deleteChore(index) { if (confirm("確定刪除這個家務項目？")) { cloudState.chores.splice(index, 1); db.set(cloudState); } }
+        function editChore(index) {
+            const chore = cloudState.chores[index];
+            const newName = prompt("修改家務名稱：", chore.name);
+            if (newName === null) return;
+            const newPts = prompt("修改完成點數：", chore.pts);
+            if (newPts === null) return;
+            cloudState.chores[index] = { name: newName.trim() || chore.name, pts: Number(newPts) || chore.pts };
+            db.set(cloudState);
         }
 
-        let i = 0, j = 0;
-        while (i < debtors.length && j < creditors.length) {
-            let d = debtors[i], c = creditors[j];
-            let pay = Math.min(d.amount, c.amount);
-            out.innerHTML += `<div style="background:#fff9c4; border:2px solid #2b2b2b; padding:10px; margin:6px 0; border-radius:12px; box-shadow:2px 2px 0px #333;">
-                💸 <b>【${d.name}】</b> 需支付給 <b>【${c.name}】</b> <span style="color:#d32f2f; font-weight:bold;">$${pay} 元</span>
-            </div>`;
-            d.amount -= pay; c.amount -= pay;
-            if (d.amount <= 0) i++;
-            if (c.amount <= 0) j++;
+        function addChorePoints(m, p) { 
+            if(m==='A') cloudState.scoreA=(cloudState.scoreA||0)+p; else cloudState.scoreB=(cloudState.scoreB||0)+p; 
+            db.set(cloudState); 
         }
-    }
+        function resetChoresScore() { if(confirm("分數歸零？")) { cloudState.scoreA=0; cloudState.scoreB=0; db.set(cloudState); } }
 
-    function switchTab(id, el) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById('page-' + id).classList.add('active');
-        document.querySelectorAll('.nav-bar .nav-item').forEach(n => n.classList.remove('active'));
-        el.classList.add('active');
-    }
-</script>
+        function saveCloudSettings() {
+            const title = document.getElementById('setting-app-title').value.trim();
+            const nA = document.getElementById('setting-name-a').value.trim();
+            const nB = document.getElementById('setting-name-b').value.trim();
+            if(!title || !nA || !nB) return alert("名稱和標題不可留空！");
+            
+            cloudState.appTitle = title;
+            cloudState.nameA = nA;
+            cloudState.nameB = nB;
+            
+            db.set(cloudState).then(() => {
+                alert("雲端暱稱與大標題同步更新成功！🌟");
+            });
+        }
+
+        function saveAvatarOnly() {
+            const fileInput = document.getElementById('setting-avatar-file');
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader(); reader.onload = function(e) { localState.avatar = e.target.result; saveLocal(); applyDisplay(); alert("頭像儲存成功！"); }; reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function applyDisplay() {
+            document.getElementById('app-title-display').innerText = cloudState.appTitle;
+            document.getElementById('browser-tab-title').innerText = cloudState.appTitle;
+            document.getElementById('chore-name-a-label').innerText = cloudState.nameA;
+            document.getElementById('chore-name-b-label').innerText = cloudState.nameB;
+            
+            document.getElementById('setting-app-title').value = cloudState.appTitle;
+            document.getElementById('setting-name-a').value = cloudState.nameA;
+            document.getElementById('setting-name-b').value = cloudState.nameB;
+            
+            const p = localState.pcts;
+            document.getElementById('pct-nec').value = p.nec; document.getElementById('pct-ffa').value = p.ffa; document.getElementById('pct-play').value = p.play; document.getElementById('pct-ltss').value = p.ltss; document.getElementById('pct-edu').value = p.edu; document.getElementById('pct-give').value = p.give;
+            const imgEl = document.getElementById('app-avatar-img'); const iconEl = document.getElementById('app-avatar-icon');
+            if (localState.avatar) { imgEl.src = localState.avatar; imgEl.classList.remove('hidden'); iconEl.classList.add('hidden'); }
+            else { imgEl.classList.add('hidden'); iconEl.classList.remove('hidden'); }
+            
+            const selectPayer = document.getElementById('bill-payer'); 
+            if(selectPayer) {
+                selectPayer.innerHTML = `<option value="A">由 ${cloudState.nameA} 代墊</option><option value="B">由 ${cloudState.nameB} 代墊</option>`;
+            }
+            calcJars(); renderBills(); renderChores();
+        }
+        document.getElementById('total-income').value = localState.income; calcJars();
+        applyTheme(localState.theme || 'mauve');
+    </script>
 </body>
 </html>
