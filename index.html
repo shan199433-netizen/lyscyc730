@@ -10,27 +10,49 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Huninn:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'NaikaiFont';
+            src: url(https://cdn.jsdelivr.net/gh/max32002/naikaifont@1.0/webfont/NaikaiFont-Regular-Lite.woff2) format("woff2");
+            font-display: swap;
+        }
         :root, [data-theme="mauve"] {
             --c-bg: #F8F5F5; --c-text: #4A3E43; --c-border: #E1D9D9; --c-accent: #8A7A80;
             --c-accent-dark: #796A70; --c-text-muted: #8C7E83; --c-border-strong: #D5C9C9;
             --c-card-alt: #EAE1E1; --c-label: #6B5E63; --c-list-bg: #F9F6F6;
+            --c-grad: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);
         }
-        [data-theme="sage"] {
-            --c-bg: #F5F7F3; --c-text: #3F4A3E; --c-border: #DCE3D7; --c-accent: #7C9070;
-            --c-accent-dark: #67785D; --c-text-muted: #7E8C79; --c-border-strong: #C7D2C0;
-            --c-card-alt: #E4EADF; --c-label: #5B6A55; --c-list-bg: #F6F8F4;
+        [data-theme="lavender"] {
+            --c-bg: #F6EAF3; --c-text: #4A3E52; --c-border: #E4D6E9; --c-accent: #B4A9D2;
+            --c-accent-dark: #A88DC0; --c-text-muted: #A88DC0; --c-border-strong: #CDC7E3;
+            --c-card-alt: #E4D6E9; --c-label: #A88DC0; --c-list-bg: #F6EAF3;
+            --c-grad: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);
         }
-        [data-theme="blue"] {
-            --c-bg: #F4F6F8; --c-text: #3B4652; --c-border: #D9E1E8; --c-accent: #7A93A8;
-            --c-accent-dark: #647C8F; --c-text-muted: #7E8E9B; --c-border-strong: #C3D0DA;
-            --c-card-alt: #E2E9EE; --c-label: #54636F; --c-list-bg: #F6F8FA;
+        [data-theme="plumjam"] {
+            --c-bg: #F5E0DF; --c-text: #303030; --c-border: #E9B9C5; --c-accent: #DC7090;
+            --c-accent-dark: #303030; --c-text-muted: #DC7090; --c-border-strong: #E9B9C5;
+            --c-card-alt: #E9B9C5; --c-label: #DC7090; --c-list-bg: #F5E0DF;
+            --c-grad: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);
         }
-        [data-theme="oat"] {
-            --c-bg: #F9F6F1; --c-text: #4E4438; --c-border: #E8DFD1; --c-accent: #B29470;
-            --c-accent-dark: #9A7E5C; --c-text-muted: #8F8271; --c-border-strong: #DACBB4;
-            --c-card-alt: #F0E6D8; --c-label: #6B5D48; --c-list-bg: #FAF7F2;
+        [data-theme="iceblue"] {
+            --c-bg: #B3D2EE; --c-text: #4B6775; --c-border: #86ACC3; --c-accent: #7790AC;
+            --c-accent-dark: #4B6775; --c-text-muted: #7790AC; --c-border-strong: #86ACC3;
+            --c-card-alt: #86ACC3; --c-label: #4B6775; --c-list-bg: #D9E9F7;
+            --c-grad: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);
         }
-        body { font-family: 'Huninn', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text); -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; transition: background-color .3s ease, color .3s ease; }
+        [data-theme="mocha"] {
+            --c-bg: #F3E9E3; --c-text: #4A3E38; --c-border: #D7CEC7; --c-accent: #9C8B79;
+            --c-accent-dark: #6E5F4E; --c-text-muted: #9C9090; --c-border-strong: #9C9090;
+            --c-card-alt: #D7CEC7; --c-label: #9C9090; --c-list-bg: #F3E9E3;
+            --c-grad: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);
+        }
+        [data-theme="cloudmilk"] {
+            --c-bg: #F5EEEE; --c-text: #3A3A3A; --c-border: #DBDBDB; --c-accent: #A7A3A2;
+            --c-accent-dark: #6B6B6B; --c-text-muted: #8B8B8B; --c-border-strong: #A7A3A2;
+            --c-card-alt: #DBDBDB; --c-label: #8B8B8B; --c-list-bg: #F5EEEE;
+            --c-grad: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);
+        }
+        html { font-size: 113%; }
+        body { font-family: 'NaikaiFont', 'Huninn', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text); -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; transition: background-color .3s ease, color .3s ease; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn .35s ease; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -44,7 +66,7 @@
         .nav-btn.active-nav i { animation: popIn .35s ease; }
         .theme-swatch { transition: transform .15s ease; }
         .theme-swatch:active { transform: scale(0.9); }
-        .theme-swatch.selected { box-shadow: 0 0 0 3px var(--c-accent); }
+        .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px white, 0 0 0 5px var(--c-accent); }
         button, .btn-pop { transition: transform .12s ease; }
         button:active, .btn-pop:active { transform: scale(0.96); }
     </style>
@@ -144,23 +166,31 @@
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
                     <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-palette mr-2 text-[var(--c-accent)]"></i>外觀主題色彩 🎨（本機獨立）</h2>
-                    <p class="text-[11px] text-[var(--c-text-muted)]">挑一個喜歡的莫蘭迪色系，只會套用在您自己的手機上喔！</p>
-                    <div class="grid grid-cols-4 gap-3" id="theme-swatch-list">
+                    <p class="text-[11px] text-[var(--c-text-muted)]">挑一個喜歡的莫蘭迪漸層色系，只會套用在您自己的手機上喔！</p>
+                    <div class="grid grid-cols-3 gap-3" id="theme-swatch-list">
                         <button onclick="applyTheme('mauve')" data-theme-btn="mauve" class="theme-swatch flex flex-col items-center space-y-1">
-                            <span class="w-9 h-9 rounded-full block border border-black/10" style="background:#8A7A80;"></span>
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);"></span>
                             <span class="text-[10px] text-[var(--c-text-muted)]">藕粉霧</span>
                         </button>
-                        <button onclick="applyTheme('sage')" data-theme-btn="sage" class="theme-swatch flex flex-col items-center space-y-1">
-                            <span class="w-9 h-9 rounded-full block border border-black/10" style="background:#7C9070;"></span>
-                            <span class="text-[10px] text-[var(--c-text-muted)]">灰綠</span>
+                        <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
                         </button>
-                        <button onclick="applyTheme('blue')" data-theme-btn="blue" class="theme-swatch flex flex-col items-center space-y-1">
-                            <span class="w-9 h-9 rounded-full block border border-black/10" style="background:#7A93A8;"></span>
-                            <span class="text-[10px] text-[var(--c-text-muted)]">霧藍</span>
+                        <button onclick="applyTheme('plumjam')" data-theme-btn="plumjam" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">梅子果醬</span>
                         </button>
-                        <button onclick="applyTheme('oat')" data-theme-btn="oat" class="theme-swatch flex flex-col items-center space-y-1">
-                            <span class="w-9 h-9 rounded-full block border border-black/10" style="background:#B29470;"></span>
-                            <span class="text-[10px] text-[var(--c-text-muted)]">燕麥杏</span>
+                        <button onclick="applyTheme('iceblue')" data-theme-btn="iceblue" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">冰藍玫瑰</span>
+                        </button>
+                        <button onclick="applyTheme('mocha')" data-theme-btn="mocha" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">摩卡杏仁</span>
+                        </button>
+                        <button onclick="applyTheme('cloudmilk')" data-theme-btn="cloudmilk" class="theme-swatch flex flex-col items-center space-y-1">
+                            <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
+                            <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
                         </button>
                     </div>
                 </div>
