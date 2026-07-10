@@ -51,7 +51,7 @@
             --c-card-alt: #DBDBDB; --c-label: #8B8B8B; --c-list-bg: #F5EEEE;
             --c-grad: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);
         }
-        html { font-size: 113%; }
+        html { font-size: 121%; }
         body { font-family: 'NaikaiFont', 'Huninn', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text); -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; transition: background-color .3s ease, color .3s ease; }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn .35s ease; }
@@ -85,7 +85,6 @@
                 </div>
                 <div>
                     <h1 id="app-title-display" class="font-bold text-base text-[var(--c-text)]">艾姍的微甜生活 APP</h1>
-                    <p class="text-xs text-[var(--c-text-muted)]">雙人雲端實時同步版 🐾</p>
                 </div>
             </div>
             <div id="sync-indicator" class="text-[10px] px-2 py-1 rounded bg-amber-100 text-amber-700 font-bold animate-pulse">☁️ 連線中</div>
@@ -97,7 +96,7 @@
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">本月個人預估總收入 (NT$)</label>
                     <input type="number" id="total-income" value="80000" class="w-full text-xl font-bold p-2 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)]" oninput="calcJars()">
-                    <p class="text-[10px] text-amber-600 mt-1 font-medium">🔒 預算沙盤是個人獨立空間，另一半的手機不會看到您的分配細項、收入與自訂%數。</p>
+                    <p class="text-[10px] text-amber-600 mt-1 font-medium">🔒 可自訂屬於自己的六帳戶分配%數，另一半看不到唷</p>
                 </div>
                 <div id="jars-container" class="space-y-4"></div>
             </div>
@@ -122,7 +121,7 @@
                         </div>
                     </div>
                     
-                    <button onclick="addBill()" class="w-full py-2.5 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-white rounded-xl text-sm font-bold transition shadow-sm">送出記帳 (秒同步 ☁️)</button>
+                    <button onclick="addBill()" class="w-full py-2.5 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-white rounded-xl text-sm font-bold transition shadow-sm">送出記帳 (秒同步☁️)</button>
                 </div>
 
                 <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm">
@@ -157,8 +156,18 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h3 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>點擊完成工作 (對手手機秒加分 ⚡️)</h3>
+                    <h3 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>點擊完成工作 (積分換獎勵 ⚡️)</h3>
                     <div id="chores-list" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar"></div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增/管理家務項目 (兩端秒同步)</h2>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                    </div>
+                    <button onclick="addChore()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                    <p class="text-[10px] text-[var(--c-text-muted)]">上方清單裡每個項目後面都有 ✏️ 修改 / 🗑️ 刪除 按鈕，可自由調整。</p>
                 </div>
             </div>
 
@@ -466,10 +475,32 @@
             document.getElementById('score-a').innerText = cloudState.scoreA || 0; document.getElementById('score-b').innerText = cloudState.scoreB || 0;
             const listEl = document.getElementById('chores-list'); listEl.innerHTML = ''; const choresArr = cloudState.chores || [];
             choresArr.forEach((chore, index) => {
-                const itemDiv = document.createElement('div'); itemDiv.className = "flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm";
-                itemDiv.innerHTML = `<span class="font-bold text-sm text-gray-700">${chore.name} <span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200 ml-1">+${chore.pts} 點</span></span><div class="flex items-center space-x-1"><button onclick="addChorePoints('A', ${chore.pts})" class="px-2.5 py-1 bg-white hover:bg-gray-100 text-xs font-bold rounded-xl border text-gray-700 shadow-sm">${cloudState.nameA}</button><button onclick="addChorePoints('B', ${chore.pts})" class="px-2.5 py-1 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-xs font-bold rounded-xl text-white shadow-sm">${cloudState.nameB}</button></div>`;
+                const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
+                itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${chore.name}</span><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">+${chore.pts} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="addChorePoints('A', ${chore.pts})" class="px-2.5 py-1 bg-white hover:bg-gray-100 text-xs font-bold rounded-xl border text-gray-700 shadow-sm">${cloudState.nameA}</button><button onclick="addChorePoints('B', ${chore.pts})" class="px-2.5 py-1 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-xs font-bold rounded-xl text-white shadow-sm">${cloudState.nameB}</button></div><div class="flex items-center space-x-2"><button onclick="editChore(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChore(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
                 listEl.appendChild(itemDiv);
             });
+        }
+
+        function addChore() {
+            const nameInput = document.getElementById('chore-new-name');
+            const ptsInput = document.getElementById('chore-new-pts');
+            const name = nameInput.value.trim();
+            const pts = Number(ptsInput.value) || 1;
+            if (!name) return alert("請輸入家務名稱！");
+            if (!cloudState.chores) cloudState.chores = [];
+            cloudState.chores.push({ name, pts });
+            db.set(cloudState);
+            nameInput.value = ''; ptsInput.value = '1';
+        }
+        function deleteChore(index) { if (confirm("確定刪除這個家務項目？")) { cloudState.chores.splice(index, 1); db.set(cloudState); } }
+        function editChore(index) {
+            const chore = cloudState.chores[index];
+            const newName = prompt("修改家務名稱：", chore.name);
+            if (newName === null) return;
+            const newPts = prompt("修改完成點數：", chore.pts);
+            if (newPts === null) return;
+            cloudState.chores[index] = { name: newName.trim() || chore.name, pts: Number(newPts) || chore.pts };
+            db.set(cloudState);
         }
 
         function addChorePoints(m, p) { 
