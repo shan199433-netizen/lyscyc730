@@ -170,6 +170,16 @@
         @media (prefers-reduced-motion: reduce) {
             *, *::after, *::before { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
         }
+
+        /* 讓 grid 兩欄框框（例如：誰先代墊／怎麼分、哪一天／誰做的）強制等比例，
+           不會因為欄位內容（尤其是日期選擇器）較寬就把格子撐大而導致一大一小或溢出 */
+        .grid-cols-2 > * { min-width: 0; }
+        input[type="date"] {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body class="bg-[var(--c-bg)]" data-theme="mauve">
@@ -231,7 +241,7 @@
                         </div>
                     </div>
                     
-                    <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步 ☁️)</button>
+                    <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
                 </div>
 
                 <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm">
@@ -327,7 +337,7 @@
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
                     <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增／管理家務項目</h2>
-                    <div id="chore-def-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar"></div>
+                    <div id="chore-def-list" class="space-y-2 max-h-44 overflow-y-auto no-scrollbar"></div>
                     <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3">
                         <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
