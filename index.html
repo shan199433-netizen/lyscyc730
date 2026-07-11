@@ -87,8 +87,8 @@
         .shadow-sm { box-shadow: 0 2px 14px rgba(74,62,67,0.06), 0 1px 3px rgba(74,62,67,0.05) !important; }
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
-        nav { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important; }
-        #app { padding-bottom: calc(8rem + env(safe-area-inset-bottom)) !important; }
+        nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
+        #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
 
         /* 輸入框聚焦：柔和的主題色光暈 */
         input:focus, select:focus, textarea:focus {
@@ -96,7 +96,30 @@
             border-color: var(--c-accent) !important;
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-accent) 18%, transparent);
         }
-        input, select, textarea { transition: border-color .2s ease, box-shadow .2s ease; }
+        
+        /* 強制所有輸入框、選單與日期選擇器嚴格遵守邊界與等比例 */
+        input, select, textarea {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        /* 針對雙欄 Flex 或 Grid 容器做強制平均分配與防止溢出 */
+        .flex gap-2 > *, .grid-cols-2 > * {
+            flex: 1 1 0%;
+            min-width: 0;
+        }
+
+        /* 修正日期框在行動裝置上的顯示與內距填滿 */
+        input[type="date"] {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 8px 10px;
+            font-size: 15px !important;
+            background-color: #fff;
+        }
 
         /* 主要按鈕：加一點漸層與陰影，按壓更有質感 */
         .btn-primary {
@@ -169,16 +192,6 @@
 
         @media (prefers-reduced-motion: reduce) {
             *, *::after, *::before { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-        }
-
-        /* 讓 grid 兩欄框框（例如：誰先代墊／怎麼分、哪一天／誰做的）強制等比例，
-           不會因為欄位內容（尤其是日期選擇器）較寬就把格子撐大而導致一大一小或溢出 */
-        .grid-cols-2 > * { min-width: 0; }
-        input[type="date"] {
-            width: 100%;
-            max-width: 100%;
-            min-width: 0;
-            box-sizing: border-box;
         }
     </style>
 </head>
@@ -481,10 +494,8 @@
         </nav>
     </div>
 
-    <!-- Toast 提示容器 -->
     <div id="toast-wrap"></div>
 
-    <!-- 彈窗（確認 / 編輯）容器 -->
     <div id="modal-root">
         <div class="backdrop" onclick="closeModal(false)"></div>
         <div class="panel" id="modal-panel"></div>
@@ -501,10 +512,8 @@
             appId: "1:402069817592:web:b3ca4c3edebe522849930d"
         };
         firebase.initializeApp(firebaseConfig);
-        // 專屬於你們兩人的雲端房間代號（不易被猜到）
         const db = firebase.database().ref("room_x7k2q9v_shanshan_yunchen");
 
-        /* ---------- 精緻 UI 元件：Toast / 彈窗 ---------- */
         function showToast(msg, type = 'ok', duration = 2200) {
             const wrap = document.getElementById('toast-wrap');
             if (!wrap) return;
@@ -525,7 +534,6 @@
             root.classList.remove('show');
             if (_modalResolve) { const r = _modalResolve; _modalResolve = null; r(result); }
         }
-        // 漂亮的確認框（取代 confirm），回傳 Promise<boolean>
         function showConfirm(message, { title = '確認一下', icon = 'fa-circle-question', okText = '確定', cancelText = '取消', danger = false } = {}) {
             return new Promise(resolve => {
                 _modalResolve = resolve;
@@ -541,7 +549,6 @@
                 document.getElementById('modal-root').classList.add('show');
             });
         }
-        // 漂亮的編輯框（取代雙重 prompt）：一次填「名稱 + 數值」，回傳 Promise<{name,val}|null>
         function showEditModal({ title = '修改', icon = 'fa-pen', nameLabel = '名稱', nameVal = '', valLabel = '數值', valVal = '', valMin = 1 } = {}) {
             return new Promise(resolve => {
                 _modalResolve = resolve;
@@ -566,7 +573,6 @@
             const val = document.getElementById('modal-val').value;
             closeModal({ name, val });
         }
-        // 分數跳動動畫
         function animateScore(el, to) {
             if (!el) return;
             const from = Number(el.innerText) || 0;
@@ -581,7 +587,6 @@
                 if (p < 1) requestAnimationFrame(step);
             })(performance.now());
         }
-        // 加點時浮出的 +N 回饋
         function floatPoints(anchorEl, pts) {
             if (!anchorEl) return;
             const parent = anchorEl.closest('.text-center') || anchorEl.parentElement;
@@ -594,7 +599,6 @@
             parent.appendChild(tag);
             setTimeout(() => tag.remove(), 1000);
         }
-        // Esc 關閉彈窗
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && document.getElementById('modal-root').classList.contains('show')) closeModal(null);
             if (e.key === 'Enter' && document.getElementById('modal-root').classList.contains('show')) {
@@ -626,10 +630,8 @@
             redeemLog: [], choreLog: []
         };
 
-        // 月份篩選目前選到的月（YYYY-MM）
         let billsMonth = null, choreMonth = null;
 
-        /* ---------- 日期 / 月份 / 分數 輔助 ---------- */
         function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
         function pad2(n) { return String(n).padStart(2, '0'); }
         function todayISO() { const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -638,7 +640,6 @@
         function fmtMonthLabel(ym) { const [y, m] = ym.split('-'); return `${y}年${Number(m)}月`; }
         function fmtMD(dateStr) { if (!dateStr) return ''; const p = String(dateStr).split('-'); return `${Number(p[1])}/${Number(p[2])}`; }
         function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
-        // 依資料裡出現過的月份（外加當月）建立月份下拉，回傳實際選定的月
         function populateMonthSelect(selectEl, monthsPresent, selected) {
             if (!selectEl) return selected;
             const set = new Set(monthsPresent.filter(Boolean));
@@ -649,7 +650,6 @@
             selectEl.value = selected;
             return selected;
         }
-        // 由完成紀錄與兌換紀錄自動算出兩人目前可用點數
         function computeScores() {
             let A = 0, B = 0;
             (cloudState.choreLog || []).forEach(e => { if (e.member === 'A') A += Number(e.pts) || 0; else if (e.member === 'B') B += Number(e.pts) || 0; });
@@ -678,7 +678,6 @@
             if (dot && themeGradients[themeName]) dot.style.background = themeGradients[themeName];
         }
 
-        // 雲端實時監聽
         db.on('value', (snapshot) => {
             const data = snapshot.val();
             if (data) { 
@@ -689,7 +688,6 @@
             } else { 
                 db.set(cloudState); 
             }
-            // 連線成功！定格為柔和的綠色呼吸點
             const indicator = document.getElementById('sync-indicator');
             if(indicator) {
                 indicator.className = "flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-bold border border-emerald-100";
@@ -863,10 +861,8 @@
                 crownA.style.opacity = (s.A > s.B) ? '1' : '0';
                 crownB.style.opacity = (s.B > s.A) ? '1' : '0';
             }
-            // 登記表：誰做的
             const whoSel = document.getElementById('chorelog-who');
             if (whoSel) { const cur = whoSel.value; whoSel.innerHTML = `<option value="A">${cloudState.nameA}</option><option value="B">${cloudState.nameB}</option>`; if (cur) whoSel.value = cur; }
-            // 登記表：做了什麼（來自家務清單）
             const choreSel = document.getElementById('chorelog-chore');
             if (choreSel) {
                 const cur = choreSel.value;
@@ -876,7 +872,6 @@
                     : `<option value="">尚未設定家務，請到最下方新增</option>`;
                 if (cur) choreSel.value = cur;
             }
-            // 登記表：日期預設今天
             const dateEl = document.getElementById('chorelog-date'); if (dateEl && !dateEl.value) dateEl.value = todayISO();
 
             renderChoreDefs();
@@ -884,7 +879,6 @@
             renderRewards();
         }
 
-        // 家務項目管理清單（名稱＋點數，可改可刪）
         function renderChoreDefs() {
             const el = document.getElementById('chore-def-list'); if (!el) return;
             const chores = cloudState.chores || [];
@@ -893,7 +887,6 @@
                 : chores.map((c, i) => `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><span class="font-bold text-sm text-gray-700">${c.name}</span><div class="flex items-center gap-2"><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">${c.pts} 點</span><button onclick="editChore(${i})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChore(${i})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
         }
 
-        // 完成紀錄（依月份篩選、可改可刪）
         function renderChoreLog() {
             const listEl = document.getElementById('chorelog-list'); if (!listEl) return;
             const allLog = cloudState.choreLog || [];
@@ -930,7 +923,6 @@
                 db.set(cloudState); showToast("已刪除完成紀錄", "info");
             }
         }
-        // 編輯一筆完成紀錄：可改日期 / 誰做的 / 哪個家務
         function editChoreLog(id) {
             const entry = (cloudState.choreLog || []).find(e => e.id === id);
             if (!entry) return;
@@ -1106,7 +1098,6 @@
         document.getElementById('total-income').value = localState.income; calcJars();
         applyTheme(localState.theme || 'mauve');
 
-        /* ---------- 順手互動：Enter 送出 & 聚焦全選 ---------- */
         function bindEnter(ids, fn) {
             ids.forEach(id => {
                 const el = document.getElementById(id);
@@ -1117,7 +1108,6 @@
         bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
         bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
         bindEnter(['manage-item-name', 'manage-item-cost'], addLocalJarItem);
-        // 數字輸入框聚焦時自動全選，方便直接改數字
         document.querySelectorAll('input[type="number"]').forEach(el => {
             el.addEventListener('focus', () => { requestAnimationFrame(() => el.select()); });
         });
