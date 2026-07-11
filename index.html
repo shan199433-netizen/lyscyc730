@@ -211,7 +211,12 @@
                     <h2 class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</h2>
                     <input type="text" id="bill-desc" placeholder="項目說明（如：買保健食品、7月基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
                     <input type="number" id="bill-amount" placeholder="金額 (NT$)" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
-                    
+
+                    <div>
+                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天的開銷？</label>
+                        <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
+                    </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
                             <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢代墊？</label>
@@ -235,9 +240,12 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-sm text-[var(--c-text)]">近期共同帳目明細</h3>
-                        <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
+                    <div class="flex justify-between items-center mb-3 gap-2">
+                        <h3 class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap">帳目明細</h3>
+                        <div class="flex items-center gap-2">
+                            <select id="bills-month" onchange="billsMonth=this.value; renderBills()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
+                            <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline whitespace-nowrap"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
+                        </div>
                     </div>
                     <div id="bills-list" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar text-sm"></div>
                 </div>
@@ -259,34 +267,34 @@
                             <p id="score-b" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
                         </div>
                     </div>
-                    <button onclick="resetChoresScore()" class="text-xs text-gray-400 hover:text-gray-600 mt-2 block mx-auto underline">點數重新歸零</button>
+                    <p class="text-[10px] text-[var(--c-text-muted)] mt-2">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <details class="group" open>
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>點擊完成工作 (積分換獎勵 ⚡️)</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div id="chores-list" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar pt-3"></div>
-                    </details>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增/管理家務項目</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="space-y-2 pt-3">
-                            <div class="grid grid-cols-3 gap-2">
-                                <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            </div>
-                            <button onclick="addChore()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
-                            <p class="text-[10px] text-[var(--c-text-muted)]">上方清單裡每個項目後面都有 ✏️ 修改 / 🗑️ 刪除 按鈕，可自由調整。</p>
+                    <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>登記完成的家務 ⚡️</h2>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天？</label>
+                            <input type="date" id="chorelog-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
                         </div>
-                    </details>
+                        <div>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰做的？</label>
+                            <select id="chorelog-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">做了什麼家務？</label>
+                        <select id="chorelog-chore" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                    </div>
+                    <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">記錄完成</button>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <div class="flex justify-between items-center gap-2">
+                        <h3 class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap"><i class="fa-solid fa-clipboard-check mr-2 text-[var(--c-accent)]"></i>完成紀錄</h3>
+                        <select id="chorelog-month" onchange="choreMonth=this.value; renderChoreLog()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
+                    </div>
+                    <div id="chorelog-list" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-sm"></div>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -316,6 +324,17 @@
                         <div id="redeem-log" class="space-y-1.5 pt-3 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
                     </details>
                 </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增／管理家務項目</h2>
+                    <div id="chore-def-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar"></div>
+                    <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3">
+                        <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                    </div>
+                    <button onclick="addChore()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                    <p class="text-[10px] text-[var(--c-text-muted)]">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
+                </div>
             </div>
 
             <div id="tab-settings" class="tab-content space-y-4">
@@ -336,7 +355,7 @@
                             <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
                     </div>
-                    <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步 ☁️)</button>
+                    <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步☁️)</button>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -589,8 +608,39 @@
                 { name: "指定一部電影一起看 🎬", cost: 10 },
                 { name: "對方洗碗一整週 🍽️", cost: 15 }
             ],
-            redeemLog: []
+            redeemLog: [], choreLog: []
         };
+
+        // 月份篩選目前選到的月（YYYY-MM）
+        let billsMonth = null, choreMonth = null;
+
+        /* ---------- 日期 / 月份 / 分數 輔助 ---------- */
+        function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+        function pad2(n) { return String(n).padStart(2, '0'); }
+        function todayISO() { const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+        function currentYM() { const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}`; }
+        function ymOf(dateStr) { return dateStr ? String(dateStr).slice(0, 7) : null; }
+        function fmtMonthLabel(ym) { const [y, m] = ym.split('-'); return `${y}年${Number(m)}月`; }
+        function fmtMD(dateStr) { if (!dateStr) return ''; const p = String(dateStr).split('-'); return `${Number(p[1])}/${Number(p[2])}`; }
+        function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+        // 依資料裡出現過的月份（外加當月）建立月份下拉，回傳實際選定的月
+        function populateMonthSelect(selectEl, monthsPresent, selected) {
+            if (!selectEl) return selected;
+            const set = new Set(monthsPresent.filter(Boolean));
+            set.add(currentYM());
+            const sorted = [...set].sort().reverse();
+            if (!selected || !set.has(selected)) selected = sorted[0];
+            selectEl.innerHTML = sorted.map(m => `<option value="${m}">${fmtMonthLabel(m)}</option>`).join('');
+            selectEl.value = selected;
+            return selected;
+        }
+        // 由完成紀錄與兌換紀錄自動算出兩人目前可用點數
+        function computeScores() {
+            let A = 0, B = 0;
+            (cloudState.choreLog || []).forEach(e => { if (e.member === 'A') A += Number(e.pts) || 0; else if (e.member === 'B') B += Number(e.pts) || 0; });
+            (cloudState.redeemLog || []).forEach(r => { if (r.member === 'A') A -= Number(r.cost) || 0; else if (r.member === 'B') B -= Number(r.cost) || 0; });
+            return { A, B };
+        }
 
         function saveLocal() { localStorage.setItem('shanshan_local_v70', JSON.stringify(localState)); }
 
@@ -723,19 +773,21 @@
         function deleteLocalJarItem(jarId, index) { localState.jarItems[jarId].splice(index, 1); saveLocal(); calcJars(); renderLocalJarItems(); }
 
         function renderBills() {
-            const listEl = document.getElementById('bills-list'); listEl.innerHTML = ''; 
-            let netOwedToA = 0; 
-            const billsArr = cloudState.bills || [];
+            const listEl = document.getElementById('bills-list');
+            const allBills = cloudState.bills || [];
+            billsMonth = populateMonthSelect(document.getElementById('bills-month'), allBills.map(b => ymOf(b.date)), billsMonth || currentYM());
+            const bd = document.getElementById('bill-date'); if (bd && !bd.value) bd.value = todayISO();
 
-            if (billsArr.length === 0) {
-                listEl.innerHTML = '<div class="text-center py-6 text-gray-400"><i class="fa-regular fa-face-smile text-2xl mb-2 block"></i><p class="text-xs">還沒有帳目，從上方記下第一筆吧 ✨</p></div>';
+            const bills = allBills.filter(b => ymOf(b.date) === billsMonth);
+            listEl.innerHTML = '';
+            let netOwedToA = 0;
+            if (bills.length === 0) {
+                listEl.innerHTML = `<div class="text-center py-6 text-gray-400"><i class="fa-regular fa-face-smile text-2xl mb-2 block"></i><p class="text-xs">${fmtMonthLabel(billsMonth)}還沒有帳目，記下第一筆吧 ✨</p></div>`;
             }
-
-            billsArr.forEach((bill, index) => {
+            bills.forEach(bill => {
                 const amount = Number(bill.amount) || 0;
-                const splitType = bill.splitType || 'half'; 
+                const splitType = bill.splitType || 'half';
                 let textType = '';
-                
                 if (bill.payer === 'A') {
                     if (splitType === 'half') { netOwedToA += (amount / 2); textType = '👥 共同平分'; }
                     else { netOwedToA += amount; textType = '👤 幫對方全額代墊'; }
@@ -743,20 +795,20 @@
                     if (splitType === 'half') { netOwedToA -= (amount / 2); textType = '👥 共同平分'; }
                     else { netOwedToA -= amount; textType = '👤 幫對方全額代墊'; }
                 }
-
                 const payerLabel = bill.payer === 'A' ? cloudState.nameA : cloudState.nameB;
                 const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100";
-                div.innerHTML = `<div><p class="font-bold text-[var(--c-text)]">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)]">${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill(${index})" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
+                div.innerHTML = `<div><p class="font-bold text-[var(--c-text)]">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)]"><b>${fmtMD(bill.date)}</b> · ${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
                 listEl.appendChild(div);
             });
-            
+
             const statusTextEl = document.getElementById('bill-status-text');
+            const mLabel = fmtMonthLabel(billsMonth);
             if (netOwedToA > 0) {
-                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameB}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameA}</span> <span class="text-lg font-black">NT$ ${Math.round(netOwedToA).toLocaleString()}</span>`;
+                statusTextEl.innerHTML = `${mLabel}｜👉 <span class="text-red-500 font-extrabold">${cloudState.nameB}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameA}</span> <span class="text-lg font-black">NT$ ${Math.round(netOwedToA).toLocaleString()}</span>`;
             } else if (netOwedToA < 0) {
-                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
+                statusTextEl.innerHTML = `${mLabel}｜👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
             } else {
-                statusTextEl.innerHTML = "🎉 帳目目前完全平分，誰也不欠誰！";
+                statusTextEl.innerHTML = `${mLabel}｜🎉 帳目完全平分，誰也不欠誰！`;
             }
         }
 
@@ -765,41 +817,142 @@
             const amount = Number(document.getElementById('bill-amount').value); 
             const payer = document.getElementById('bill-payer').value;
             const splitType = document.getElementById('bill-split-type').value;
+            const date = document.getElementById('bill-date').value || todayISO();
             
             if (!desc || !amount || amount <= 0) return showToast("請填寫項目說明與金額", "err"); 
             if(!cloudState.bills) cloudState.bills = []; 
-            cloudState.bills.unshift({ desc, amount, payer, splitType }); 
+            cloudState.bills.unshift({ id: genId(), desc, amount, payer, splitType, date }); 
+            billsMonth = ymOf(date);
             db.set(cloudState);
             document.getElementById('bill-desc').value = ''; 
             document.getElementById('bill-amount').value = '';
             showToast("已記一筆，雲端同步完成 ☁️", "ok");
         }
-        async function deleteBill(index) {
+        async function deleteBill(id) {
             if (await showConfirm("要刪除這筆帳目嗎？", { title: "刪除帳目", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.bills.splice(index, 1); db.set(cloudState); showToast("已刪除這筆帳目", "info");
+                cloudState.bills = (cloudState.bills || []).filter(b => b.id !== id);
+                db.set(cloudState); showToast("已刪除這筆帳目", "info");
             }
         }
         async function clearAllBills() {
-            if (await showConfirm("將清空全部雙人帳目，這個動作無法復原。", { title: "清空所有帳目", icon: "fa-trash-can", okText: "全部清空", danger: true })) {
+            if (await showConfirm("將清空<b>全部月份</b>的雙人帳目，這個動作無法復原。", { title: "清空所有帳目", icon: "fa-trash-can", okText: "全部清空", danger: true })) {
                 cloudState.bills = []; db.set(cloudState); showToast("已清空所有帳目", "info");
             }
         }
 
         function renderChores() {
-            animateScore(document.getElementById('score-a'), cloudState.scoreA || 0); animateScore(document.getElementById('score-b'), cloudState.scoreB || 0);
-            const sA = cloudState.scoreA || 0, sB = cloudState.scoreB || 0;
+            const s = computeScores();
+            animateScore(document.getElementById('score-a'), s.A); animateScore(document.getElementById('score-b'), s.B);
             const crownA = document.getElementById('crown-a'), crownB = document.getElementById('crown-b');
             if (crownA && crownB) {
-                crownA.style.opacity = (sA > sB) ? '1' : '0';
-                crownB.style.opacity = (sB > sA) ? '1' : '0';
+                crownA.style.opacity = (s.A > s.B) ? '1' : '0';
+                crownB.style.opacity = (s.B > s.A) ? '1' : '0';
             }
-            const listEl = document.getElementById('chores-list'); listEl.innerHTML = ''; const choresArr = cloudState.chores || [];
-            choresArr.forEach((chore, index) => {
-                const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
-                itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${chore.name}</span><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">+${chore.pts} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="addChorePoints('A', ${chore.pts})" class="px-2.5 py-1 bg-white hover:bg-gray-100 text-xs font-bold rounded-xl border text-gray-700 shadow-sm">${cloudState.nameA}</button><button onclick="addChorePoints('B', ${chore.pts})" class="px-2.5 py-1 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-xs font-bold rounded-xl text-white shadow-sm">${cloudState.nameB}</button></div><div class="flex items-center space-x-2"><button onclick="editChore(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChore(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
-                listEl.appendChild(itemDiv);
-            });
+            // 登記表：誰做的
+            const whoSel = document.getElementById('chorelog-who');
+            if (whoSel) { const cur = whoSel.value; whoSel.innerHTML = `<option value="A">${cloudState.nameA}</option><option value="B">${cloudState.nameB}</option>`; if (cur) whoSel.value = cur; }
+            // 登記表：做了什麼（來自家務清單）
+            const choreSel = document.getElementById('chorelog-chore');
+            if (choreSel) {
+                const cur = choreSel.value;
+                const chores = cloudState.chores || [];
+                choreSel.innerHTML = chores.length
+                    ? chores.map(c => `<option value="${escAttr(c.name)}">${c.name}（${c.pts} 點）</option>`).join('')
+                    : `<option value="">尚未設定家務，請到最下方新增</option>`;
+                if (cur) choreSel.value = cur;
+            }
+            // 登記表：日期預設今天
+            const dateEl = document.getElementById('chorelog-date'); if (dateEl && !dateEl.value) dateEl.value = todayISO();
+
+            renderChoreDefs();
+            renderChoreLog();
             renderRewards();
+        }
+
+        // 家務項目管理清單（名稱＋點數，可改可刪）
+        function renderChoreDefs() {
+            const el = document.getElementById('chore-def-list'); if (!el) return;
+            const chores = cloudState.chores || [];
+            el.innerHTML = chores.length === 0
+                ? '<p class="text-xs text-gray-400 text-center py-2">還沒有家務項目，從下方新增第一個吧</p>'
+                : chores.map((c, i) => `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><span class="font-bold text-sm text-gray-700">${c.name}</span><div class="flex items-center gap-2"><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">${c.pts} 點</span><button onclick="editChore(${i})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChore(${i})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
+        }
+
+        // 完成紀錄（依月份篩選、可改可刪）
+        function renderChoreLog() {
+            const listEl = document.getElementById('chorelog-list'); if (!listEl) return;
+            const allLog = cloudState.choreLog || [];
+            choreMonth = populateMonthSelect(document.getElementById('chorelog-month'), allLog.map(e => ymOf(e.date)), choreMonth || currentYM());
+            const log = allLog.filter(e => ymOf(e.date) === choreMonth)
+                              .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+            if (log.length === 0) {
+                listEl.innerHTML = `<div class="text-center py-6 text-gray-400"><i class="fa-regular fa-calendar-check text-2xl mb-2 block"></i><p class="text-xs">${fmtMonthLabel(choreMonth)}還沒有完成紀錄，上面登記一筆吧 ⚡️</p></div>`;
+                return;
+            }
+            listEl.innerHTML = log.map(e => {
+                const who = e.member === 'A' ? cloudState.nameA : cloudState.nameB;
+                return `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><div><p class="font-bold text-sm text-gray-700"><span class="text-[var(--c-accent-dark)]">${fmtMD(e.date)}</span> · ${who}</p><p class="text-[11px] text-[var(--c-text-muted)]">${e.chore}</p></div><div class="flex items-center gap-2"><span class="text-xs font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 whitespace-nowrap">+${e.pts} 點</span><button onclick="editChoreLog('${e.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChoreLog('${e.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+            }).join('');
+        }
+
+        function addChoreLog() {
+            const date = document.getElementById('chorelog-date').value || todayISO();
+            const member = document.getElementById('chorelog-who').value;
+            const choreName = document.getElementById('chorelog-chore').value;
+            if (!choreName) return showToast("請先到最下方新增家務項目", "err");
+            const chore = (cloudState.chores || []).find(c => c.name === choreName);
+            const pts = chore ? chore.pts : 1;
+            if (!cloudState.choreLog) cloudState.choreLog = [];
+            cloudState.choreLog.unshift({ id: genId(), date, member, chore: choreName, pts });
+            choreMonth = ymOf(date);
+            db.set(cloudState);
+            floatPoints(document.getElementById(member === 'A' ? 'score-a' : 'score-b'), pts);
+            showToast("已記錄完成 ⚡️", "ok");
+        }
+        async function deleteChoreLog(id) {
+            if (await showConfirm("要刪除這筆完成紀錄嗎？（分數會一起扣回）", { title: "刪除紀錄", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.choreLog = (cloudState.choreLog || []).filter(e => e.id !== id);
+                db.set(cloudState); showToast("已刪除完成紀錄", "info");
+            }
+        }
+        // 編輯一筆完成紀錄：可改日期 / 誰做的 / 哪個家務
+        function editChoreLog(id) {
+            const entry = (cloudState.choreLog || []).find(e => e.id === id);
+            if (!entry) return;
+            _modalResolve = (res) => {
+                if (!res) return;
+                const chore = (cloudState.chores || []).find(c => c.name === res.chore);
+                entry.date = res.date || entry.date;
+                entry.member = res.member;
+                entry.chore = res.chore;
+                entry.pts = chore ? chore.pts : entry.pts;
+                choreMonth = ymOf(entry.date);
+                db.set(cloudState); showToast("紀錄已更新", "ok");
+            };
+            const chores = cloudState.chores || [];
+            const choreOpts = chores.map(c => `<option value="${escAttr(c.name)}" ${c.name === entry.chore ? 'selected' : ''}>${c.name}（${c.pts} 點）</option>`).join('') || `<option value="${escAttr(entry.chore)}" selected>${entry.chore}</option>`;
+            const panel = document.getElementById('modal-panel');
+            panel.innerHTML = `
+                <div class="modal-ic"><i class="fa-solid fa-pen"></i></div>
+                <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-4">修改完成紀錄</h3>
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">哪一天</label>
+                <input id="cl-date" type="date" class="modal-input mb-3" value="${entry.date}">
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">誰做的</label>
+                <select id="cl-who" class="modal-input mb-3"><option value="A" ${entry.member === 'A' ? 'selected' : ''}>${cloudState.nameA}</option><option value="B" ${entry.member === 'B' ? 'selected' : ''}>${cloudState.nameB}</option></select>
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">做了什麼家務</label>
+                <select id="cl-chore" class="modal-input mb-5">${choreOpts}</select>
+                <div class="flex gap-2.5">
+                    <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
+                    <button onclick="_submitChoreLogEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                </div>`;
+            document.getElementById('modal-root').classList.add('show');
+        }
+        function _submitChoreLogEdit() {
+            closeModal({
+                date: document.getElementById('cl-date').value,
+                member: document.getElementById('cl-who').value,
+                chore: document.getElementById('cl-chore').value
+            });
         }
 
         function renderRewards() {
@@ -809,9 +962,10 @@
             if (rewardsArr.length === 0) {
                 listEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-2">還沒有獎勵，從下方「新增獎勵項目」加入第一個吧 🎁</p>';
             }
+            const sc = computeScores();
             rewardsArr.forEach((reward, index) => {
-                const canA = (cloudState.scoreA || 0) >= reward.cost;
-                const canB = (cloudState.scoreB || 0) >= reward.cost;
+                const canA = sc.A >= reward.cost;
+                const canB = sc.B >= reward.cost;
                 const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
                 itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${reward.name}</span><span class="text-xs text-pink-500 bg-white px-1.5 py-0.5 rounded-md border border-pink-200 font-bold">${reward.cost} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-700' : 'bg-gray-50 text-gray-300 cursor-not-allowed'}">${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl shadow-sm ${canB ? 'bg-pink-400 hover:bg-pink-500 text-white' : 'bg-gray-100 text-gray-300 cursor-not-allowed'}">${cloudState.nameB} 兌換</button></div><div class="flex items-center space-x-2"><button onclick="editReward(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteReward(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
                 listEl.appendChild(itemDiv);
@@ -828,13 +982,12 @@
         async function redeemReward(index, member) {
             const reward = cloudState.rewards[index];
             const who = member === 'A' ? cloudState.nameA : cloudState.nameB;
-            const score = member === 'A' ? (cloudState.scoreA || 0) : (cloudState.scoreB || 0);
-            if (score < reward.cost) return showToast("點數還不夠，再累積一下 💪", "err");
+            const avail = computeScores()[member];
+            if (avail < reward.cost) return showToast("點數還不夠，再累積一下 💪", "err");
             if (!await showConfirm(`${who} 要用 <b>${reward.cost}</b> 點兌換「${reward.name}」嗎？`, { title: "兌換獎勵", icon: "fa-gift", okText: "兌換" })) return;
-            if (member === 'A') cloudState.scoreA = score - reward.cost; else cloudState.scoreB = score - reward.cost;
             if (!cloudState.redeemLog) cloudState.redeemLog = [];
             const now = new Date();
-            cloudState.redeemLog.unshift({ who, what: reward.name, cost: reward.cost, date: `${now.getMonth()+1}/${now.getDate()}` });
+            cloudState.redeemLog.unshift({ member, who, what: reward.name, cost: reward.cost, date: `${now.getMonth()+1}/${now.getDate()}` });
             if (cloudState.redeemLog.length > 30) cloudState.redeemLog = cloudState.redeemLog.slice(0, 30);
             db.set(cloudState);
             showToast(`兌換成功 🎉 記得跟對方領取喔`, "ok", 2600);
@@ -888,17 +1041,6 @@
             if (res === null) return;
             cloudState.chores[index] = { name: res.name || chore.name, pts: Number(res.val) || chore.pts };
             db.set(cloudState); showToast("家務已更新", "ok");
-        }
-
-        function addChorePoints(m, p) { 
-            if(m==='A') cloudState.scoreA=(cloudState.scoreA||0)+p; else cloudState.scoreB=(cloudState.scoreB||0)+p; 
-            floatPoints(document.getElementById(m === 'A' ? 'score-a' : 'score-b'), p);
-            db.set(cloudState); 
-        }
-        async function resetChoresScore() {
-            if(await showConfirm("兩人的家務點數都會歸零，確定嗎？", { title: "點數歸零", icon: "fa-rotate-left", okText: "歸零", danger: true })) {
-                cloudState.scoreA=0; cloudState.scoreB=0; db.set(cloudState); showToast("點數已重新歸零", "info");
-            }
         }
 
         function saveCloudSettings() {
