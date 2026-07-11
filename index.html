@@ -231,14 +231,14 @@
 
                     <div class="flex gap-2">
                         <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢代墊？</label>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢支付？</label>
                             <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
                         </div>
                         <div class="flex-1 min-w-0">
                             <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
                             <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
                                 <option value="half">👥 共同花費</option>
-                                <option value="full">👤 幫對方買</option>
+                                <option value="full">👤 幫對方付</option>
                             </select>
                         </div>
                     </div>
@@ -246,14 +246,12 @@
                     <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
                 </div>
 
-                <!-- 雙人即時對帳計算機調整排版：金額獨立放下一行 -->
                 <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm space-y-1">
                     <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-0.5">雙人即時對帳計算機</h3>
                     <p id="bill-month-label-text" class="text-xs font-bold text-[var(--c-text-muted)]"></p>
                     <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)] leading-snug">雲端帳目載入中...</p>
                 </div>
 
-                <!-- 帳目明細調整：日期擺前面，明細居中，清除按鈕在右側 -->
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <div class="flex justify-between items-center mb-3 gap-2">
                         <div class="flex items-center gap-2">
@@ -799,20 +797,18 @@
                 let textType = '';
                 if (bill.payer === 'A') {
                     if (splitType === 'half') { netOwedToA += (amount / 2); textType = '👥 共同平分'; }
-                    else { netOwedToA += amount; textType = '👤 幫對方全額代墊'; }
+                    else { netOwedToA += amount; textType = '👤 幫對方付'; }
                 } else {
                     if (splitType === 'half') { netOwedToA -= (amount / 2); textType = '👥 共同平分'; }
-                    else { netOwedToA -= amount; textType = '👤 幫對方全額代墊'; }
+                    else { netOwedToA -= amount; textType = '👤 幫對方付'; }
                 }
                 const payerLabel = bill.payer === 'A' ? `👸 ${cloudState.nameA}` : `🤴 ${cloudState.nameB}`;
                 
-                // 帳目明細調整順序：日期擺在前面，再來是說明與金額
-                const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100";
-                div.innerHTML = `<div class="flex items-center gap-3"><span class="font-extrabold text-[var(--c-accent-dark)] whitespace-nowrap">${fmtMD(bill.date)}</span><div><p class="font-bold text-[var(--c-text)] leading-tight">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)] mt-0.5">${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
+                const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 gap-2";
+                div.innerHTML = `<div class="flex items-center gap-3 min-w-0 flex-1"><span class="font-extrabold text-[var(--c-accent-dark)] whitespace-nowrap">${fmtMD(bill.date)}</span><div class="min-w-0 flex-1"><p class="font-bold text-[var(--c-text)] leading-tight flex items-center flex-wrap gap-1"><span class="truncate">${bill.desc}</span> <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 font-normal whitespace-nowrap shrink-0">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)] mt-0.5 truncate">${payerLabel} 先付了 NT$ ${amount.toLocaleString()}</p></div></div><div class="flex items-center space-x-2 shrink-0"><span class="font-extrabold text-[var(--c-accent)] whitespace-nowrap">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
                 listEl.appendChild(div);
             });
 
-            // 對帳計算機文字拆成兩行：月份在第一行，補給金額在第二行
             const monthLabelEl = document.getElementById('bill-month-label-text');
             const statusTextEl = document.getElementById('bill-status-text');
             if (monthLabelEl) monthLabelEl.innerText = fmtMonthLabel(billsMonth) + ' 結算';
@@ -863,7 +859,6 @@
                 crownB.style.opacity = (s.B > s.A) ? '1' : '0';
             }
             
-            // 家務對抗：誰做的選單新增「一起做」並加上 Emoji
             const whoSel = document.getElementById('chorelog-who');
             if (whoSel) { 
                 const cur = whoSel.value; 
@@ -1103,10 +1098,9 @@
             if (localState.avatar) { imgEl.src = localState.avatar; imgEl.classList.remove('hidden'); iconEl.classList.add('hidden'); }
             else { imgEl.classList.add('hidden'); iconEl.classList.remove('hidden'); }
             
-            // 雙人記帳：誰先掏錢代墊選單加上 Emoji
             const selectPayer = document.getElementById('bill-payer'); 
             if(selectPayer) {
-                selectPayer.innerHTML = `<option value="A">👸 由 ${cloudState.nameA} 代墊</option><option value="B">🤴 由 ${cloudState.nameB} 代墊</option>`;
+                selectPayer.innerHTML = `<option value="A">👸 由 ${cloudState.nameA} 支付</option><option value="B">🤴 由 ${cloudState.nameB} 支付</option>`;
             }
             calcJars(); renderBills(); renderChores();
         }
@@ -1129,4 +1123,3 @@
     </script>
 </body>
 </html>
-```[cite: 1]
