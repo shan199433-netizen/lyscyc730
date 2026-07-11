@@ -90,14 +90,12 @@
         nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
         #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
 
-        /* 輸入框聚焦：柔和的主題色光暈 */
         input:focus, select:focus, textarea:focus {
             outline: none !important;
             border-color: var(--c-accent) !important;
             box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-accent) 18%, transparent);
         }
         
-        /* 強制所有輸入框、選單與日期選擇器嚴格遵守邊界與等比例 */
         input, select, textarea {
             width: 100%;
             max-width: 100%;
@@ -106,13 +104,11 @@
             transition: border-color .2s ease, box-shadow .2s ease;
         }
 
-        /* 針對雙欄 Flex 或 Grid 容器做強制平均分配與防止溢出 */
         .flex gap-2 > *, .grid-cols-2 > * {
             flex: 1 1 0%;
             min-width: 0;
         }
 
-        /* 修正日期框在行動裝置上的顯示與內距填滿 */
         input[type="date"] {
             appearance: none;
             -webkit-appearance: none;
@@ -121,14 +117,12 @@
             background-color: #fff;
         }
 
-        /* 主要按鈕：加一點漸層與陰影，按壓更有質感 */
         .btn-primary {
             background: linear-gradient(180deg, var(--c-accent), var(--c-accent-dark));
             box-shadow: 0 4px 12px color-mix(in srgb, var(--c-accent) 32%, transparent);
         }
         .btn-primary:hover { box-shadow: 0 6px 16px color-mix(in srgb, var(--c-accent) 40%, transparent); }
 
-        /* 進度條：漸層 + 光澤流動 */
         .prog-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-accent) 12%, #f0eaea); overflow: hidden; }
         .prog-fill { height: 100%; border-radius: 999px; position: relative; transition: width .6s cubic-bezier(.16,1,.3,1), background .3s ease; }
         .prog-fill::after {
@@ -138,11 +132,9 @@
         }
         @keyframes shine { to { transform: translateX(100%); } }
 
-        /* 分數跳動 */
         @keyframes scorePulse { 0%{transform:scale(1);} 40%{transform:scale(1.22);} 100%{transform:scale(1);} }
         .score-pulse { animation: scorePulse .5s cubic-bezier(.16,1,.3,1); }
 
-        /* 加點時浮出的 +N 回饋 */
         .float-pt {
             position: absolute; left: 50%; top: 0; transform: translateX(-50%);
             font-weight: 900; pointer-events: none; z-index: 60;
@@ -154,13 +146,11 @@
             100% { opacity: 0; transform: translate(-50%, -34px) scale(1.1); }
         }
 
-        /* 同步指示燈的呼吸點 */
         .sync-dot { width: 7px; height: 7px; border-radius: 999px; display: inline-block; }
         .sync-dot.live { background: #34d399; box-shadow: 0 0 0 0 rgba(52,211,153,.6); animation: pulseDot 2s infinite; }
         .sync-dot.wait { background: #f59e0b; animation: pulseDot 1.2s infinite; }
         @keyframes pulseDot { 0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);} 70%{box-shadow:0 0 0 6px rgba(52,211,153,0);} 100%{box-shadow:0 0 0 0 rgba(52,211,153,0);} }
 
-        /* Toast 提示 */
         #toast-wrap { position: fixed; left: 0; right: 0; bottom: calc(6.5rem + env(safe-area-inset-bottom)); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; padding: 0 1rem; }
         .toast {
             max-width: 26rem; width: fit-content; pointer-events: auto;
@@ -177,7 +167,6 @@
         @keyframes toastIn { from { opacity: 0; transform: translateY(16px) scale(.95);} to { opacity: 1; transform: translateY(0) scale(1);} }
         @keyframes toastOut { to { opacity: 0; transform: translateY(10px) scale(.96);} }
 
-        /* 彈窗（確認 / 編輯） */
         #modal-root { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; padding: 1.5rem; }
         #modal-root.show { display: flex; }
         #modal-root .backdrop { position: absolute; inset: 0; background: rgba(40,32,36,.42); backdrop-filter: blur(3px); animation: fadeIn .25s ease; }
@@ -257,18 +246,21 @@
                     <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
                 </div>
 
-                <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm">
-                    <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-1">雙人即時對帳計算機</h3>
-                    <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)]">雲端帳目載入中...</p>
+                <!-- 雙人即時對帳計算機調整排版：金額獨立放下一行 -->
+                <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm space-y-1">
+                    <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-0.5">雙人即時對帳計算機</h3>
+                    <p id="bill-month-label-text" class="text-xs font-bold text-[var(--c-text-muted)]"></p>
+                    <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)] leading-snug">雲端帳目載入中...</p>
                 </div>
 
+                <!-- 帳目明細調整：日期擺前面，明細居中，清除按鈕在右側 -->
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <div class="flex justify-between items-center mb-3 gap-2">
-                        <h3 class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap">帳目明細</h3>
                         <div class="flex items-center gap-2">
+                            <span class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap">📅 帳目明細</span>
                             <select id="bills-month" onchange="billsMonth=this.value; renderBills()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
-                            <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline whitespace-nowrap"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
                         </div>
+                        <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline whitespace-nowrap ml-auto"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
                     </div>
                     <div id="bills-list" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar text-sm"></div>
                 </div>
@@ -652,7 +644,11 @@
         }
         function computeScores() {
             let A = 0, B = 0;
-            (cloudState.choreLog || []).forEach(e => { if (e.member === 'A') A += Number(e.pts) || 0; else if (e.member === 'B') B += Number(e.pts) || 0; });
+            (cloudState.choreLog || []).forEach(e => { 
+                if (e.member === 'A') { A += Number(e.pts) || 0; } 
+                else if (e.member === 'B') { B += Number(e.pts) || 0; } 
+                else if (e.member === 'TOGETHER') { A += Number(e.pts) || 0; B += Number(e.pts) || 0; }
+            });
             (cloudState.redeemLog || []).forEach(r => { if (r.member === 'A') A -= Number(r.cost) || 0; else if (r.member === 'B') B -= Number(r.cost) || 0; });
             return { A, B };
         }
@@ -808,20 +804,25 @@
                     if (splitType === 'half') { netOwedToA -= (amount / 2); textType = '👥 共同平分'; }
                     else { netOwedToA -= amount; textType = '👤 幫對方全額代墊'; }
                 }
-                const payerLabel = bill.payer === 'A' ? cloudState.nameA : cloudState.nameB;
+                const payerLabel = bill.payer === 'A' ? `👸 ${cloudState.nameA}` : `🤴 ${cloudState.nameB}`;
+                
+                // 帳目明細調整順序：日期擺在前面，再來是說明與金額
                 const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100";
-                div.innerHTML = `<div><p class="font-bold text-[var(--c-text)]">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)]"><b>${fmtMD(bill.date)}</b> · ${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
+                div.innerHTML = `<div class="flex items-center gap-3"><span class="font-extrabold text-[var(--c-accent-dark)] whitespace-nowrap">${fmtMD(bill.date)}</span><div><p class="font-bold text-[var(--c-text)] leading-tight">${bill.desc} <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 ml-1 font-normal">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)] mt-0.5">${payerLabel} 先墊了 NT$ ${amount.toLocaleString()}</p></div></div><div class="flex items-center space-x-2"><span class="font-extrabold text-[var(--c-accent)]">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
                 listEl.appendChild(div);
             });
 
+            // 對帳計算機文字拆成兩行：月份在第一行，補給金額在第二行
+            const monthLabelEl = document.getElementById('bill-month-label-text');
             const statusTextEl = document.getElementById('bill-status-text');
-            const mLabel = fmtMonthLabel(billsMonth);
+            if (monthLabelEl) monthLabelEl.innerText = fmtMonthLabel(billsMonth) + ' 結算';
+            
             if (netOwedToA > 0) {
-                statusTextEl.innerHTML = `${mLabel}｜👉 <span class="text-red-500 font-extrabold">${cloudState.nameB}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameA}</span> <span class="text-lg font-black">NT$ ${Math.round(netOwedToA).toLocaleString()}</span>`;
+                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameB}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameA}</span> <span class="text-lg font-black">NT$ ${Math.round(netOwedToA).toLocaleString()}</span>`;
             } else if (netOwedToA < 0) {
-                statusTextEl.innerHTML = `${mLabel}｜👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
+                statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
             } else {
-                statusTextEl.innerHTML = `${mLabel}｜🎉 帳目完全平分，誰也不欠誰！`;
+                statusTextEl.innerHTML = `🎉 帳目完全平分，誰也不欠誰！`;
             }
         }
 
@@ -861,8 +862,15 @@
                 crownA.style.opacity = (s.A > s.B) ? '1' : '0';
                 crownB.style.opacity = (s.B > s.A) ? '1' : '0';
             }
+            
+            // 家務對抗：誰做的選單新增「一起做」並加上 Emoji
             const whoSel = document.getElementById('chorelog-who');
-            if (whoSel) { const cur = whoSel.value; whoSel.innerHTML = `<option value="A">${cloudState.nameA}</option><option value="B">${cloudState.nameB}</option>`; if (cur) whoSel.value = cur; }
+            if (whoSel) { 
+                const cur = whoSel.value; 
+                whoSel.innerHTML = `<option value="A">👸 ${cloudState.nameA}</option><option value="B">🤴 ${cloudState.nameB}</option><option value="TOGETHER">👯 一起做</option>`; 
+                if (cur) whoSel.value = cur; 
+            }
+            
             const choreSel = document.getElementById('chorelog-chore');
             if (choreSel) {
                 const cur = choreSel.value;
@@ -898,8 +906,9 @@
                 return;
             }
             listEl.innerHTML = log.map(e => {
-                const who = e.member === 'A' ? cloudState.nameA : cloudState.nameB;
-                return `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><div><p class="font-bold text-sm text-gray-700"><span class="text-[var(--c-accent-dark)]">${fmtMD(e.date)}</span> · ${who}</p><p class="text-[11px] text-[var(--c-text-muted)]">${e.chore}</p></div><div class="flex items-center gap-2"><span class="text-xs font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 whitespace-nowrap">+${e.pts} 點</span><button onclick="editChoreLog('${e.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChoreLog('${e.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                let who = e.member === 'A' ? `👸 ${cloudState.nameA}` : (e.member === 'B' ? `🤴 ${cloudState.nameB}` : `👯 一起做`);
+                let ptsText = e.member === 'TOGETHER' ? `+${e.pts}點(雙方)` : `+${e.pts} 點`;
+                return `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><div><p class="font-bold text-sm text-gray-700"><span class="text-[var(--c-accent-dark)]">${fmtMD(e.date)}</span> · ${who}</p><p class="text-[11px] text-[var(--c-text-muted)]">${e.chore}</p></div><div class="flex items-center gap-2"><span class="text-xs font-bold text-emerald-600 bg-white px-1.5 py-0.5 rounded-md border border-gray-200 whitespace-nowrap">${ptsText}</span><button onclick="editChoreLog('${e.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteChoreLog('${e.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
             }).join('');
         }
 
@@ -914,7 +923,12 @@
             cloudState.choreLog.unshift({ id: genId(), date, member, chore: choreName, pts });
             choreMonth = ymOf(date);
             db.set(cloudState);
-            floatPoints(document.getElementById(member === 'A' ? 'score-a' : 'score-b'), pts);
+            if (member === 'TOGETHER') {
+                floatPoints(document.getElementById('score-a'), pts);
+                floatPoints(document.getElementById('score-b'), pts);
+            } else {
+                floatPoints(document.getElementById(member === 'A' ? 'score-a' : 'score-b'), pts);
+            }
             showToast("已記錄完成 ⚡️", "ok");
         }
         async function deleteChoreLog(id) {
@@ -945,7 +959,7 @@
                 <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">哪一天</label>
                 <input id="cl-date" type="date" class="modal-input mb-3" value="${entry.date}">
                 <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">誰做的</label>
-                <select id="cl-who" class="modal-input mb-3"><option value="A" ${entry.member === 'A' ? 'selected' : ''}>${cloudState.nameA}</option><option value="B" ${entry.member === 'B' ? 'selected' : ''}>${cloudState.nameB}</option></select>
+                <select id="cl-who" class="modal-input mb-3"><option value="A" ${entry.member === 'A' ? 'selected' : ''}>👸 ${cloudState.nameA}</option><option value="B" ${entry.member === 'B' ? 'selected' : ''}>🤴 ${cloudState.nameB}</option><option value="TOGETHER" ${entry.member === 'TOGETHER' ? 'selected' : ''}>👯 一起做</option></select>
                 <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">做了什麼家務</label>
                 <select id="cl-chore" class="modal-input mb-5">${choreOpts}</select>
                 <div class="flex gap-2.5">
@@ -974,7 +988,7 @@
                 const canA = sc.A >= reward.cost;
                 const canB = sc.B >= reward.cost;
                 const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
-                itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${reward.name}</span><span class="text-xs text-pink-500 bg-white px-1.5 py-0.5 rounded-md border border-pink-200 font-bold">${reward.cost} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-700' : 'bg-gray-50 text-gray-300 cursor-not-allowed'}">${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl shadow-sm ${canB ? 'bg-pink-400 hover:bg-pink-500 text-white' : 'bg-gray-100 text-gray-300 cursor-not-allowed'}">${cloudState.nameB} 兌換</button></div><div class="flex items-center space-x-2"><button onclick="editReward(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteReward(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                itemDiv.innerHTML = `<div class="flex items-center justify-between"><span class="font-bold text-sm text-gray-700">${reward.name}</span><span class="text-xs text-pink-500 bg-white px-1.5 py-0.5 rounded-md border border-pink-200 font-bold">${reward.cost} 點</span></div><div class="flex items-center justify-between"><div class="flex items-center space-x-1.5"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-700' : 'bg-gray-50 text-gray-300 cursor-not-allowed'}">👸 ${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="px-2.5 py-1 text-xs font-bold rounded-xl shadow-sm ${canB ? 'bg-pink-400 hover:bg-pink-500 text-white' : 'bg-gray-100 text-gray-300 cursor-not-allowed'}">🤴 ${cloudState.nameB} 兌換</button></div><div class="flex items-center space-x-2"><button onclick="editReward(${index})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteReward(${index})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
                 listEl.appendChild(itemDiv);
             });
             const logEl = document.getElementById('redeem-log');
@@ -1089,9 +1103,10 @@
             if (localState.avatar) { imgEl.src = localState.avatar; imgEl.classList.remove('hidden'); iconEl.classList.add('hidden'); }
             else { imgEl.classList.add('hidden'); iconEl.classList.remove('hidden'); }
             
+            // 雙人記帳：誰先掏錢代墊選單加上 Emoji
             const selectPayer = document.getElementById('bill-payer'); 
             if(selectPayer) {
-                selectPayer.innerHTML = `<option value="A">由 ${cloudState.nameA} 代墊</option><option value="B">由 ${cloudState.nameB} 代墊</option>`;
+                selectPayer.innerHTML = `<option value="A">👸 由 ${cloudState.nameA} 代墊</option><option value="B">🤴 由 ${cloudState.nameB} 代墊</option>`;
             }
             calcJars(); renderBills(); renderChores();
         }
@@ -1114,3 +1129,4 @@
     </script>
 </body>
 </html>
+```[cite: 1]
