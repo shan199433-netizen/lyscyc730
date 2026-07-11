@@ -64,40 +64,131 @@
         input, select, textarea { font-size: 16px !important; font-family: 'NaikaiFont', 'Noto Sans TC', sans-serif; }
         button { font-family: 'NaikaiFont', 'Noto Sans TC', sans-serif; }
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn .35s ease; }
+        .tab-content.active { display: block; }
+        .tab-content.active > * { animation: cardIn .4s cubic-bezier(.16,1,.3,1) backwards; }
+        .tab-content.active > *:nth-child(2) { animation-delay: .04s; }
+        .tab-content.active > *:nth-child(3) { animation-delay: .08s; }
+        .tab-content.active > *:nth-child(4) { animation-delay: .12s; }
+        .tab-content.active > *:nth-child(5) { animation-delay: .16s; }
+        .tab-content.active > *:nth-child(6) { animation-delay: .20s; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.99);} to { opacity: 1; transform: translateY(0) scale(1);} }
         @keyframes popIn { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
         .nav-btn.active-nav i { animation: popIn .3s ease; }
-        .nav-btn { padding: 6px 14px; border-radius: 14px; transition: background-color .25s ease, color .2s ease; }
-        .nav-btn.active-nav { background: var(--c-card-alt); }
+        .nav-btn { padding: 6px 14px; border-radius: 16px; transition: background-color .25s ease, color .2s ease, transform .2s ease; position: relative; }
+        .nav-btn.active-nav { background: var(--c-card-alt); transform: translateY(-1px); }
         .theme-swatch { transition: transform .15s ease; }
         .theme-swatch:active { transform: scale(0.9); }
-        .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px white, 0 0 0 5px var(--c-accent); }
-        button, .btn-pop { transition: transform .12s ease; }
+        .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 5px var(--c-accent); }
+        button, .btn-pop { transition: transform .12s ease, background-color .2s ease, box-shadow .2s ease; }
         button:active, .btn-pop:active { transform: scale(0.97); }
         .shadow-sm { box-shadow: 0 2px 14px rgba(74,62,67,0.06), 0 1px 3px rgba(74,62,67,0.05) !important; }
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
         nav { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important; }
         #app { padding-bottom: calc(8rem + env(safe-area-inset-bottom)) !important; }
+
+        /* 輸入框聚焦：柔和的主題色光暈 */
+        input:focus, select:focus, textarea:focus {
+            outline: none !important;
+            border-color: var(--c-accent) !important;
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-accent) 18%, transparent);
+        }
+        input, select, textarea { transition: border-color .2s ease, box-shadow .2s ease; }
+
+        /* 主要按鈕：加一點漸層與陰影，按壓更有質感 */
+        .btn-primary {
+            background: linear-gradient(180deg, var(--c-accent), var(--c-accent-dark));
+            box-shadow: 0 4px 12px color-mix(in srgb, var(--c-accent) 32%, transparent);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 16px color-mix(in srgb, var(--c-accent) 40%, transparent); }
+
+        /* 進度條：漸層 + 光澤流動 */
+        .prog-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-accent) 12%, #f0eaea); overflow: hidden; }
+        .prog-fill { height: 100%; border-radius: 999px; position: relative; transition: width .6s cubic-bezier(.16,1,.3,1), background .3s ease; }
+        .prog-fill::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent);
+            transform: translateX(-100%); animation: shine 2.4s ease-in-out infinite;
+        }
+        @keyframes shine { to { transform: translateX(100%); } }
+
+        /* 分數跳動 */
+        @keyframes scorePulse { 0%{transform:scale(1);} 40%{transform:scale(1.22);} 100%{transform:scale(1);} }
+        .score-pulse { animation: scorePulse .5s cubic-bezier(.16,1,.3,1); }
+
+        /* 加點時浮出的 +N 回饋 */
+        .float-pt {
+            position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+            font-weight: 900; pointer-events: none; z-index: 60;
+            animation: floatUp 1s cubic-bezier(.16,1,.3,1) forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translate(-50%, 6px) scale(.8); }
+            25% { opacity: 1; }
+            100% { opacity: 0; transform: translate(-50%, -34px) scale(1.1); }
+        }
+
+        /* 同步指示燈的呼吸點 */
+        .sync-dot { width: 7px; height: 7px; border-radius: 999px; display: inline-block; }
+        .sync-dot.live { background: #34d399; box-shadow: 0 0 0 0 rgba(52,211,153,.6); animation: pulseDot 2s infinite; }
+        .sync-dot.wait { background: #f59e0b; animation: pulseDot 1.2s infinite; }
+        @keyframes pulseDot { 0%{box-shadow:0 0 0 0 rgba(52,211,153,.5);} 70%{box-shadow:0 0 0 6px rgba(52,211,153,0);} 100%{box-shadow:0 0 0 0 rgba(52,211,153,0);} }
+
+        /* Toast 提示 */
+        #toast-wrap { position: fixed; left: 0; right: 0; bottom: calc(6.5rem + env(safe-area-inset-bottom)); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; padding: 0 1rem; }
+        .toast {
+            max-width: 26rem; width: fit-content; pointer-events: auto;
+            background: var(--c-text); color: #fff; padding: 11px 18px; border-radius: 16px;
+            font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,.22);
+            display: flex; align-items: center; gap: 9px;
+            animation: toastIn .4s cubic-bezier(.16,1,.3,1);
+        }
+        .toast.leaving { animation: toastOut .3s ease forwards; }
+        .toast .t-ic { font-size: 15px; }
+        .toast.ok .t-ic { color: #6ee7b7; }
+        .toast.err .t-ic { color: #fca5a5; }
+        .toast.info .t-ic { color: #fcd9b6; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(16px) scale(.95);} to { opacity: 1; transform: translateY(0) scale(1);} }
+        @keyframes toastOut { to { opacity: 0; transform: translateY(10px) scale(.96);} }
+
+        /* 彈窗（確認 / 編輯） */
+        #modal-root { position: fixed; inset: 0; z-index: 9998; display: none; align-items: center; justify-content: center; padding: 1.5rem; }
+        #modal-root.show { display: flex; }
+        #modal-root .backdrop { position: absolute; inset: 0; background: rgba(40,32,36,.42); backdrop-filter: blur(3px); animation: fadeIn .25s ease; }
+        #modal-root .panel {
+            position: relative; width: 100%; max-width: 20rem; background: var(--c-bg);
+            border-radius: 24px; padding: 22px 20px 18px; box-shadow: 0 24px 60px rgba(0,0,0,.28);
+            animation: modalIn .35s cubic-bezier(.16,1,.3,1);
+        }
+        @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(.94);} to { opacity: 1; transform: translateY(0) scale(1);} }
+        .modal-ic { width: 52px; height: 52px; border-radius: 999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 22px; background: var(--c-card-alt); color: var(--c-accent-dark); }
+        .modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--c-border); border-radius: 12px; background: #fff; font-size: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::after, *::before { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+        }
     </style>
 </head>
 <body class="bg-[var(--c-bg)]" data-theme="mauve">
     <div id="app" class="max-w-md mx-auto min-h-screen bg-[var(--c-bg)] shadow-lg relative flex flex-col" style="background: linear-gradient(180deg, var(--c-card-alt) 0%, var(--c-bg) 220px);">
         
-        <header class="bg-white px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden">
+        <header class="px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden" style="background: linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--c-card-alt) 45%, #ffffff));">
             <div class="flex items-center space-x-3">
-                <div class="w-11 h-11 rounded-full border-2 border-[var(--c-border-strong)] overflow-hidden bg-gray-100 flex items-center justify-center relative shadow-sm">
+                <div class="w-11 h-11 rounded-full overflow-hidden bg-white flex items-center justify-center relative shadow-sm" style="box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent);">
                     <img id="app-avatar-img" src="" class="w-full h-full object-cover hidden">
                     <i id="app-avatar-icon" class="fa-solid fa-dog text-lg text-[var(--c-accent)]"></i>
                 </div>
                 <div>
-                    <h1 id="app-title-display" class="font-semibold text-base text-[var(--c-text)]">艾姍的微甜生活 APP</h1>
+                    <h1 id="app-title-display" class="font-semibold text-base text-[var(--c-text)] leading-tight">艾姍的微甜生活 APP</h1>
+                    <p class="text-[11px] text-[var(--c-text-muted)] leading-tight mt-0.5">兩個人的每一天 ♡</p>
                 </div>
             </div>
-            <div id="sync-indicator" class="text-[10px] px-2 py-1 rounded bg-amber-100 text-amber-700 font-bold animate-pulse">☁️ 連線中</div>
+            <div id="sync-indicator" class="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 font-bold border border-amber-100">
+                <span class="sync-dot wait"></span><span>連線中</span>
+            </div>
         </header>
 
 
@@ -135,7 +226,7 @@
                         </div>
                     </div>
                     
-                    <button onclick="addBill()" class="w-full py-2.5 bg-[var(--c-accent)] hover:bg-[var(--c-accent-dark)] text-white rounded-xl text-sm font-bold transition shadow-sm">送出記帳 (秒同步☁️)</button>
+                    <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步 ☁️)</button>
                 </div>
 
                 <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm">
@@ -156,12 +247,14 @@
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
                     <h2 class="font-bold text-sm mb-3 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>雲端家務點數爭霸賽</h2>
                     <div class="flex justify-around items-center border-t border-b border-gray-100 py-3">
-                        <div class="text-center">
+                        <div class="text-center flex-1">
+                            <div id="crown-a" class="h-4 text-amber-400 text-sm opacity-0 transition-opacity">👑</div>
                             <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
                             <p id="score-a" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
                         </div>
-                        <div class="w-px h-8 bg-gray-200"></div>
-                        <div class="text-center">
+                        <div class="w-px h-10 bg-gray-200"></div>
+                        <div class="text-center flex-1">
+                            <div id="crown-b" class="h-4 text-amber-400 text-sm opacity-0 transition-opacity">👑</div>
                             <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
                             <p id="score-b" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
                         </div>
@@ -243,7 +336,7 @@
                             <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
                     </div>
-                    <button onclick="saveCloudSettings()" class="w-full py-2.5 bg-[var(--c-accent)] text-white rounded-xl text-sm font-bold hover:bg-[var(--c-accent-dark)] transition">儲存基本設定 (雙向同步 ☁️)</button>
+                    <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步 ☁️)</button>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -346,14 +439,23 @@
             </div>
         </main>
 
-        <nav class="bg-white border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg">
+        <nav class="border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg rounded-t-3xl" style="background: color-mix(in srgb, #ffffff 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
             <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>預算沙盤</span></button>
             <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
             <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
             <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-gear text-lg"></i><span>設定</span></button>
         </nav>
     </div>
-    
+
+    <!-- Toast 提示容器 -->
+    <div id="toast-wrap"></div>
+
+    <!-- 彈窗（確認 / 編輯）容器 -->
+    <div id="modal-root">
+        <div class="backdrop" onclick="closeModal(false)"></div>
+        <div class="panel" id="modal-panel"></div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCApWrIpF-dWtD-ocG4oYtnakLCajX37-Y",
@@ -367,6 +469,105 @@
         firebase.initializeApp(firebaseConfig);
         // 專屬於你們兩人的雲端房間代號（不易被猜到）
         const db = firebase.database().ref("room_x7k2q9v_shanshan_yunchen");
+
+        /* ---------- 精緻 UI 元件：Toast / 彈窗 ---------- */
+        function showToast(msg, type = 'ok', duration = 2200) {
+            const wrap = document.getElementById('toast-wrap');
+            if (!wrap) return;
+            const icons = { ok: 'fa-circle-check', err: 'fa-circle-exclamation', info: 'fa-circle-info' };
+            const el = document.createElement('div');
+            el.className = 'toast ' + type;
+            el.innerHTML = `<i class="fa-solid ${icons[type] || icons.ok} t-ic"></i><span>${msg}</span>`;
+            wrap.appendChild(el);
+            setTimeout(() => {
+                el.classList.add('leaving');
+                setTimeout(() => el.remove(), 320);
+            }, duration);
+        }
+
+        let _modalResolve = null;
+        function closeModal(result) {
+            const root = document.getElementById('modal-root');
+            root.classList.remove('show');
+            if (_modalResolve) { const r = _modalResolve; _modalResolve = null; r(result); }
+        }
+        // 漂亮的確認框（取代 confirm），回傳 Promise<boolean>
+        function showConfirm(message, { title = '確認一下', icon = 'fa-circle-question', okText = '確定', cancelText = '取消', danger = false } = {}) {
+            return new Promise(resolve => {
+                _modalResolve = resolve;
+                const panel = document.getElementById('modal-panel');
+                panel.innerHTML = `
+                    <div class="modal-ic"><i class="fa-solid ${icon}"></i></div>
+                    <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-1">${title}</h3>
+                    <p class="text-center text-sm text-[var(--c-text-muted)] mb-5 leading-relaxed">${message}</p>
+                    <div class="flex gap-2.5">
+                        <button onclick="closeModal(false)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">${cancelText}</button>
+                        <button onclick="closeModal(true)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white ${danger ? '' : 'btn-primary'}" ${danger ? 'style="background:linear-gradient(180deg,#f87171,#ef4444);box-shadow:0 4px 12px rgba(239,68,68,.3)"' : ''}>${okText}</button>
+                    </div>`;
+                document.getElementById('modal-root').classList.add('show');
+            });
+        }
+        // 漂亮的編輯框（取代雙重 prompt）：一次填「名稱 + 數值」，回傳 Promise<{name,val}|null>
+        function showEditModal({ title = '修改', icon = 'fa-pen', nameLabel = '名稱', nameVal = '', valLabel = '數值', valVal = '', valMin = 1 } = {}) {
+            return new Promise(resolve => {
+                _modalResolve = resolve;
+                const panel = document.getElementById('modal-panel');
+                panel.innerHTML = `
+                    <div class="modal-ic"><i class="fa-solid ${icon}"></i></div>
+                    <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-4">${title}</h3>
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">${nameLabel}</label>
+                    <input id="modal-name" class="modal-input mb-3" value="${(nameVal + '').replace(/"/g, '&quot;')}">
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">${valLabel}</label>
+                    <input id="modal-val" type="number" min="${valMin}" class="modal-input mb-5" value="${valVal}">
+                    <div class="flex gap-2.5">
+                        <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
+                        <button onclick="_submitEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                    </div>`;
+                document.getElementById('modal-root').classList.add('show');
+                setTimeout(() => { const n = document.getElementById('modal-name'); if (n) n.focus(); }, 60);
+            });
+        }
+        function _submitEdit() {
+            const name = document.getElementById('modal-name').value.trim();
+            const val = document.getElementById('modal-val').value;
+            closeModal({ name, val });
+        }
+        // 分數跳動動畫
+        function animateScore(el, to) {
+            if (!el) return;
+            const from = Number(el.innerText) || 0;
+            to = Number(to) || 0;
+            if (from === to) { el.innerText = to; return; }
+            el.classList.remove('score-pulse'); void el.offsetWidth; el.classList.add('score-pulse');
+            const dur = 500, t0 = performance.now();
+            (function step(now) {
+                const p = Math.min((now - t0) / dur, 1);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.innerText = Math.round(from + (to - from) * eased);
+                if (p < 1) requestAnimationFrame(step);
+            })(performance.now());
+        }
+        // 加點時浮出的 +N 回饋
+        function floatPoints(anchorEl, pts) {
+            if (!anchorEl) return;
+            const parent = anchorEl.closest('.text-center') || anchorEl.parentElement;
+            if (!parent) return;
+            parent.style.position = 'relative';
+            const tag = document.createElement('span');
+            tag.className = 'float-pt';
+            tag.style.color = 'var(--c-accent)';
+            tag.textContent = '+' + pts;
+            parent.appendChild(tag);
+            setTimeout(() => tag.remove(), 1000);
+        }
+        // Esc 關閉彈窗
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('modal-root').classList.contains('show')) closeModal(null);
+            if (e.key === 'Enter' && document.getElementById('modal-root').classList.contains('show')) {
+                const submit = document.querySelector('#modal-panel .btn-primary');
+                if (submit) submit.click();
+            }
+        });
 
         let localState = JSON.parse(localStorage.getItem('shanshan_local_v70')) || {
             income: 80000, avatar: "", theme: "mauve",
@@ -423,15 +624,21 @@
             } else { 
                 db.set(cloudState); 
             }
-            // 連線成功！立刻定格為好看的綠色，徹底告別閃爍！
+            // 連線成功！定格為柔和的綠色呼吸點
             const indicator = document.getElementById('sync-indicator');
             if(indicator) {
-                indicator.className = "text-[10px] px-2 py-1 rounded bg-green-100 text-green-700 font-bold";
-                indicator.innerText = "☁️ 雲端同步中";
+                indicator.className = "flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-bold border border-emerald-100";
+                indicator.innerHTML = '<span class="sync-dot live"></span><span>已同步</span>';
             }
             applyDisplay();
         }, (error) => {
             console.error("Firebase連線失敗：", error);
+            const indicator = document.getElementById('sync-indicator');
+            if(indicator) {
+                indicator.className = "flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full bg-rose-50 text-rose-500 font-bold border border-rose-100";
+                indicator.innerHTML = '<span class="sync-dot" style="background:#f43f5e"></span><span>連線中斷</span>';
+            }
+            showToast('雲端連線中斷，請檢查網路後重新整理', 'err');
         });
 
         function switchTab(tabId) {
@@ -477,10 +684,10 @@
                 if(items.length === 0) itemsHtml = `<p class="text-[11px] text-gray-400 italic pl-4">目前暫無設定子開銷項目</p>`;
                 const usedPct = totalBudget > 0 ? Math.min((spentSum / totalBudget) * 100, 100) : (spentSum > 0 ? 100 : 0);
                 const isOver = spentSum > totalBudget;
-                const barColor = isOver ? '#EF4444' : (usedPct >= 85 ? '#F59E0B' : 'var(--c-accent)');
+                const barColor = isOver ? 'linear-gradient(90deg,#f87171,#ef4444)' : (usedPct >= 85 ? 'linear-gradient(90deg,#fbbf24,#f59e0b)' : 'linear-gradient(90deg, color-mix(in srgb, var(--c-accent) 75%, #fff), var(--c-accent))');
                 const isOpen = jarOpenState[config.id] ? ' open' : '';
                 const jarDiv = document.createElement('div'); jarDiv.className = "bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm";
-                jarDiv.innerHTML = `<details class="group"${isOpen}><summary class="cursor-pointer list-none select-none"><div class="flex justify-between items-center pb-1 border-b border-gray-100"><span class="font-bold text-sm text-[var(--c-text)]">${config.name} (${(config.pct*100).toFixed(0)}%)</span><span class="flex items-center space-x-2"><span class="text-xs font-bold text-gray-400">總預算: NT$ ${totalBudget.toLocaleString()}</span><i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i></span></div></summary><div class="space-y-1 pt-2">${itemsHtml}</div></details><div class="mt-2 h-1.5 rounded-full bg-gray-100 overflow-hidden"><div class="h-full rounded-full transition-all duration-500" style="width:${usedPct}%; background:${barColor};"></div></div><div class="flex justify-between items-center text-xs pt-1.5 font-medium"><span class="text-gray-400">已規劃扣除: NT$ ${spentSum.toLocaleString()}</span><span class="${remain >= 0 ? 'text-emerald-600' : 'text-red-500'} font-bold">可用剩餘: NT$ ${remain.toLocaleString()}</span></div>`;
+                jarDiv.innerHTML = `<details class="group"${isOpen}><summary class="cursor-pointer list-none select-none"><div class="flex justify-between items-center pb-1 border-b border-gray-100"><span class="font-bold text-sm text-[var(--c-text)]">${config.name} (${(config.pct*100).toFixed(0)}%)</span><span class="flex items-center space-x-2"><span class="text-xs font-bold text-gray-400">總預算: NT$ ${totalBudget.toLocaleString()}</span><i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i></span></div></summary><div class="space-y-1 pt-2">${itemsHtml}</div></details><div class="mt-2.5 prog-track"><div class="prog-fill" style="width:${usedPct}%; background:${barColor};"></div></div><div class="flex justify-between items-center text-xs pt-1.5 font-medium"><span class="text-gray-400">已規劃扣除: NT$ ${spentSum.toLocaleString()}</span><span class="${remain >= 0 ? 'text-emerald-600' : 'text-red-500'} font-bold">可用剩餘: NT$ ${remain.toLocaleString()}</span></div>`;
                 const detailsEl = jarDiv.querySelector('details');
                 detailsEl.addEventListener('toggle', () => { jarOpenState[config.id] = detailsEl.open; });
                 container.appendChild(jarDiv);
@@ -493,7 +700,7 @@
                 play: Number(document.getElementById('pct-play').value) || 0, ltss: Number(document.getElementById('pct-ltss').value) || 0,
                 edu: Number(document.getElementById('pct-edu').value) || 0, give: Number(document.getElementById('pct-give').value) || 0
             };
-            saveLocal(); calcJars(); alert("個人理財百分比更新成功！");
+            saveLocal(); calcJars(); showToast("個人理財比例已更新", "ok");
         }
 
         function renderLocalJarItems() {
@@ -509,7 +716,7 @@
 
         function addLocalJarItem() {
             const jarId = document.getElementById('manage-jar-select').value; const name = document.getElementById('manage-item-name').value.trim(); const cost = Number(document.getElementById('manage-item-cost').value);
-            if(!name || !cost || cost <= 0) return alert("請填寫細項與金額！");
+            if(!name || !cost || cost <= 0) return showToast("請填寫細項名稱與金額", "err");
             if(!localState.jarItems[jarId]) localState.jarItems[jarId] = []; localState.jarItems[jarId].push({ name, cost });
             saveLocal(); calcJars(); renderLocalJarItems(); document.getElementById('manage-item-name').value = ''; document.getElementById('manage-item-cost').value = '';
         }
@@ -519,7 +726,11 @@
             const listEl = document.getElementById('bills-list'); listEl.innerHTML = ''; 
             let netOwedToA = 0; 
             const billsArr = cloudState.bills || [];
-            
+
+            if (billsArr.length === 0) {
+                listEl.innerHTML = '<div class="text-center py-6 text-gray-400"><i class="fa-regular fa-face-smile text-2xl mb-2 block"></i><p class="text-xs">還沒有帳目，從上方記下第一筆吧 ✨</p></div>';
+            }
+
             billsArr.forEach((bill, index) => {
                 const amount = Number(bill.amount) || 0;
                 const splitType = bill.splitType || 'half'; 
@@ -555,18 +766,33 @@
             const payer = document.getElementById('bill-payer').value;
             const splitType = document.getElementById('bill-split-type').value;
             
-            if (!desc || !amount || amount <= 0) return alert("請填寫項目與金額！"); 
+            if (!desc || !amount || amount <= 0) return showToast("請填寫項目說明與金額", "err"); 
             if(!cloudState.bills) cloudState.bills = []; 
             cloudState.bills.unshift({ desc, amount, payer, splitType }); 
             db.set(cloudState);
             document.getElementById('bill-desc').value = ''; 
             document.getElementById('bill-amount').value = '';
+            showToast("已記一筆，雲端同步完成 ☁️", "ok");
         }
-        function deleteBill(index) { cloudState.bills.splice(index, 1); db.set(cloudState); }
-        function clearAllBills() { if (confirm("確定一鍵清空所有雲端記帳？")) { cloudState.bills = []; db.set(cloudState); } }
+        async function deleteBill(index) {
+            if (await showConfirm("要刪除這筆帳目嗎？", { title: "刪除帳目", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.bills.splice(index, 1); db.set(cloudState); showToast("已刪除這筆帳目", "info");
+            }
+        }
+        async function clearAllBills() {
+            if (await showConfirm("將清空全部雙人帳目，這個動作無法復原。", { title: "清空所有帳目", icon: "fa-trash-can", okText: "全部清空", danger: true })) {
+                cloudState.bills = []; db.set(cloudState); showToast("已清空所有帳目", "info");
+            }
+        }
 
         function renderChores() {
-            document.getElementById('score-a').innerText = cloudState.scoreA || 0; document.getElementById('score-b').innerText = cloudState.scoreB || 0;
+            animateScore(document.getElementById('score-a'), cloudState.scoreA || 0); animateScore(document.getElementById('score-b'), cloudState.scoreB || 0);
+            const sA = cloudState.scoreA || 0, sB = cloudState.scoreB || 0;
+            const crownA = document.getElementById('crown-a'), crownB = document.getElementById('crown-b');
+            if (crownA && crownB) {
+                crownA.style.opacity = (sA > sB) ? '1' : '0';
+                crownB.style.opacity = (sB > sA) ? '1' : '0';
+            }
             const listEl = document.getElementById('chores-list'); listEl.innerHTML = ''; const choresArr = cloudState.chores || [];
             choresArr.forEach((chore, index) => {
                 const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2";
@@ -599,19 +825,19 @@
             }
         }
 
-        function redeemReward(index, member) {
+        async function redeemReward(index, member) {
             const reward = cloudState.rewards[index];
             const who = member === 'A' ? cloudState.nameA : cloudState.nameB;
             const score = member === 'A' ? (cloudState.scoreA || 0) : (cloudState.scoreB || 0);
-            if (score < reward.cost) return alert("點數不夠喔！繼續加油做家務 💪");
-            if (!confirm(`${who} 要用 ${reward.cost} 點兌換「${reward.name}」嗎？`)) return;
+            if (score < reward.cost) return showToast("點數還不夠，再累積一下 💪", "err");
+            if (!await showConfirm(`${who} 要用 <b>${reward.cost}</b> 點兌換「${reward.name}」嗎？`, { title: "兌換獎勵", icon: "fa-gift", okText: "兌換" })) return;
             if (member === 'A') cloudState.scoreA = score - reward.cost; else cloudState.scoreB = score - reward.cost;
             if (!cloudState.redeemLog) cloudState.redeemLog = [];
             const now = new Date();
             cloudState.redeemLog.unshift({ who, what: reward.name, cost: reward.cost, date: `${now.getMonth()+1}/${now.getDate()}` });
             if (cloudState.redeemLog.length > 30) cloudState.redeemLog = cloudState.redeemLog.slice(0, 30);
             db.set(cloudState);
-            alert(`兌換成功 🎉 記得跟對方領取「${reward.name}」！`);
+            showToast(`兌換成功 🎉 記得跟對方領取喔`, "ok", 2600);
         }
 
         function addReward() {
@@ -619,21 +845,24 @@
             const costInput = document.getElementById('reward-new-cost');
             const name = nameInput.value.trim();
             const cost = Number(costInput.value) || 1;
-            if (!name) return alert("請輸入獎勵內容！");
+            if (!name) return showToast("請先輸入獎勵內容", "err");
             if (!cloudState.rewards) cloudState.rewards = [];
             cloudState.rewards.push({ name, cost });
             db.set(cloudState);
             nameInput.value = ''; costInput.value = '8';
+            showToast("已加入獎勵商店 🎁", "ok");
         }
-        function deleteReward(index) { if (confirm("確定刪除這個獎勵？")) { cloudState.rewards.splice(index, 1); db.set(cloudState); } }
-        function editReward(index) {
+        async function deleteReward(index) {
+            if (await showConfirm("要刪除這個獎勵嗎？", { title: "刪除獎勵", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.rewards.splice(index, 1); db.set(cloudState); showToast("已刪除獎勵", "info");
+            }
+        }
+        async function editReward(index) {
             const reward = cloudState.rewards[index];
-            const newName = prompt("修改獎勵內容：", reward.name);
-            if (newName === null) return;
-            const newCost = prompt("修改所需點數：", reward.cost);
-            if (newCost === null) return;
-            cloudState.rewards[index] = { name: newName.trim() || reward.name, cost: Number(newCost) || reward.cost };
-            db.set(cloudState);
+            const res = await showEditModal({ title: "修改獎勵", icon: "fa-gift", nameLabel: "獎勵內容", nameVal: reward.name, valLabel: "所需點數", valVal: reward.cost });
+            if (res === null) return;
+            cloudState.rewards[index] = { name: res.name || reward.name, cost: Number(res.val) || reward.cost };
+            db.set(cloudState); showToast("獎勵已更新", "ok");
         }
 
         function addChore() {
@@ -641,48 +870,57 @@
             const ptsInput = document.getElementById('chore-new-pts');
             const name = nameInput.value.trim();
             const pts = Number(ptsInput.value) || 1;
-            if (!name) return alert("請輸入家務名稱！");
+            if (!name) return showToast("請先輸入家務名稱", "err");
             if (!cloudState.chores) cloudState.chores = [];
             cloudState.chores.push({ name, pts });
             db.set(cloudState);
             nameInput.value = ''; ptsInput.value = '1';
+            showToast("已新增家務項目", "ok");
         }
-        function deleteChore(index) { if (confirm("確定刪除這個家務項目？")) { cloudState.chores.splice(index, 1); db.set(cloudState); } }
-        function editChore(index) {
+        async function deleteChore(index) {
+            if (await showConfirm("要刪除這個家務項目嗎？", { title: "刪除家務", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.chores.splice(index, 1); db.set(cloudState); showToast("已刪除家務項目", "info");
+            }
+        }
+        async function editChore(index) {
             const chore = cloudState.chores[index];
-            const newName = prompt("修改家務名稱：", chore.name);
-            if (newName === null) return;
-            const newPts = prompt("修改完成點數：", chore.pts);
-            if (newPts === null) return;
-            cloudState.chores[index] = { name: newName.trim() || chore.name, pts: Number(newPts) || chore.pts };
-            db.set(cloudState);
+            const res = await showEditModal({ title: "修改家務", icon: "fa-list-check", nameLabel: "家務名稱", nameVal: chore.name, valLabel: "完成點數", valVal: chore.pts });
+            if (res === null) return;
+            cloudState.chores[index] = { name: res.name || chore.name, pts: Number(res.val) || chore.pts };
+            db.set(cloudState); showToast("家務已更新", "ok");
         }
 
         function addChorePoints(m, p) { 
             if(m==='A') cloudState.scoreA=(cloudState.scoreA||0)+p; else cloudState.scoreB=(cloudState.scoreB||0)+p; 
+            floatPoints(document.getElementById(m === 'A' ? 'score-a' : 'score-b'), p);
             db.set(cloudState); 
         }
-        function resetChoresScore() { if(confirm("分數歸零？")) { cloudState.scoreA=0; cloudState.scoreB=0; db.set(cloudState); } }
+        async function resetChoresScore() {
+            if(await showConfirm("兩人的家務點數都會歸零，確定嗎？", { title: "點數歸零", icon: "fa-rotate-left", okText: "歸零", danger: true })) {
+                cloudState.scoreA=0; cloudState.scoreB=0; db.set(cloudState); showToast("點數已重新歸零", "info");
+            }
+        }
 
         function saveCloudSettings() {
             const title = document.getElementById('setting-app-title').value.trim();
             const nA = document.getElementById('setting-name-a').value.trim();
             const nB = document.getElementById('setting-name-b').value.trim();
-            if(!title || !nA || !nB) return alert("名稱和標題不可留空！");
+            if(!title || !nA || !nB) return showToast("標題與暱稱都不能留空", "err");
             
             cloudState.appTitle = title;
             cloudState.nameA = nA;
             cloudState.nameB = nB;
             
             db.set(cloudState).then(() => {
-                alert("雲端暱稱與大標題同步更新成功！🌟");
+                showToast("設定已雙向同步 🌟", "ok");
             });
         }
 
         function saveAvatarOnly() {
             const fileInput = document.getElementById('setting-avatar-file');
             if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader(); reader.onload = function(e) { localState.avatar = e.target.result; saveLocal(); applyDisplay(); alert("頭像儲存成功！"); }; reader.readAsDataURL(fileInput.files[0]);
+                const reader = new FileReader(); reader.onload = function(e) { localState.avatar = e.target.result; saveLocal(); applyDisplay(); showToast("頭像已儲存 ♡", "ok"); }; reader.readAsDataURL(fileInput.files[0]);
+            } else { showToast("請先選擇一張照片", "err"); return;
             }
         }
 
@@ -710,6 +948,22 @@
         }
         document.getElementById('total-income').value = localState.income; calcJars();
         applyTheme(localState.theme || 'mauve');
+
+        /* ---------- 順手互動：Enter 送出 & 聚焦全選 ---------- */
+        function bindEnter(ids, fn) {
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); fn(); } });
+            });
+        }
+        bindEnter(['bill-desc', 'bill-amount'], addBill);
+        bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
+        bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
+        bindEnter(['manage-item-name', 'manage-item-cost'], addLocalJarItem);
+        // 數字輸入框聚焦時自動全選，方便直接改數字
+        document.querySelectorAll('input[type="number"]').forEach(el => {
+            el.addEventListener('focus', () => { requestAnimationFrame(() => el.select()); });
+        });
     </script>
 </body>
 </html>
