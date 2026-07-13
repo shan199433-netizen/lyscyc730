@@ -90,6 +90,37 @@
         nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
         #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
 
+        /* ====== 手機框架 RWD ======
+           手機瀏覽器（< 480px）：完全滿版，無邊框，原生 App 體驗
+           桌面／平板（≥ 480px）：以手機視窗比例置中呈現
+           如需切換 390px 版型，只要把 --frame-max 改成 390px 即可，兩處寬度設定會一起同步 */
+        :root { --frame-max: 414px; }
+        #app { max-width: var(--frame-max); }
+        #app nav { max-width: var(--frame-max); }
+
+        @media (min-width: 480px) {
+            body {
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                background: radial-gradient(circle at 20% -10%,
+                    color-mix(in srgb, var(--c-accent) 20%, var(--c-bg)) 0%,
+                    color-mix(in srgb, var(--c-accent) 6%, var(--c-bg)) 45%,
+                    color-mix(in srgb, var(--c-text) 6%, var(--c-bg)) 100%);
+            }
+            #app {
+                border-left: 1px solid color-mix(in srgb, var(--c-text) 10%, transparent);
+                border-right: 1px solid color-mix(in srgb, var(--c-text) 10%, transparent);
+                box-shadow: 0 30px 60px -18px color-mix(in srgb, var(--c-text) 40%, transparent),
+                            0 10px 24px -10px color-mix(in srgb, var(--c-text) 22%, transparent) !important;
+            }
+            #app nav {
+                box-shadow: -1px 0 0 color-mix(in srgb, var(--c-text) 10%, transparent),
+                             1px 0 0 color-mix(in srgb, var(--c-text) 10%, transparent),
+                             0 -8px 24px -12px color-mix(in srgb, var(--c-text) 25%, transparent) !important;
+            }
+        }
+
         input:focus, select:focus, textarea:focus {
             outline: none !important;
             border-color: var(--c-accent) !important;
@@ -250,6 +281,39 @@
                     <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-0.5">雙人即時對帳計算機</h3>
                     <p id="bill-month-label-text" class="text-xs font-bold text-[var(--c-text-muted)]"></p>
                     <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)] leading-snug">雲端帳目載入中...</p>
+                    <div id="settle-badge-area" class="pt-1.5"></div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2.5 text-left">
+                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5">
+                            <p class="text-[10px] text-emerald-600 font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i>本月已結算</p>
+                            <p id="month-settled-amount" class="text-sm font-black text-emerald-600 mt-0.5">NT$ 0</p>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-100 rounded-xl p-2.5">
+                            <p class="text-[10px] text-amber-600 font-bold flex items-center gap-1"><i class="fa-solid fa-hourglass-half"></i>本月剩餘未結算</p>
+                            <p id="month-unsettled-amount" class="text-sm font-black text-amber-600 mt-0.5">NT$ 0</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 text-left space-y-2">
+                        <p class="text-[11px] font-bold text-[var(--c-label)]">新增一筆結算紀錄</p>
+                        <div class="flex gap-2">
+                            <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
+                            <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
+                        </div>
+                        <button onclick="addSettlement()" class="btn-primary w-full py-2 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+                        <div id="settlement-list" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar text-xs pt-0.5"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-2 text-left">
+                        <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
+                            <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積已結算</p>
+                            <p id="settled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
+                        </div>
+                        <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
+                            <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積未結算</p>
+                            <p id="unsettled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
@@ -617,7 +681,7 @@
                 { name: "指定一部電影一起看 🎬", cost: 10 },
                 { name: "對方洗碗一整週 🍽️", cost: 15 }
             ],
-            redeemLog: [], choreLog: []
+            redeemLog: [], choreLog: [], settledMonths: {}, settlements: []
         };
 
         let billsMonth = null, choreMonth = null;
@@ -678,6 +742,29 @@
                 if(!data.appTitle) data.appTitle = "艾姍的微甜生活 APP";
                 if(!data.nameA) data.nameA = "姍姍";
                 if(!data.nameB) data.nameB = "昀辰";
+                if(!data.settlements) data.settlements = [];
+                if (data.settledMonths) {
+                    let migratedAny = false;
+                    Object.keys(data.settledMonths).forEach(ym => {
+                        const already = data.settlements.some(s => s.ym === ym && s.migrated);
+                        if (!already) {
+                            const bills = (data.bills || []).filter(b => ymOf(b.date) === ym);
+                            let net = 0;
+                            bills.forEach(b => {
+                                const amt = Number(b.amount) || 0;
+                                const st = b.splitType || 'half';
+                                const delta = st === 'half' ? amt / 2 : amt;
+                                net += (b.payer === 'A' ? delta : -delta);
+                            });
+                            const total = Math.abs(net);
+                            if (total > 0) {
+                                data.settlements.push({ id: genId(), ym, amount: total, date: (data.settledMonths[ym] && data.settledMonths[ym].date) || todayISO(), migrated: true });
+                                migratedAny = true;
+                            }
+                        }
+                    });
+                    if (migratedAny) db.set(data);
+                }
                 cloudState = data; 
             } else { 
                 db.set(cloudState); 
@@ -779,35 +866,57 @@
         }
         function deleteLocalJarItem(jarId, index) { localState.jarItems[jarId].splice(index, 1); saveLocal(); calcJars(); renderLocalJarItems(); }
 
+        function computeMonthOwed(ym) {
+            let netOwedToA = 0;
+            (cloudState.bills || []).filter(b => ymOf(b.date) === ym).forEach(bill => {
+                const amount = Number(bill.amount) || 0;
+                const splitType = bill.splitType || 'half';
+                const delta = splitType === 'half' ? (amount / 2) : amount;
+                netOwedToA += (bill.payer === 'A' ? delta : -delta);
+            });
+            return netOwedToA;
+        }
+
+        function monthSettledAmount(ym) {
+            return (cloudState.settlements || []).filter(s => s.ym === ym).reduce((sum, s) => sum + (Number(s.amount) || 0), 0);
+        }
+
+        function monthRemaining(ym) {
+            const total = Math.abs(computeMonthOwed(ym));
+            return Math.max(total - monthSettledAmount(ym), 0);
+        }
+
+        function isMonthSettled(ym) {
+            return Math.abs(computeMonthOwed(ym)) > 0 && monthRemaining(ym) <= 0;
+        }
+
         function renderBills() {
             const listEl = document.getElementById('bills-list');
             const allBills = cloudState.bills || [];
             billsMonth = populateMonthSelect(document.getElementById('bills-month'), allBills.map(b => ymOf(b.date)), billsMonth || currentYM());
             const bd = document.getElementById('bill-date'); if (bd && !bd.value) bd.value = todayISO();
+            const sd = document.getElementById('settle-new-date'); if (sd && !sd.value) sd.value = todayISO();
 
             const bills = allBills.filter(b => ymOf(b.date) === billsMonth);
             listEl.innerHTML = '';
-            let netOwedToA = 0;
             if (bills.length === 0) {
                 listEl.innerHTML = `<div class="text-center py-6 text-gray-400"><i class="fa-regular fa-face-smile text-2xl mb-2 block"></i><p class="text-xs">${fmtMonthLabel(billsMonth)}還沒有帳目，記下第一筆吧 ✨</p></div>`;
             }
             bills.forEach(bill => {
                 const amount = Number(bill.amount) || 0;
                 const splitType = bill.splitType || 'half';
-                let textType = '';
-                if (bill.payer === 'A') {
-                    if (splitType === 'half') { netOwedToA += (amount / 2); textType = '👥 共同平分'; }
-                    else { netOwedToA += amount; textType = '👤 幫對方付'; }
-                } else {
-                    if (splitType === 'half') { netOwedToA -= (amount / 2); textType = '👥 共同平分'; }
-                    else { netOwedToA -= amount; textType = '👤 幫對方付'; }
-                }
+                const textType = splitType === 'half' ? '👥 共同平分' : '👤 幫對方付';
                 const payerLabel = bill.payer === 'A' ? `👸 ${cloudState.nameA}` : `🤴 ${cloudState.nameB}`;
                 
                 const div = document.createElement('div'); div.className = "flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 gap-2";
                 div.innerHTML = `<div class="flex items-center gap-3 min-w-0 flex-1"><span class="font-extrabold text-[var(--c-accent-dark)] whitespace-nowrap">${fmtMD(bill.date)}</span><div class="min-w-0 flex-1"><p class="font-bold text-[var(--c-text)] leading-tight flex items-center flex-wrap gap-1"><span class="truncate">${bill.desc}</span> <span class="text-[10px] bg-white border px-1 py-0.5 rounded text-gray-500 font-normal whitespace-nowrap shrink-0">${textType}</span></p><p class="text-[10px] text-[var(--c-text-muted)] mt-0.5 truncate">${payerLabel} 先付了 NT$ ${amount.toLocaleString()}</p></div></div><div class="flex items-center space-x-2 shrink-0"><span class="font-extrabold text-[var(--c-accent)] whitespace-nowrap">NT$ ${amount.toLocaleString()}</span><button onclick="deleteBill('${bill.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-base"></i></button></div>`;
                 listEl.appendChild(div);
             });
+
+            const netOwedToA = computeMonthOwed(billsMonth);
+            const totalOwed = Math.abs(netOwedToA);
+            const settledAmt = Math.min(monthSettledAmount(billsMonth), totalOwed);
+            const remaining = Math.max(totalOwed - settledAmt, 0);
 
             const monthLabelEl = document.getElementById('bill-month-label-text');
             const statusTextEl = document.getElementById('bill-status-text');
@@ -819,6 +928,75 @@
                 statusTextEl.innerHTML = `👉 <span class="text-red-500 font-extrabold">${cloudState.nameA}</span> 應補給 <span class="text-emerald-600 font-extrabold">${cloudState.nameB}</span> <span class="text-lg font-black">NT$ ${Math.round(Math.abs(netOwedToA)).toLocaleString()}</span>`;
             } else {
                 statusTextEl.innerHTML = `🎉 帳目完全平分，誰也不欠誰！`;
+            }
+
+            const settled = totalOwed > 0 && remaining <= 0;
+            statusTextEl.classList.toggle('line-through', settled);
+            statusTextEl.classList.toggle('opacity-50', settled);
+
+            const badgeAreaEl = document.getElementById('settle-badge-area');
+            if (badgeAreaEl) {
+                if (totalOwed <= 0) {
+                    badgeAreaEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-circle-check"></i>本月帳目已平分</span>`;
+                } else if (remaining <= 0) {
+                    badgeAreaEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-circle-check"></i>本月已結清 🎉</span>`;
+                } else if (settledAmt > 0) {
+                    badgeAreaEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-hourglass-half"></i>已結算一部分，還差 NT$ ${Math.round(remaining).toLocaleString()}</span>`;
+                } else {
+                    badgeAreaEl.innerHTML = `<span class="inline-flex items-center gap-1 bg-gray-100 text-gray-400 border border-gray-200 px-2.5 py-1 rounded-full text-xs font-bold"><i class="fa-regular fa-clock"></i>本月尚未開始結算</span>`;
+                }
+            }
+
+            const monthSettledEl = document.getElementById('month-settled-amount');
+            const monthUnsettledEl = document.getElementById('month-unsettled-amount');
+            if (monthSettledEl) monthSettledEl.innerText = `NT$ ${Math.round(settledAmt).toLocaleString()}`;
+            if (monthUnsettledEl) monthUnsettledEl.innerText = `NT$ ${Math.round(remaining).toLocaleString()}`;
+
+            const settleListEl = document.getElementById('settlement-list');
+            if (settleListEl) {
+                const records = (cloudState.settlements || []).filter(s => s.ym === billsMonth).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                settleListEl.innerHTML = records.length === 0
+                    ? '<p class="text-gray-400 text-center py-1">這個月還沒有結算紀錄</p>'
+                    : records.map(r => `<div class="flex justify-between items-center p-2 bg-white rounded-xl border border-gray-100"><span class="text-[var(--c-text-muted)]">${fmtMD(r.date)} 結算了一筆</span><span class="flex items-center gap-2"><b class="text-[var(--c-accent-dark)]">NT$ ${Math.round(Number(r.amount) || 0).toLocaleString()}</b><button onclick="deleteSettlement('${r.id}')" class="text-gray-300 hover:text-red-500"><i class="fa-solid fa-circle-xmark"></i></button></span></div>`).join('');
+            }
+
+            const summary = computeSettlementSummary();
+            const settledTotalEl = document.getElementById('settled-total-amount');
+            const unsettledTotalEl = document.getElementById('unsettled-total-amount');
+            if (settledTotalEl) settledTotalEl.innerText = `NT$ ${Math.round(summary.settledTotal).toLocaleString()}`;
+            if (unsettledTotalEl) unsettledTotalEl.innerText = `NT$ ${Math.round(summary.unsettledTotal).toLocaleString()}`;
+        }
+
+        function computeSettlementSummary() {
+            const months = new Set();
+            (cloudState.bills || []).forEach(bill => { const ym = ymOf(bill.date); if (ym) months.add(ym); });
+            (cloudState.settlements || []).forEach(s => { if (s.ym) months.add(s.ym); });
+            let settledTotal = 0, unsettledTotal = 0;
+            months.forEach(ym => {
+                const total = Math.abs(computeMonthOwed(ym));
+                const settled = Math.min(monthSettledAmount(ym), total);
+                settledTotal += settled;
+                unsettledTotal += Math.max(total - settled, 0);
+            });
+            return { settledTotal, unsettledTotal };
+        }
+
+        function addSettlement() {
+            const amountInput = document.getElementById('settle-new-amount');
+            const dateInput = document.getElementById('settle-new-date');
+            const amount = Number(amountInput.value);
+            const date = dateInput.value || todayISO();
+            if (!amount || amount <= 0) return showToast("請輸入這次結算的金額", "err");
+            if (!cloudState.settlements) cloudState.settlements = [];
+            cloudState.settlements.unshift({ id: genId(), ym: billsMonth, amount, date });
+            db.set(cloudState);
+            amountInput.value = '';
+            showToast("已記錄這筆結算，雲端同步完成 ☁️", "ok");
+        }
+        async function deleteSettlement(id) {
+            if (await showConfirm("要刪除這筆結算紀錄嗎？", { title: "刪除結算紀錄", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.settlements = (cloudState.settlements || []).filter(s => s.id !== id);
+                db.set(cloudState); showToast("已刪除結算紀錄", "info");
             }
         }
 
@@ -1114,6 +1292,7 @@
             });
         }
         bindEnter(['bill-desc', 'bill-amount'], addBill);
+        bindEnter(['settle-new-amount'], addSettlement);
         bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
         bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
         bindEnter(['manage-item-name', 'manage-item-cost'], addLocalJarItem);
