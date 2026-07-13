@@ -90,37 +90,6 @@
         nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
         #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
 
-        /* ====== 手機框架 RWD ======
-           手機瀏覽器（< 480px）：完全滿版，無邊框，原生 App 體驗
-           桌面／平板（≥ 480px）：以手機視窗比例置中呈現
-           如需切換 390px 版型，只要把 --frame-max 改成 390px 即可，兩處寬度設定會一起同步 */
-        :root { --frame-max: 414px; }
-        #app { max-width: var(--frame-max); }
-        #app nav { max-width: var(--frame-max); }
-
-        @media (min-width: 480px) {
-            body {
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                background: radial-gradient(circle at 20% -10%,
-                    color-mix(in srgb, var(--c-accent) 20%, var(--c-bg)) 0%,
-                    color-mix(in srgb, var(--c-accent) 6%, var(--c-bg)) 45%,
-                    color-mix(in srgb, var(--c-text) 6%, var(--c-bg)) 100%);
-            }
-            #app {
-                border-left: 1px solid color-mix(in srgb, var(--c-text) 10%, transparent);
-                border-right: 1px solid color-mix(in srgb, var(--c-text) 10%, transparent);
-                box-shadow: 0 30px 60px -18px color-mix(in srgb, var(--c-text) 40%, transparent),
-                            0 10px 24px -10px color-mix(in srgb, var(--c-text) 22%, transparent) !important;
-            }
-            #app nav {
-                box-shadow: -1px 0 0 color-mix(in srgb, var(--c-text) 10%, transparent),
-                             1px 0 0 color-mix(in srgb, var(--c-text) 10%, transparent),
-                             0 -8px 24px -12px color-mix(in srgb, var(--c-text) 25%, transparent) !important;
-            }
-        }
-
         input:focus, select:focus, textarea:focus {
             outline: none !important;
             border-color: var(--c-accent) !important;
