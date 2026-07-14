@@ -1221,12 +1221,11 @@
             if (rewardsArr.length === 0) {
                 listEl.innerHTML = '<p class="col-span-2 text-xs text-gray-400 text-center py-2">還沒有獎勵，從下方「新增獎勵項目」加入第一個吧 🎁</p>';
             }
-            const sc = computeScores();
             rewardsArr.forEach((reward, index) => {
-                const canA = sc.A >= reward.cost;
-                const canB = sc.B >= reward.cost;
-                const itemDiv = document.createElement('div'); itemDiv.className = "p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2 flex flex-col";
-                itemDiv.innerHTML = `<div class="text-center pb-1"><p class="font-black text-base text-[var(--c-text)] leading-snug">${reward.name}</p><span class="inline-block mt-1.5 text-sm font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-200">🎁 ${reward.cost} 點</span></div><div class="space-y-1.5 mt-auto pt-2 border-t border-dashed border-gray-200"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-600 border-gray-200' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">👸 ${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border shadow-sm ${canB ? 'bg-white hover:bg-pink-50 text-gray-600 border-gray-200' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">🤴 ${cloudState.nameB} 兌換</button></div>`;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center cursor-pointer active:scale-95 transition";
+                itemDiv.onclick = () => openRedeemModal(index);
+                itemDiv.innerHTML = `<p class="font-black text-base text-[var(--c-text)] leading-snug">${reward.name}</p><span class="inline-block mt-1.5 text-sm font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-200">🎁 ${reward.cost} 點</span>`;
                 listEl.appendChild(itemDiv);
             });
             const logEl = document.getElementById('redeem-log');
@@ -1247,6 +1246,24 @@
                 : rewardsArr.map((r, i) => `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><span class="font-bold text-sm text-gray-700">${r.name}</span><div class="flex items-center gap-2"><span class="text-xs text-pink-500 bg-white px-1.5 py-0.5 rounded-md border border-pink-200 font-bold">${r.cost} 點</span><button onclick="editReward(${i})" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deleteReward(${i})" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
         }
 
+        function openRedeemModal(index) {
+            const reward = cloudState.rewards[index];
+            if (!reward) return;
+            const sc = computeScores();
+            const canA = sc.A >= reward.cost;
+            const canB = sc.B >= reward.cost;
+            const panel = document.getElementById('modal-panel');
+            panel.innerHTML = `
+                <div class="modal-ic"><i class="fa-solid fa-gift"></i></div>
+                <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-1">${reward.name}</h3>
+                <p class="text-center text-sm text-[var(--c-text-muted)] mb-5">需要 <b class="text-pink-500">${reward.cost}</b> 點，選擇由誰兌換</p>
+                <div class="space-y-2.5">
+                    <button onclick="closeModal(null); redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="w-full py-2.5 rounded-2xl text-sm font-bold border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-700 border-[var(--c-border)]' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">👸 ${cloudState.nameA} 兌換${canA ? '' : '（點數不夠）'}</button>
+                    <button onclick="closeModal(null); redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="w-full py-2.5 rounded-2xl text-sm font-bold border shadow-sm ${canB ? 'bg-white hover:bg-pink-50 text-gray-700 border-[var(--c-border)]' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">🤴 ${cloudState.nameB} 兌換${canB ? '' : '（點數不夠）'}</button>
+                </div>
+                <button onclick="closeModal(null)" class="w-full mt-3 py-2 rounded-2xl text-xs font-bold text-[var(--c-text-muted)]">取消</button>`;
+            document.getElementById('modal-root').classList.add('show');
+        }
         async function redeemReward(index, member) {
             const reward = cloudState.rewards[index];
             const who = member === 'A' ? cloudState.nameA : cloudState.nameB;
