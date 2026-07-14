@@ -280,12 +280,19 @@
                     </div>
 
                     <div class="pt-3 text-left space-y-2">
-                        <p class="text-[11px] font-bold text-[var(--c-label)]">新增一筆結算紀錄</p>
-                        <div class="flex gap-2">
-                            <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
-                            <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
-                        </div>
-                        <button onclick="addSettlement()" class="btn-primary w-full py-2 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+                        <details class="group">
+                            <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                                <span class="text-[11px] font-bold text-[var(--c-label)]">➕ 新增一筆結算紀錄</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="space-y-2 pt-2">
+                                <div class="flex gap-2">
+                                    <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
+                                    <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
+                                </div>
+                                <button onclick="addSettlement()" class="btn-primary w-full py-2 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+                            </div>
+                        </details>
                         <div id="settlement-list" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar text-xs pt-0.5"></div>
                     </div>
 
@@ -314,22 +321,22 @@
             </div>
 
             <div id="tab-chores" class="tab-content space-y-4">
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
-                    <h2 class="font-bold text-sm mb-3 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-2 text-amber-500"></i>雲端家務點數爭霸賽</h2>
-                    <div class="flex justify-around items-center border-t border-b border-gray-100 py-3">
+                <div class="bg-white px-4 py-2.5 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
+                    <h2 class="font-bold text-[11px] mb-1.5 text-[var(--c-text-muted)]"><i class="fa-solid fa-trophy mr-1 text-amber-500"></i>雲端家務點數爭霸賽</h2>
+                    <div class="flex justify-around items-center border-t border-b border-gray-100 py-1.5">
                         <div class="text-center flex-1">
-                            <div id="crown-a" class="h-4 text-amber-400 text-sm opacity-0 transition-opacity">👑</div>
-                            <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
-                            <p id="score-a" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
+                            <div id="crown-a" class="h-3 text-amber-400 text-xs opacity-0 transition-opacity">👑</div>
+                            <p class="text-[11px] text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
+                            <p id="score-a" class="text-xl font-black text-[var(--c-accent)] mt-0.5">0</p>
                         </div>
-                        <div class="w-px h-10 bg-gray-200"></div>
+                        <div class="w-px h-8 bg-gray-200"></div>
                         <div class="text-center flex-1">
-                            <div id="crown-b" class="h-4 text-amber-400 text-sm opacity-0 transition-opacity">👑</div>
-                            <p class="text-xs text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
-                            <p id="score-b" class="text-3xl font-black text-[var(--c-accent)] mt-1">0</p>
+                            <div id="crown-b" class="h-3 text-amber-400 text-xs opacity-0 transition-opacity">👑</div>
+                            <p class="text-[11px] text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
+                            <p id="score-b" class="text-xl font-black text-[var(--c-accent)] mt-0.5">0</p>
                         </div>
                     </div>
-                    <p class="text-[10px] text-[var(--c-text-muted)] mt-2">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
+                    <p class="text-[9px] text-[var(--c-text-muted)] mt-1">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -349,32 +356,22 @@
                         </div>
                     </div>
                     <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">記錄完成</button>
-                </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <div class="flex justify-between items-center gap-2">
-                        <h3 class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap"><i class="fa-solid fa-clipboard-check mr-2 text-[var(--c-accent)]"></i>完成紀錄</h3>
-                        <select id="chorelog-month" onchange="choreMonth=this.value; renderChoreLog()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
-                    </div>
-                    <div id="chorelog-list" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-sm"></div>
+                    <details class="group border-t border-[var(--c-border)] pt-2">
+                        <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                            <span class="text-sm font-bold text-[var(--c-text)] whitespace-nowrap"><i class="fa-solid fa-clipboard-check mr-2 text-[var(--c-accent)]"></i>完成紀錄</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-2 pt-2">
+                            <select id="chorelog-month" onchange="choreMonth=this.value; renderChoreLog()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
+                            <div id="chorelog-list" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-sm"></div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
                     <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-gift mr-2 text-pink-400"></i>獎勵兌換商店 (兩端秒同步)</h2>
                     <div id="rewards-list" class="space-y-2 max-h-72 overflow-y-auto no-scrollbar"></div>
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
-                            <span class="text-xs font-bold text-[var(--c-text-muted)]">➕ 新增獎勵項目</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="space-y-2 pt-2">
-                            <div class="grid grid-cols-3 gap-2">
-                                <input type="text" id="reward-new-name" placeholder="獎勵內容（如：按摩10分鐘 💆）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <input type="number" id="reward-new-cost" placeholder="點數" value="8" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            </div>
-                            <button onclick="addReward()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">加入獎勵商店</button>
-                        </div>
-                    </details>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -388,19 +385,35 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none border-b border-[var(--c-border)] pb-2">
+                    <h2 class="font-bold text-xs text-[var(--c-text-muted)] uppercase tracking-wide">🛠️ 新增／管理</h2>
+
+                    <details class="group border-t border-[var(--c-border)] pt-2">
+                        <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                            <span class="text-xs font-bold text-[var(--c-text-muted)]">➕ 新增獎勵項目</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-2 pt-2">
+                            <div class="grid grid-cols-3 gap-2">
+                                <input type="text" id="reward-new-name" placeholder="獎勵內容（如：按摩10分鐘 💆）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <input type="number" id="reward-new-cost" placeholder="點數" value="8" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            </div>
+                            <button onclick="addReward()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">加入獎勵商店</button>
+                        </div>
+                    </details>
+
+                    <details class="group border-t border-[var(--c-border)] pt-2">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
                             <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增／管理家務項目</span>
                             <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                         </summary>
                         <div id="chore-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
+                        <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
+                            <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        </div>
+                        <button onclick="addChore()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                        <p class="text-[10px] text-[var(--c-text-muted)] mt-2">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
                     </details>
-                    <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3">
-                        <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                        <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                    </div>
-                    <button onclick="addChore()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
-                    <p class="text-[10px] text-[var(--c-text-muted)]">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
                 </div>
             </div>
 
