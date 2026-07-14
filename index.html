@@ -54,6 +54,11 @@
             --c-accent-dark: #6B6B6B; --c-text-muted: #8B8B8B; --c-border-strong: #A7A3A2;
             --c-card-alt: #DBDBDB; --c-label: #8B8B8B; --c-list-bg: #F5EEEE;
         }
+        [data-theme="inkblack"] {
+            --c-bg: #F1F1F1; --c-text: #141414; --c-border: #D2D2D2; --c-accent: #262626;
+            --c-accent-dark: #000000; --c-text-muted: #6E6E6E; --c-border-strong: #9E9E9E;
+            --c-card-alt: #DCDCDC; --c-label: #3A3A3A; --c-list-bg: #F1F1F1;
+        }
         html { font-size: 116%; }
         body {
             font-family: 'NaikaiFont', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text);
@@ -224,8 +229,10 @@
             
             <div id="tab-jars" class="tab-content active space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <label class="block text-base font-black text-[var(--c-text)] mb-1.5"><i class="fa-solid fa-sack-dollar mr-1.5 text-[var(--c-accent)]"></i>本月個人預估總收入 (NT$)</label>
-                    <input type="number" id="total-income" value="80000" class="w-36 text-lg font-bold p-1.5 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)]" oninput="calcJars()">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <label class="text-base font-black text-[var(--c-text)]"><i class="fa-solid fa-sack-dollar mr-1.5 text-[var(--c-accent)]"></i>本月個人預估總收入</label>
+                        <input type="number" id="total-income" value="80000" class="w-28 text-lg font-bold p-1.5 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)] text-right" oninput="calcJars()">
+                    </div>
                     <div class="flex items-center justify-between mt-1.5">
                         <p class="text-[10px] text-amber-600 font-medium">🔒 可自訂屬於自己的六帳戶分配%數，另一半看不到唷</p>
                         <span id="pct-sum-indicator" class="text-[10px] font-bold whitespace-nowrap ml-2"></span>
@@ -237,7 +244,7 @@
             <div id="tab-bills" class="tab-content space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
                     <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
-                        <h2 id="piggybank-title-text" class="font-black text-xl text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
+                        <h2 id="piggybank-title-text" class="font-black text-base text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
                         <button onclick="renamePiggyBankTitle()" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
                     <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-4">
@@ -366,7 +373,7 @@
 
             <div id="tab-chores" class="tab-content space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
-                    <h2 class="font-bold text-sm mb-2 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>雲端家務點數爭霸賽</h2>
+                    <h2 class="font-black text-base mb-2 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>雲端家務點數爭霸賽</h2>
                     <div class="flex justify-around items-center border-t border-b border-gray-100 py-3">
                         <div class="text-center flex-1">
                             <div id="crown-a" class="h-4 text-amber-400 text-base opacity-0 transition-opacity">👑</div>
@@ -384,7 +391,7 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>登記完成的家務 ⚡️</h2>
+                    <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>登記完成的家務⚡️</h2>
                     <div>
                         <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天？</label>
                         <input type="date" id="chorelog-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
@@ -414,7 +421,7 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-gift mr-2 text-pink-400"></i>獎勵兌換商店 (兩端秒同步)</h2>
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-gift mr-2 text-pink-400"></i>獎勵兌換商店</h2>
                     <div id="rewards-list" class="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto no-scrollbar"></div>
                 </div>
 
@@ -465,7 +472,7 @@
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <details class="group/basic">
                         <summary class="flex items-center justify-between cursor-pointer list-none select-none border-b border-[var(--c-border)] pb-2">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-user-gear mr-2 text-[var(--c-accent)]"></i>共同基本設定 (兩端秒同步)</span>
+                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-user-gear mr-2 text-[var(--c-accent)]"></i>共同基本設定</span>
                             <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open/basic:rotate-180"></i>
                         </summary>
                         <div class="space-y-3 pt-3">
@@ -491,7 +498,7 @@
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <details class="group/personal">
                         <summary class="flex items-center justify-between cursor-pointer list-none select-none border-b border-[var(--c-border)] pb-2">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-[var(--c-accent)]"></i>個人化設定（本機獨立）</span>
+                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-[var(--c-accent)]"></i>個人化設定</span>
                             <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open/personal:rotate-180"></i>
                         </summary>
                         <div class="space-y-3 pt-3">
@@ -504,10 +511,6 @@
                                     </span>
                                 </summary>
                                 <div class="grid grid-cols-3 gap-3 pt-3" id="theme-swatch-list">
-                                    <button onclick="applyTheme('mauve')" data-theme-btn="mauve" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">藕粉霧</span>
-                                    </button>
                                     <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
                                         <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
                                         <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
@@ -528,6 +531,10 @@
                                         <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
                                         <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
                                     </button>
+                                    <button onclick="applyTheme('inkblack')" data-theme-btn="inkblack" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F1F1F1, #D2D2D2, #6E6E6E, #262626, #000000);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">潑墨黑</span>
+                                    </button>
                                 </div>
                             </details>
 
@@ -541,7 +548,7 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-percentage mr-2 text-[var(--c-accent)]"></i>個人六帳戶百分比 (%) 調配自訂</h2>
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-percentage mr-2 text-[var(--c-accent)]"></i>個人六帳戶％調配</h2>
                     <div class="grid grid-cols-2 gap-3 text-xs">
                         <div>
                             <label class="block text-[var(--c-text-muted)] font-bold mb-1">🏠 生活必需 (%)</label>
@@ -572,7 +579,7 @@
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-folder-plus mr-2 text-[var(--c-accent)]"></i>個人六帳戶細項管理 (本機獨立)</h2>
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-folder-plus mr-2 text-[var(--c-accent)]"></i>個人六帳戶細項管理</h2>
                     <div class="space-y-2">
                         <label class="block text-xs text-[var(--c-text-muted)] font-bold">選擇歸屬大分類</label>
                         <select id="manage-jar-select" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white" onchange="renderLocalJarItems()">
@@ -817,7 +824,8 @@
             plumjam: "linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030)",
             iceblue: "linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775)",
             mocha: "linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79)",
-            cloudmilk: "linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B)"
+            cloudmilk: "linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B)",
+            inkblack: "linear-gradient(135deg, #F1F1F1, #D2D2D2, #6E6E6E, #262626, #000000)"
         };
         function applyTheme(themeName) {
             localState.theme = themeName;
