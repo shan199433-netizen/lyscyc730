@@ -237,14 +237,14 @@
             <div id="tab-bills" class="tab-content space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
                     <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
-                        <h2 id="piggybank-title-text" class="font-bold text-sm text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
+                        <h2 id="piggybank-title-text" class="font-black text-lg text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
                         <button onclick="renamePiggyBankTitle()" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
-                    <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-3">
-                        <p class="text-[11px] text-[var(--c-label)] font-bold">目前已累計總存款</p>
-                        <p id="piggybank-total" class="text-3xl font-black text-[var(--c-accent)] mt-0.5">$0 元</p>
+                    <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-4">
+                        <p class="text-xs text-[var(--c-label)] font-bold tracking-wide">目前已累計總存款</p>
+                        <p id="piggybank-total" class="text-4xl font-black text-[var(--c-accent)] mt-1">$0 元</p>
                     </div>
-                    <div id="piggybank-list" class="space-y-2"></div>
+                    <div id="piggybank-list" class="grid grid-cols-2 gap-2"></div>
                     <details class="group border-t border-[var(--c-border)] pt-2">
                         <summary class="flex items-center justify-between cursor-pointer list-none select-none">
                             <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-plus mr-2 text-[var(--c-accent)]"></i>新增存錢筒項目</span>
@@ -1135,10 +1135,10 @@
             const totalEl = document.getElementById('piggybank-total');
             if (totalEl) totalEl.innerText = `$${Math.round(total).toLocaleString()} 元`;
             listEl.innerHTML = items.length === 0
-                ? '<p class="text-xs text-gray-400 text-center py-2">還沒有存錢筒，從下方新增第一個吧 🪙</p>'
+                ? '<p class="col-span-2 text-xs text-gray-400 text-center py-2">還沒有存錢筒，從下方新增第一個吧 🪙</p>'
                 : items.map(p => {
                     const amt = Number(p.amount) || 0;
-                    return `<div class="flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 gap-2"><div class="min-w-0 flex-1"><p class="font-bold text-sm text-[var(--c-text)] truncate">${p.name}</p><p class="text-base font-black text-[var(--c-accent-dark)] mt-0.5">$${amt.toLocaleString()} 元</p></div><div class="flex items-center gap-1.5 shrink-0"><button onclick="editPiggyBank('${p.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deletePiggyBank('${p.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                    return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center flex flex-col"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}</p><p class="text-[10px] text-[var(--c-text-muted)] -mt-0.5 mb-1.5">元</p><div class="flex items-center justify-center gap-3 mt-auto pt-1.5 border-t border-dashed border-gray-200"><button onclick="editPiggyBank('${p.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deletePiggyBank('${p.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
                 }).join('');
         }
         function addPiggyBank() {
