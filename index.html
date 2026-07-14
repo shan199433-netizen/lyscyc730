@@ -236,38 +236,68 @@
 
             <div id="tab-bills" class="tab-content space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</h2>
-                    <div class="flex gap-2">
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">項目說明</label>
-                            <input type="text" id="bill-desc" placeholder="如：買保健食品、7月基金" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">金額 (NT$)</label>
-                            <input type="number" id="bill-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
-                        </div>
+                    <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
+                        <h2 id="piggybank-title-text" class="font-bold text-sm text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
+                        <button onclick="renamePiggyBankTitle()" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button>
                     </div>
+                    <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-3">
+                        <p class="text-[11px] text-[var(--c-label)] font-bold">目前已累計總存款</p>
+                        <p id="piggybank-total" class="text-3xl font-black text-[var(--c-accent)] mt-0.5">$0 元</p>
+                    </div>
+                    <div id="piggybank-list" class="space-y-2"></div>
+                    <details class="group border-t border-[var(--c-border)] pt-2">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-plus mr-2 text-[var(--c-accent)]"></i>新增存錢筒項目</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-2 pt-2">
+                            <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <input type="number" id="piggy-new-amount" placeholder="目前金額 (NT$)" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <button onclick="addPiggyBank()" class="btn-primary w-full py-2 text-white rounded-xl text-xs font-bold">確認儲存</button>
+                        </div>
+                    </details>
+                </div>
 
-                    <div class="flex gap-2">
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢支付？</label>
-                            <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
-                            <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
-                                <option value="half">👥 共同花費</option>
-                                <option value="full">👤 幫對方付</option>
-                            </select>
-                        </div>
-                    </div>
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                            <span class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-3 pt-3">
+                            <div class="flex gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">項目說明</label>
+                                    <input type="text" id="bill-desc" placeholder="如：買保健食品、7月基金" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">金額 (NT$)</label>
+                                    <input type="number" id="bill-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                                </div>
+                            </div>
 
-                    <div>
-                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天的開銷？</label>
-                        <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
-                    </div>
-                    
-                    <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
+                            <div class="flex gap-2">
+                                <div class="flex-1 min-w-0">
+                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢支付？</label>
+                                    <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
+                                    <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
+                                        <option value="half">👥 共同花費</option>
+                                        <option value="full">👤 幫對方付</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天的開銷？</label>
+                                <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
+                            </div>
+                            
+                            <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm space-y-1">
@@ -743,7 +773,8 @@
                 { name: "指定一部電影一起看 🎬", cost: 10 },
                 { name: "對方洗碗一整週 🍽️", cost: 15 }
             ],
-            redeemLog: [], choreLog: [], settledMonths: {}, settlements: []
+            redeemLog: [], choreLog: [], settledMonths: {}, settlements: [],
+            piggyBanks: [], piggyBankTitle: "🪙 艾姍存錢筒"
         };
 
         let billsMonth = null, choreMonth = null;
@@ -806,6 +837,8 @@
                 if(!data.nameA) data.nameA = "姍姍";
                 if(!data.nameB) data.nameB = "昀辰";
                 if(!data.settlements) data.settlements = [];
+                if(!data.piggyBanks) data.piggyBanks = [];
+                if(!data.piggyBankTitle) data.piggyBankTitle = "🪙 艾姍存錢筒";
                 if (data.settledMonths) {
                     let migratedAny = false;
                     Object.keys(data.settledMonths).forEach(ym => {
@@ -1093,6 +1126,72 @@
             }
         }
 
+        function renderPiggyBanks() {
+            const titleEl = document.getElementById('piggybank-title-text');
+            if (titleEl) titleEl.innerText = cloudState.piggyBankTitle || "🪙 艾姍存錢筒";
+            const listEl = document.getElementById('piggybank-list'); if (!listEl) return;
+            const items = cloudState.piggyBanks || [];
+            const total = items.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
+            const totalEl = document.getElementById('piggybank-total');
+            if (totalEl) totalEl.innerText = `$${Math.round(total).toLocaleString()} 元`;
+            listEl.innerHTML = items.length === 0
+                ? '<p class="text-xs text-gray-400 text-center py-2">還沒有存錢筒，從下方新增第一個吧 🪙</p>'
+                : items.map(p => {
+                    const amt = Number(p.amount) || 0;
+                    return `<div class="flex justify-between items-center p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 gap-2"><div class="min-w-0 flex-1"><p class="font-bold text-sm text-[var(--c-text)] truncate">${p.name}</p><p class="text-base font-black text-[var(--c-accent-dark)] mt-0.5">$${amt.toLocaleString()} 元</p></div><div class="flex items-center gap-1.5 shrink-0"><button onclick="editPiggyBank('${p.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deletePiggyBank('${p.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                }).join('');
+        }
+        function addPiggyBank() {
+            const nameInput = document.getElementById('piggy-new-name');
+            const amountInput = document.getElementById('piggy-new-amount');
+            const name = nameInput.value.trim();
+            const amount = Number(amountInput.value) || 0;
+            if (!name) return showToast("請先輸入存錢筒名稱", "err");
+            if (!cloudState.piggyBanks) cloudState.piggyBanks = [];
+            cloudState.piggyBanks.push({ id: genId(), name, amount });
+            db.set(cloudState);
+            nameInput.value = ''; amountInput.value = '';
+            showToast("已新增存錢筒 🪙", "ok");
+        }
+        async function deletePiggyBank(id) {
+            if (await showConfirm("要刪除這個存錢筒嗎？", { title: "刪除存錢筒", icon: "fa-trash-can", okText: "刪除", danger: true })) {
+                cloudState.piggyBanks = (cloudState.piggyBanks || []).filter(p => p.id !== id);
+                db.set(cloudState); showToast("已刪除存錢筒", "info");
+            }
+        }
+        async function editPiggyBank(id) {
+            const item = (cloudState.piggyBanks || []).find(p => p.id === id);
+            if (!item) return;
+            const res = await showEditModal({ title: "修改存錢筒", icon: "fa-piggy-bank", nameLabel: "存錢筒名稱", nameVal: item.name, valLabel: "目前金額", valVal: item.amount, valMin: 0 });
+            if (res === null) return;
+            item.name = res.name || item.name;
+            item.amount = Number(res.val) || 0;
+            db.set(cloudState); showToast("存錢筒已更新", "ok");
+        }
+        function renamePiggyBankTitle() {
+            const panel = document.getElementById('modal-panel');
+            panel.innerHTML = `
+                <div class="modal-ic"><i class="fa-solid fa-piggy-bank"></i></div>
+                <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-4">重新命名存錢筒標題</h3>
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">標題</label>
+                <input id="pb-title-input" class="modal-input mb-5" value="${escAttr(cloudState.piggyBankTitle || '🪙 艾姍存錢筒')}">
+                <div class="flex gap-2.5">
+                    <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
+                    <button onclick="_submitPiggyTitle()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                </div>`;
+            document.getElementById('modal-root').classList.add('show');
+            setTimeout(() => { const n = document.getElementById('pb-title-input'); if (n) { n.focus(); n.select(); } }, 60);
+        }
+        function _submitPiggyTitle() {
+            const val = document.getElementById('pb-title-input').value.trim();
+            document.getElementById('modal-root').classList.remove('show');
+            if (val) {
+                cloudState.piggyBankTitle = val;
+                db.set(cloudState);
+                showToast("標題已更新", "ok");
+            }
+        }
+
         function renderChores() {
             const s = computeScores();
             animateScore(document.getElementById('score-a'), s.A); animateScore(document.getElementById('score-b'), s.B);
@@ -1371,7 +1470,7 @@
             if(selectPayer) {
                 selectPayer.innerHTML = `<option value="A">👸 由 ${cloudState.nameA} 支付</option><option value="B">🤴 由 ${cloudState.nameB} 支付</option>`;
             }
-            calcJars(); renderBills(); renderChores();
+            calcJars(); renderBills(); renderChores(); renderPiggyBanks();
         }
         document.getElementById('total-income').value = localState.income; calcJars();
         applyTheme(localState.theme || 'mauve');
@@ -1383,6 +1482,7 @@
             });
         }
         bindEnter(['bill-desc', 'bill-amount'], addBill);
+        bindEnter(['piggy-new-name', 'piggy-new-amount'], addPiggyBank);
         bindEnter(['settle-new-amount'], addSettlement);
         bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
         bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
