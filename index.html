@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="apple-touch-icon" href="icon-180.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#8A7A80">
+    <meta name="theme-color" content="#1E2E27">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="微甜生活">
@@ -24,41 +24,67 @@
             src: url(https://cdn.jsdelivr.net/gh/max32002/naikaifont@1.0/webfont/NaikaiFont-Regular-Lite.woff2) format("woff2");
             font-display: swap;
         }
-        :root, [data-theme="mauve"] {
-            --c-bg: #F8F5F5; --c-text: #4A3E43; --c-border: #E1D9D9; --c-accent: #8A7A80;
-            --c-accent-dark: #796A70; --c-text-muted: #8C7E83; --c-border-strong: #D5C9C9;
-            --c-card-alt: #EAE1E1; --c-label: #6B5E63; --c-list-bg: #F9F6F6;
+        /* ====== 6 大配色主題（依據配色參考圖重新設計） ====== */
+        :root, [data-theme="mosswood"] {
+            /* 苔色森綠｜深綠黑底 + 米白／嫩綠 */
+            --c-bg: #1E2E27; --c-text: #F4F1EA; --c-border: #3B5347; --c-accent: #B0D183;
+            --c-accent-dark: #6A8E4E; --c-text-muted: #9FB8A6; --c-border-strong: #4C6656;
+            --c-card-alt: #2C473E; --c-label: #B0D183; --c-list-bg: #243830;
+            --c-card: #25392F; --c-input-bg: #213229; --c-btn-text: #1C2A21;
+            --c-icon-muted: #6E8778; --c-border-light: #33473C; --c-bg-soft: #243830;
         }
-        [data-theme="lavender"] {
-            --c-bg: #F6EAF3; --c-text: #4A3E52; --c-border: #E4D6E9; --c-accent: #B4A9D2;
-            --c-accent-dark: #A88DC0; --c-text-muted: #A88DC0; --c-border-strong: #CDC7E3;
-            --c-card-alt: #E4D6E9; --c-label: #A88DC0; --c-list-bg: #F6EAF3;
+        [data-theme="moltensilver"] {
+            /* 未來熔銀｜槍灰黑底 + 螢光青／冰銀灰 */
+            --c-bg: #2C313A; --c-text: #EBEFF2; --c-border: #414957; --c-accent: #46E5FF;
+            --c-accent-dark: #1CA9C9; --c-text-muted: #C8D2DC; --c-border-strong: #4F5967;
+            --c-card-alt: #3A4250; --c-label: #46E5FF; --c-list-bg: #343B46;
+            --c-card: #373F4A; --c-input-bg: #313842; --c-btn-text: #0E212A;
+            --c-icon-muted: #7C8896; --c-border-light: #3C4451; --c-bg-soft: #343B46;
         }
-        [data-theme="plumjam"] {
-            --c-bg: #F5E0DF; --c-text: #303030; --c-border: #E9B9C5; --c-accent: #DC7090;
-            --c-accent-dark: #303030; --c-text-muted: #DC7090; --c-border-strong: #E9B9C5;
-            --c-card-alt: #E9B9C5; --c-label: #DC7090; --c-list-bg: #F5E0DF;
+        [data-theme="garnet"] {
+            /* 石榴酒紅｜酒紅底 + 石榴粉／香草米 */
+            --c-bg: #5C1B2C; --c-text: #F1D9B5; --c-border: #7A3347; --c-accent: #D7859F;
+            --c-accent-dark: #B35C78; --c-text-muted: #E0B79E; --c-border-strong: #8C4459;
+            --c-card-alt: #6D2540; --c-label: #D7859F; --c-list-bg: #551A2A;
+            --c-card: #642036; --c-input-bg: #571C2D; --c-btn-text: #3A0F1A;
+            --c-icon-muted: #A97485; --c-border-light: #743145; --c-bg-soft: #551A2A;
         }
-        [data-theme="iceblue"] {
-            --c-bg: #B3D2EE; --c-text: #4B6775; --c-border: #86ACC3; --c-accent: #7790AC;
-            --c-accent-dark: #4B6775; --c-text-muted: #7790AC; --c-border-strong: #86ACC3;
-            --c-card-alt: #86ACC3; --c-label: #4B6775; --c-list-bg: #D9E9F7;
+        [data-theme="blackgold"] {
+            /* 耀金黑曜｜啞黑底 + 金色 */
+            --c-bg: #1B1B1B; --c-text: #F4E8CB; --c-border: #38352B; --c-accent: #EACD76;
+            --c-accent-dark: #C9A94F; --c-text-muted: #BDB090; --c-border-strong: #48432F;
+            --c-card-alt: #272522; --c-label: #EACD76; --c-list-bg: #212020;
+            --c-card: #252423; --c-input-bg: #201F1E; --c-btn-text: #1B1B1B;
+            --c-icon-muted: #726C58; --c-border-light: #332F28; --c-bg-soft: #212020;
         }
-        [data-theme="mocha"] {
-            --c-bg: #F3E9E3; --c-text: #4A3E38; --c-border: #D7CEC7; --c-accent: #9C8B79;
-            --c-accent-dark: #6E5F4E; --c-text-muted: #9C9090; --c-border-strong: #9C9090;
-            --c-card-alt: #D7CEC7; --c-label: #9C9090; --c-list-bg: #F3E9E3;
+        [data-theme="jellypurple"] {
+            /* 數位果凍紫｜深紫底 + 電光藍／冰粉 */
+            --c-bg: #4B2E83; --c-text: #FFE9EF; --c-border: #623C9C; --c-accent: #4D7CFE;
+            --c-accent-dark: #3A5FD1; --c-text-muted: #D9BEE3; --c-border-strong: #6E4CAA;
+            --c-card-alt: #43276F; --c-label: #4D7CFE; --c-list-bg: #402471;
+            --c-card: #472A76; --c-input-bg: #3E2469; --c-btn-text: #FFFFFF;
+            --c-icon-muted: #9C82C4; --c-border-light: #623C9C; --c-bg-soft: #402471;
         }
-        [data-theme="cloudmilk"] {
-            --c-bg: #F5EEEE; --c-text: #3A3A3A; --c-border: #DBDBDB; --c-accent: #A7A3A2;
-            --c-accent-dark: #6B6B6B; --c-text-muted: #8B8B8B; --c-border-strong: #A7A3A2;
-            --c-card-alt: #DBDBDB; --c-label: #8B8B8B; --c-list-bg: #F5EEEE;
+        [data-theme="firteal"] {
+            /* 冷杉微光｜深青藍底 + 珊瑚橙／淺沙白 */
+            --c-bg: #20566D; --c-text: #F7E8D5; --c-border: #336882; --c-accent: #F77A4A;
+            --c-accent-dark: #D65F32; --c-text-muted: #BBD8E2; --c-border-strong: #3D7891;
+            --c-card-alt: #1A4759; --c-label: #F77A4A; --c-list-bg: #1C4B5F;
+            --c-card: #245F77; --c-input-bg: #1E4E62; --c-btn-text: #271005;
+            --c-icon-muted: #84AFBF; --c-border-light: #336882; --c-bg-soft: #1C4B5F;
         }
-        [data-theme="inkblack"] {
-            --c-bg: #F1F1F1; --c-text: #141414; --c-border: #D2D2D2; --c-accent: #262626;
-            --c-accent-dark: #000000; --c-text-muted: #6E6E6E; --c-border-strong: #9E9E9E;
-            --c-card-alt: #DCDCDC; --c-label: #3A3A3A; --c-list-bg: #F1F1F1;
-        }
+        /* 深色主題下，統一改寫 Tailwind 內建灰階／白色 utility class，
+           確保卡片、文字、邊框在 6 組深色主題中都維持清楚對比 */
+        .bg-white { background-color: var(--c-card) !important; }
+        .bg-gray-50 { background-color: var(--c-bg-soft) !important; }
+        .bg-gray-100 { background-color: var(--c-card-alt) !important; }
+        .bg-gray-200 { background-color: var(--c-border) !important; }
+        .text-gray-300 { color: var(--c-icon-muted) !important; }
+        .text-gray-400 { color: var(--c-text-muted) !important; }
+        .text-gray-500 { color: var(--c-text-muted) !important; }
+        .text-gray-700 { color: var(--c-text) !important; }
+        .border-gray-100 { border-color: var(--c-border-light) !important; }
+        .border-gray-200 { border-color: var(--c-border) !important; }
         html { font-size: 116%; }
         body {
             font-family: 'NaikaiFont', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text);
@@ -120,7 +146,7 @@
             -webkit-appearance: none;
             padding: 8px 10px;
             font-size: 15px !important;
-            background-color: #fff;
+            background-color: var(--c-input-bg);
         }
 
         .btn-primary {
@@ -129,7 +155,7 @@
         }
         .btn-primary:hover { box-shadow: 0 6px 16px color-mix(in srgb, var(--c-accent) 40%, transparent); }
 
-        .prog-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-accent) 12%, #f0eaea); overflow: hidden; }
+        .prog-track { height: 8px; border-radius: 999px; background: color-mix(in srgb, var(--c-accent) 18%, var(--c-card-alt)); overflow: hidden; }
         .prog-fill { height: 100%; border-radius: 999px; position: relative; transition: width .6s cubic-bezier(.16,1,.3,1), background .3s ease; }
         .prog-fill::after {
             content: ''; position: absolute; inset: 0;
@@ -160,7 +186,7 @@
         #toast-wrap { position: fixed; left: 0; right: 0; bottom: calc(6.5rem + env(safe-area-inset-bottom)); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; padding: 0 1rem; }
         .toast {
             max-width: 26rem; width: fit-content; pointer-events: auto;
-            background: var(--c-text); color: #fff; padding: 11px 18px; border-radius: 16px;
+            background: #201C22; color: #fff; padding: 11px 18px; border-radius: 16px;
             font-size: 14px; font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,.22);
             display: flex; align-items: center; gap: 9px;
             animation: toastIn .4s cubic-bezier(.16,1,.3,1);
@@ -183,14 +209,14 @@
         }
         @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(.94);} to { opacity: 1; transform: translateY(0) scale(1);} }
         .modal-ic { width: 52px; height: 52px; border-radius: 999px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 22px; background: var(--c-card-alt); color: var(--c-accent-dark); }
-        .modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--c-border); border-radius: 12px; background: #fff; font-size: 16px; }
+        .modal-input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--c-border); border-radius: 12px; background: var(--c-input-bg); color: var(--c-text); font-size: 16px; }
 
         @media (prefers-reduced-motion: reduce) {
             *, *::after, *::before { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
         }
     </style>
 </head>
-<body class="bg-[var(--c-bg)]" data-theme="mauve">
+<body class="bg-[var(--c-bg)]" data-theme="mosswood">
 
     <div id="login-screen" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg, var(--c-card-alt) 0%, var(--c-bg) 220px);display:flex;align-items:center;justify-content:center;padding:24px;">
         <div style="width:100%;max-width:340px;">
@@ -199,16 +225,16 @@
                 <h1 style="font-size:20px;font-weight:700;color:var(--c-text);margin:0;">艾姍的微甜生活 APP</h1>
                 <p style="font-size:13px;color:var(--c-text-muted);margin-top:6px;">請登入專屬帳號才能使用</p>
             </div>
-            <input type="email" id="login-email" placeholder="Email" autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:10px;border:1px solid var(--c-border-strong);border-radius:12px;background:#fff;">
-            <input type="password" id="login-password" placeholder="密碼" autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:14px;border:1px solid var(--c-border-strong);border-radius:12px;background:#fff;">
-            <button id="login-btn" class="btn-primary" style="width:100%;padding:12px;border:none;border-radius:12px;color:#fff;font-weight:700;font-size:15px;">登入</button>
+            <input type="email" id="login-email" placeholder="Email" autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:10px;border:1px solid var(--c-border-strong);border-radius:12px;background:var(--c-input-bg);color:var(--c-text);">
+            <input type="password" id="login-password" placeholder="密碼" autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:12px 14px;margin-bottom:14px;border:1px solid var(--c-border-strong);border-radius:12px;background:var(--c-input-bg);color:var(--c-text);">
+            <button id="login-btn" class="btn-primary" style="width:100%;padding:12px;border:none;border-radius:12px;color:var(--c-btn-text);font-weight:700;font-size:15px;">登入</button>
             <p id="login-error" style="color:#e11d48;font-size:13px;text-align:center;margin-top:12px;min-height:18px;"></p>
         </div>
     </div>
 
     <div id="app" class="max-w-md mx-auto min-h-screen bg-[var(--c-bg)] shadow-lg relative flex flex-col" style="background: linear-gradient(180deg, var(--c-card-alt) 0%, var(--c-bg) 220px); display:none;">
         
-        <header class="px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden" style="background: linear-gradient(180deg, #ffffff, color-mix(in srgb, var(--c-card-alt) 45%, #ffffff));">
+        <header class="px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden" style="background: linear-gradient(180deg, var(--c-card), var(--c-card-alt));">
             <div class="flex items-center space-x-3">
                 <div class="w-11 h-11 rounded-full overflow-hidden bg-white flex items-center justify-center relative shadow-sm" style="box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent);">
                     <img id="app-avatar-img" src="" class="w-full h-full object-cover hidden">
@@ -262,7 +288,7 @@
                             <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
                             <input type="number" id="piggy-new-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
-                        <button onclick="addPiggyBank()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">確認儲存</button>
+                        <button onclick="addPiggyBank()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">確認儲存</button>
                     </details>
                 </div>
 
@@ -303,7 +329,7 @@
                                 <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
                             </div>
                             
-                            <button onclick="addBill()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
+                            <button onclick="addBill()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
                         </div>
                     </details>
                 </div>
@@ -336,7 +362,7 @@
                                     <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
                                     <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
                                 </div>
-                                <button onclick="addSettlement()" class="btn-primary w-full py-2 text-white rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+                                <button onclick="addSettlement()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
                             </div>
                         </details>
                         <div id="settlement-list" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar text-xs pt-0.5"></div>
@@ -406,7 +432,7 @@
                             <select id="chorelog-chore" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
                         </div>
                     </div>
-                    <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">記錄完成</button>
+                    <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">記錄完成</button>
 
                     <details class="group border-t border-[var(--c-border)] pt-2">
                         <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
@@ -448,7 +474,7 @@
                             <input type="text" id="reward-new-name" placeholder="獎勵內容（如：按摩10分鐘 💆）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
                             <input type="number" id="reward-new-cost" placeholder="點數" value="8" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
-                        <button onclick="addReward()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">加入獎勵商店</button>
+                        <button onclick="addReward()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">加入獎勵商店</button>
                     </details>
 
                     <details class="group border-t border-[var(--c-border)] pt-2">
@@ -461,7 +487,7 @@
                             <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
                             <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
-                        <button onclick="addChore()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                        <button onclick="addChore()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
                         <p class="text-[10px] text-[var(--c-text-muted)] mt-2">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
                     </details>
                 </div>
@@ -490,7 +516,7 @@
                                     <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                                 </div>
                             </div>
-                            <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步☁️)</button>
+                            <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">儲存基本設定 (雙向同步☁️)</button>
                         </div>
                     </details>
                 </div>
@@ -506,34 +532,34 @@
                                 <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
                                     <span class="text-xs font-bold text-[var(--c-text-muted)]"><i class="fa-solid fa-palette mr-1.5 text-[var(--c-accent)]"></i>外觀主題色彩 🎨</span>
                                     <span class="flex items-center space-x-2">
-                                        <span id="current-theme-dot" class="w-5 h-5 rounded-full border border-black/10 inline-block" style="background: linear-gradient(135deg, #F9F6F6, #8A7A80);"></span>
+                                        <span id="current-theme-dot" class="w-5 h-5 rounded-full border border-white/15 inline-block" style="background: linear-gradient(135deg, #B0D183, #2C473E);"></span>
                                         <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                                     </span>
                                 </summary>
                                 <div class="grid grid-cols-3 gap-3 pt-3" id="theme-swatch-list">
-                                    <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
+                                    <button onclick="applyTheme('mosswood')" data-theme-btn="mosswood" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #F4F1EA, #B0D183, #6A8E4E, #1E2E27);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">苔色森綠</span>
                                     </button>
-                                    <button onclick="applyTheme('plumjam')" data-theme-btn="plumjam" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">梅子果醬</span>
+                                    <button onclick="applyTheme('moltensilver')" data-theme-btn="moltensilver" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #C8D2DC, #46E5FF, #2C313A);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">未來熔銀</span>
                                     </button>
-                                    <button onclick="applyTheme('iceblue')" data-theme-btn="iceblue" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">冰藍玫瑰</span>
+                                    <button onclick="applyTheme('garnet')" data-theme-btn="garnet" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #F1D9B5, #D7859F, #5C1B2C);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">石榴酒紅</span>
                                     </button>
-                                    <button onclick="applyTheme('mocha')" data-theme-btn="mocha" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">摩卡杏仁</span>
+                                    <button onclick="applyTheme('blackgold')" data-theme-btn="blackgold" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #EACD76, #1B1B1B);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">耀金黑曜</span>
                                     </button>
-                                    <button onclick="applyTheme('cloudmilk')" data-theme-btn="cloudmilk" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
+                                    <button onclick="applyTheme('jellypurple')" data-theme-btn="jellypurple" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #FFE5EC, #4D7CFE, #4B2E83);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">數位果凍紫</span>
                                     </button>
-                                    <button onclick="applyTheme('inkblack')" data-theme-btn="inkblack" class="theme-swatch flex flex-col items-center space-y-1">
-                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F1F1F1, #D2D2D2, #6E6E6E, #262626, #000000);"></span>
-                                        <span class="text-[10px] text-[var(--c-text-muted)]">潑墨黑</span>
+                                    <button onclick="applyTheme('firteal')" data-theme-btn="firteal" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-white/15" style="background: linear-gradient(135deg, #F7E8D5, #F77A4A, #20566D);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">冷杉微光</span>
                                     </button>
                                 </div>
                             </details>
@@ -541,7 +567,7 @@
                             <div class="border-t border-[var(--c-border)] pt-3 space-y-2">
                                 <label class="block text-xs text-[var(--c-text-muted)] font-bold"><i class="fa-solid fa-image mr-1.5 text-[var(--c-accent)]"></i>自訂個人頭像照片</label>
                                 <input type="file" id="setting-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-200">
-                                <button onclick="saveAvatarOnly()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">儲存照片頭像</button>
+                                <button onclick="saveAvatarOnly()" class="w-full py-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">儲存照片頭像</button>
                             </div>
                         </div>
                     </details>
@@ -594,14 +620,14 @@
                             <input type="text" id="manage-item-name" placeholder="細項" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                             <input type="number" id="manage-item-cost" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
                         </div>
-                        <button onclick="addLocalJarItem()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">加入我的個人預算盤</button>
+                        <button onclick="addLocalJarItem()" class="w-full py-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">加入我的個人預算盤</button>
                     </div>
                     <div id="manage-jar-items-list" class="space-y-1 text-xs border-t pt-2 max-h-48 overflow-y-auto no-scrollbar"></div>
                 </div>
             </div>
         </main>
 
-        <nav class="border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg rounded-t-3xl" style="background: color-mix(in srgb, #ffffff 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <nav class="border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg rounded-t-3xl" style="background: color-mix(in srgb, var(--c-card) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
             <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>個人預算</span></button>
             <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
             <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
@@ -698,7 +724,7 @@
                     <p class="text-center text-sm text-[var(--c-text-muted)] mb-5 leading-relaxed">${message}</p>
                     <div class="flex gap-2.5">
                         <button onclick="closeModal(false)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">${cancelText}</button>
-                        <button onclick="closeModal(true)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white ${danger ? '' : 'btn-primary'}" ${danger ? 'style="background:linear-gradient(180deg,#f87171,#ef4444);box-shadow:0 4px 12px rgba(239,68,68,.3)"' : ''}>${okText}</button>
+                        <button onclick="closeModal(true)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold ${danger ? 'text-white' : 'text-[var(--c-btn-text)] btn-primary'}" ${danger ? 'style="background:linear-gradient(180deg,#f87171,#ef4444);box-shadow:0 4px 12px rgba(239,68,68,.3)"' : ''}>${okText}</button>
                     </div>`;
                 document.getElementById('modal-root').classList.add('show');
             });
@@ -716,7 +742,7 @@
                     <input id="modal-val" type="number" min="${valMin}" class="modal-input mb-5" value="${valVal}">
                     <div class="flex gap-2.5">
                         <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
-                        <button onclick="_submitEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                        <button onclick="_submitEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--c-btn-text)] btn-primary">儲存</button>
                     </div>`;
                 document.getElementById('modal-root').classList.add('show');
                 setTimeout(() => { const n = document.getElementById('modal-name'); if (n) n.focus(); }, 60);
@@ -762,11 +788,11 @@
         });
 
         let localState = JSON.parse(localStorage.getItem('shanshan_local_v70')) || {
-            income: 80000, avatar: "", theme: "mauve",
+            income: 80000, avatar: "", theme: "mosswood",
             pcts: { nec: 55, ffa: 10, play: 10, ltss: 10, edu: 10, give: 5 },
             jarItems: { nec: [], ffa: [], play: [], ltss: [], edu: [], give: [] }
         };
-        if (!localState.theme) localState.theme = "mauve";
+        if (!localState.theme) localState.theme = "mosswood";
 
         let cloudState = {
             appTitle: "艾姍的微甜生活 APP", nameA: "姍姍", nameB: "昀辰",
@@ -819,13 +845,16 @@
         function saveLocal() { localStorage.setItem('shanshan_local_v70', JSON.stringify(localState)); }
 
         const themeGradients = {
-            mauve: "linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70)",
-            lavender: "linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0)",
-            plumjam: "linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030)",
-            iceblue: "linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775)",
-            mocha: "linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79)",
-            cloudmilk: "linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B)",
-            inkblack: "linear-gradient(135deg, #F1F1F1, #D2D2D2, #6E6E6E, #262626, #000000)"
+            mosswood: "linear-gradient(135deg, #F4F1EA, #B0D183, #6A8E4E, #1E2E27)",
+            moltensilver: "linear-gradient(135deg, #C8D2DC, #46E5FF, #2C313A)",
+            garnet: "linear-gradient(135deg, #F1D9B5, #D7859F, #5C1B2C)",
+            blackgold: "linear-gradient(135deg, #EACD76, #1B1B1B)",
+            jellypurple: "linear-gradient(135deg, #FFE5EC, #4D7CFE, #4B2E83)",
+            firteal: "linear-gradient(135deg, #F7E8D5, #F77A4A, #20566D)"
+        };
+        const themeBgColors = {
+            mosswood: "#1E2E27", moltensilver: "#2C313A", garnet: "#5C1B2C",
+            blackgold: "#1B1B1B", jellypurple: "#4B2E83", firteal: "#20566D"
         };
         function applyTheme(themeName) {
             localState.theme = themeName;
@@ -836,6 +865,8 @@
             });
             const dot = document.getElementById('current-theme-dot');
             if (dot && themeGradients[themeName]) dot.style.background = themeGradients[themeName];
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme && themeBgColors[themeName]) metaTheme.setAttribute('content', themeBgColors[themeName]);
         }
 
         function startCloudSync() {
@@ -1197,7 +1228,7 @@
                 <input id="pb-title-input" class="modal-input mb-5" value="${escAttr(cloudState.piggyBankTitle || '🪙 艾姍存錢筒')}">
                 <div class="flex gap-2.5">
                     <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
-                    <button onclick="_submitPiggyTitle()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                    <button onclick="_submitPiggyTitle()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--c-btn-text)] btn-primary">儲存</button>
                 </div>`;
             document.getElementById('modal-root').classList.add('show');
             setTimeout(() => { const n = document.getElementById('pb-title-input'); if (n) { n.focus(); n.select(); } }, 60);
@@ -1321,7 +1352,7 @@
                 <select id="cl-chore" class="modal-input mb-5">${choreOpts}</select>
                 <div class="flex gap-2.5">
                     <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
-                    <button onclick="_submitChoreLogEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-white btn-primary">儲存</button>
+                    <button onclick="_submitChoreLogEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--c-btn-text)] btn-primary">儲存</button>
                 </div>`;
             document.getElementById('modal-root').classList.add('show');
         }
