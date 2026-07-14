@@ -24,57 +24,57 @@
             src: url(https://cdn.jsdelivr.net/gh/max32002/naikaifont@1.0/webfont/NaikaiFont-Regular-Lite.woff2) format("woff2");
             font-display: swap;
         }
-        /* ====== 6 大配色主題（依據配色參考圖重新設計） ====== */
+        /* ====== 6 大配色主題（依據配色參考圖重新設計，每個主題由圖片中 3-4 個實際色號組成） ====== */
         :root, [data-theme="mosswood"] {
-            /* 苔色森綠｜深綠黑底 + 米白／嫩綠 */
-            --c-bg: #1E2E27; --c-text: #F4F1EA; --c-border: #3B5347; --c-accent: #B0D183;
-            --c-accent-dark: #6A8E4E; --c-text-muted: #9FB8A6; --c-border-strong: #4C6656;
-            --c-card-alt: #2C473E; --c-label: #B0D183; --c-list-bg: #243830;
-            --c-card: #25392F; --c-input-bg: #213229; --c-btn-text: #1C2A21;
-            --c-icon-muted: #6E8778; --c-border-light: #33473C; --c-bg-soft: #243830;
+            /* 苔色森綠｜底#1E2E27＋卡片#2C473E｜字#F4F1EA｜邊框#B0D183/#6A8E4E */
+            --c-bg: #1E2E27; --c-text: #F4F1EA; --c-border: #4C6656; --c-accent: #B0D183;
+            --c-accent-dark: #6A8E4E; --c-text-muted: #A9C79A; --c-border-strong: #B0D183;
+            --c-card-alt: #2C473E; --c-label: #B0D183; --c-list-bg: #24352C;
+            --c-card: #263B31; --c-input-bg: #17251E; --c-btn-text: #16241C;
+            --c-icon-muted: #7FA085; --c-border-light: #3A4F44; --c-bg-soft: #24352C;
         }
         [data-theme="moltensilver"] {
-            /* 未來熔銀｜槍灰黑底 + 螢光青／冰銀灰 */
-            --c-bg: #2C313A; --c-text: #EBEFF2; --c-border: #414957; --c-accent: #46E5FF;
-            --c-accent-dark: #1CA9C9; --c-text-muted: #C8D2DC; --c-border-strong: #4F5967;
-            --c-card-alt: #3A4250; --c-label: #46E5FF; --c-list-bg: #343B46;
-            --c-card: #373F4A; --c-input-bg: #313842; --c-btn-text: #0E212A;
-            --c-icon-muted: #7C8896; --c-border-light: #3C4451; --c-bg-soft: #343B46;
+            /* 未來熔銀｜底#2C313A｜字#ECEFF2｜邊框#46E5FF（螢光青）/文字輔#C8D2DC（冰銀灰） */
+            --c-bg: #2C313A; --c-text: #ECEFF2; --c-border: #45505F; --c-accent: #46E5FF;
+            --c-accent-dark: #1CA9C9; --c-text-muted: #C8D2DC; --c-border-strong: #46E5FF;
+            --c-card-alt: #3A4250; --c-label: #46E5FF; --c-list-bg: #333A46;
+            --c-card: #363E4A; --c-input-bg: #23272E; --c-btn-text: #0E212A;
+            --c-icon-muted: #8792A0; --c-border-light: #3C4451; --c-bg-soft: #333A46;
         }
         [data-theme="garnet"] {
-            /* 石榴酒紅｜酒紅底 + 石榴粉／香草米 */
-            --c-bg: #5C1B2C; --c-text: #F1D9B5; --c-border: #7A3347; --c-accent: #D7859F;
-            --c-accent-dark: #B35C78; --c-text-muted: #E0B79E; --c-border-strong: #8C4459;
+            /* 石榴酒紅｜底#5C1B2C｜字#F1D9B5（香草米）｜邊框#D7859F（石榴粉） */
+            --c-bg: #5C1B2C; --c-text: #F1D9B5; --c-border: #8C4459; --c-accent: #D7859F;
+            --c-accent-dark: #B35C78; --c-text-muted: #E0B79E; --c-border-strong: #D7859F;
             --c-card-alt: #6D2540; --c-label: #D7859F; --c-list-bg: #551A2A;
-            --c-card: #642036; --c-input-bg: #571C2D; --c-btn-text: #3A0F1A;
-            --c-icon-muted: #A97485; --c-border-light: #743145; --c-bg-soft: #551A2A;
+            --c-card: #631F35; --c-input-bg: #430F1E; --c-btn-text: #3A0F1A;
+            --c-icon-muted: #B48294; --c-border-light: #743145; --c-bg-soft: #551A2A;
         }
         [data-theme="blackgold"] {
-            /* 耀金黑曜｜啞黑底 + 金色 */
-            --c-bg: #1B1B1B; --c-text: #F4E8CB; --c-border: #38352B; --c-accent: #EACD76;
-            --c-accent-dark: #C9A94F; --c-text-muted: #BDB090; --c-border-strong: #48432F;
+            /* 耀金黑曜｜底#1B1B1B｜字#F4E8CB（暖米白）｜邊框#EACD76（金色） */
+            --c-bg: #1B1B1B; --c-text: #F4E8CB; --c-border: #45402E; --c-accent: #EACD76;
+            --c-accent-dark: #C9A94F; --c-text-muted: #C9BB98; --c-border-strong: #EACD76;
             --c-card-alt: #272522; --c-label: #EACD76; --c-list-bg: #212020;
-            --c-card: #252423; --c-input-bg: #201F1E; --c-btn-text: #1B1B1B;
-            --c-icon-muted: #726C58; --c-border-light: #332F28; --c-bg-soft: #212020;
+            --c-card: #262523; --c-input-bg: #131211; --c-btn-text: #1B1B1B;
+            --c-icon-muted: #8A8267; --c-border-light: #332F28; --c-bg-soft: #212020;
         }
         [data-theme="jellypurple"] {
-            /* 數位果凍紫｜深紫底 + 電光藍／冰粉 */
-            --c-bg: #4B2E83; --c-text: #FFE9EF; --c-border: #623C9C; --c-accent: #4D7CFE;
-            --c-accent-dark: #3A5FD1; --c-text-muted: #D9BEE3; --c-border-strong: #6E4CAA;
-            --c-card-alt: #43276F; --c-label: #4D7CFE; --c-list-bg: #402471;
-            --c-card: #472A76; --c-input-bg: #3E2469; --c-btn-text: #FFFFFF;
-            --c-icon-muted: #9C82C4; --c-border-light: #623C9C; --c-bg-soft: #402471;
+            /* 數位果凍紫｜底#FFE5EC（冰粉色）｜字#4B2E83（深紫色）｜邊框#4D7CFE（電光藍） */
+            --c-bg: #FFE5EC; --c-text: #4B2E83; --c-border: #C7A6E0; --c-accent: #4D7CFE;
+            --c-accent-dark: #3457C7; --c-text-muted: #8670A8; --c-border-strong: #4D7CFE;
+            --c-card-alt: #F7C9D9; --c-label: #4D7CFE; --c-list-bg: #FBD6E1;
+            --c-card: #FFF4F7; --c-input-bg: #FFFFFF; --c-btn-text: #FFFFFF;
+            --c-icon-muted: #B79FCE; --c-border-light: #F0C3D6; --c-bg-soft: #FCE3ED;
         }
         [data-theme="firteal"] {
-            /* 冷杉微光｜深青藍底 + 珊瑚橙／淺沙白 */
-            --c-bg: #20566D; --c-text: #F7E8D5; --c-border: #336882; --c-accent: #F77A4A;
-            --c-accent-dark: #D65F32; --c-text-muted: #BBD8E2; --c-border-strong: #3D7891;
+            /* 冷杉微光｜底#20566D｜字#F7E8D5（淺沙白）｜邊框#F77A4A（珊瑚橙） */
+            --c-bg: #20566D; --c-text: #F7E8D5; --c-border: #3D7891; --c-accent: #F77A4A;
+            --c-accent-dark: #D65F32; --c-text-muted: #C7DEE6; --c-border-strong: #F77A4A;
             --c-card-alt: #1A4759; --c-label: #F77A4A; --c-list-bg: #1C4B5F;
-            --c-card: #245F77; --c-input-bg: #1E4E62; --c-btn-text: #271005;
-            --c-icon-muted: #84AFBF; --c-border-light: #336882; --c-bg-soft: #1C4B5F;
+            --c-card: #205B72; --c-input-bg: #123342; --c-btn-text: #271005;
+            --c-icon-muted: #7FA6B5; --c-border-light: #336882; --c-bg-soft: #1C4B5F;
         }
-        /* 深色主題下，統一改寫 Tailwind 內建灰階／白色 utility class，
-           確保卡片、文字、邊框在 6 組深色主題中都維持清楚對比 */
+        /* 統一改寫 Tailwind 內建灰階／白色 utility class，讓卡片、文字、邊框
+           都改跟著主題變數走，確保 6 組主題（含淺色的數位果凍紫）都維持清楚對比 */
         .bg-white { background-color: var(--c-card) !important; }
         .bg-gray-50 { background-color: var(--c-bg-soft) !important; }
         .bg-gray-100 { background-color: var(--c-card-alt) !important; }
@@ -85,6 +85,16 @@
         .text-gray-700 { color: var(--c-text) !important; }
         .border-gray-100 { border-color: var(--c-border-light) !important; }
         .border-gray-200 { border-color: var(--c-border) !important; }
+        /* 修正輸入框文字看不見的問題：強制輸入框使用主題輸入底色＋主題文字色，
+           不再吃到瀏覽器預設白底或 Tailwind 的 color:inherit */
+        input, select, textarea {
+            background-color: var(--c-input-bg) !important;
+            color: var(--c-text) !important;
+            border-color: var(--c-border-strong) !important;
+        }
+        input::placeholder, textarea::placeholder { color: var(--c-text-muted) !important; opacity: 1; }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.8) brightness(1.4); cursor: pointer; }
+        [data-theme="jellypurple"] input[type="date"]::-webkit-calendar-picker-indicator { filter: none; }
         html { font-size: 116%; }
         body {
             font-family: 'NaikaiFont', 'Noto Sans TC', sans-serif; background-color: var(--c-bg); color: var(--c-text);
