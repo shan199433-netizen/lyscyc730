@@ -224,8 +224,8 @@
             
             <div id="tab-jars" class="tab-content active space-y-4">
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">本月個人預估總收入 (NT$)</label>
-                    <input type="number" id="total-income" value="80000" class="w-full text-xl font-bold p-2 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)]" oninput="calcJars()">
+                    <label class="block text-base font-black text-[var(--c-text)] mb-1.5"><i class="fa-solid fa-sack-dollar mr-1.5 text-[var(--c-accent)]"></i>本月個人預估總收入 (NT$)</label>
+                    <input type="number" id="total-income" value="80000" class="w-36 text-lg font-bold p-1.5 border rounded border-[var(--c-border)] focus:outline-none focus:border-[var(--c-accent)]" oninput="calcJars()">
                     <div class="flex items-center justify-between mt-1.5">
                         <p class="text-[10px] text-amber-600 font-medium">🔒 可自訂屬於自己的六帳戶分配%數，另一半看不到唷</p>
                         <span id="pct-sum-indicator" class="text-[10px] font-bold whitespace-nowrap ml-2"></span>
@@ -334,22 +334,22 @@
             </div>
 
             <div id="tab-chores" class="tab-content space-y-4">
-                <div class="bg-white px-4 py-2.5 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
-                    <h2 class="font-bold text-[11px] mb-1.5 text-[var(--c-text-muted)]"><i class="fa-solid fa-trophy mr-1 text-amber-500"></i>雲端家務點數爭霸賽</h2>
-                    <div class="flex justify-around items-center border-t border-b border-gray-100 py-1.5">
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] text-center shadow-sm">
+                    <h2 class="font-bold text-sm mb-2 text-[var(--c-text)]"><i class="fa-solid fa-trophy mr-1.5 text-amber-500"></i>雲端家務點數爭霸賽</h2>
+                    <div class="flex justify-around items-center border-t border-b border-gray-100 py-3">
                         <div class="text-center flex-1">
-                            <div id="crown-a" class="h-3 text-amber-400 text-xs opacity-0 transition-opacity">👑</div>
-                            <p class="text-[11px] text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
-                            <p id="score-a" class="text-xl font-black text-[var(--c-accent)] mt-0.5">0</p>
+                            <div id="crown-a" class="h-4 text-amber-400 text-base opacity-0 transition-opacity">👑</div>
+                            <p class="text-sm text-[var(--c-text-muted)] font-bold" id="chore-name-a-label">成員 A</p>
+                            <p id="score-a" class="text-4xl font-black text-[var(--c-accent)] mt-1">0</p>
                         </div>
-                        <div class="w-px h-8 bg-gray-200"></div>
+                        <div class="w-px h-12 bg-gray-200"></div>
                         <div class="text-center flex-1">
-                            <div id="crown-b" class="h-3 text-amber-400 text-xs opacity-0 transition-opacity">👑</div>
-                            <p class="text-[11px] text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
-                            <p id="score-b" class="text-xl font-black text-[var(--c-accent)] mt-0.5">0</p>
+                            <div id="crown-b" class="h-4 text-amber-400 text-base opacity-0 transition-opacity">👑</div>
+                            <p class="text-sm text-[var(--c-text-muted)] font-bold" id="chore-name-b-label">成員 B</p>
+                            <p id="score-b" class="text-4xl font-black text-[var(--c-accent)] mt-1">0</p>
                         </div>
                     </div>
-                    <p class="text-[9px] text-[var(--c-text-muted)] mt-1">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
+                    <p class="text-[11px] text-[var(--c-text-muted)] mt-2">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -431,69 +431,82 @@
 
             <div id="tab-settings" class="tab-content space-y-4">
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-user-gear mr-2 text-[var(--c-accent)]"></i>共同基本設定 (兩端秒同步)</h2>
-                    <div>
-                        <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">共同 APP 大標題</label>
-                        <input type="text" id="setting-app-title" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 A 暱稱</label>
-                            <input type="text" id="setting-name-a" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 B 暱稱</label>
-                            <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                        </div>
-                    </div>
-                    <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步☁️)</button>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-[var(--c-accent)]"></i>個人化設定（本機獨立）</h2>
-
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
-                            <span class="text-xs font-bold text-[var(--c-text-muted)]"><i class="fa-solid fa-palette mr-1.5 text-[var(--c-accent)]"></i>外觀主題色彩 🎨</span>
-                            <span class="flex items-center space-x-2">
-                                <span id="current-theme-dot" class="w-5 h-5 rounded-full border border-black/10 inline-block" style="background: linear-gradient(135deg, #F9F6F6, #8A7A80);"></span>
-                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                            </span>
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <details class="group/basic">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none border-b border-[var(--c-border)] pb-2">
+                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-user-gear mr-2 text-[var(--c-accent)]"></i>共同基本設定 (兩端秒同步)</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open/basic:rotate-180"></i>
                         </summary>
-                        <div class="grid grid-cols-3 gap-3 pt-3" id="theme-swatch-list">
-                            <button onclick="applyTheme('mauve')" data-theme-btn="mauve" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">藕粉霧</span>
-                            </button>
-                            <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
-                            </button>
-                            <button onclick="applyTheme('plumjam')" data-theme-btn="plumjam" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">梅子果醬</span>
-                            </button>
-                            <button onclick="applyTheme('iceblue')" data-theme-btn="iceblue" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">冰藍玫瑰</span>
-                            </button>
-                            <button onclick="applyTheme('mocha')" data-theme-btn="mocha" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">摩卡杏仁</span>
-                            </button>
-                            <button onclick="applyTheme('cloudmilk')" data-theme-btn="cloudmilk" class="theme-swatch flex flex-col items-center space-y-1">
-                                <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
-                                <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
-                            </button>
+                        <div class="space-y-3 pt-3">
+                            <div>
+                                <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">共同 APP 大標題</label>
+                                <input type="text" id="setting-app-title" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 A 暱稱</label>
+                                    <input type="text" id="setting-name-a" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-[var(--c-text-muted)] mb-1 font-bold">成員 B 暱稱</label>
+                                    <input type="text" id="setting-name-b" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                </div>
+                            </div>
+                            <button onclick="saveCloudSettings()" class="btn-primary w-full py-2.5 text-white rounded-xl text-sm font-bold">儲存基本設定 (雙向同步☁️)</button>
                         </div>
                     </details>
+                </div>
 
-                    <div class="border-t border-[var(--c-border)] pt-3 space-y-2">
-                        <label class="block text-xs text-[var(--c-text-muted)] font-bold"><i class="fa-solid fa-image mr-1.5 text-[var(--c-accent)]"></i>自訂個人頭像照片</label>
-                        <input type="file" id="setting-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-200">
-                        <button onclick="saveAvatarOnly()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">儲存照片頭像</button>
-                    </div>
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <details class="group/personal">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none border-b border-[var(--c-border)] pb-2">
+                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-[var(--c-accent)]"></i>個人化設定（本機獨立）</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open/personal:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-3 pt-3">
+                            <details class="group">
+                                <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                                    <span class="text-xs font-bold text-[var(--c-text-muted)]"><i class="fa-solid fa-palette mr-1.5 text-[var(--c-accent)]"></i>外觀主題色彩 🎨</span>
+                                    <span class="flex items-center space-x-2">
+                                        <span id="current-theme-dot" class="w-5 h-5 rounded-full border border-black/10 inline-block" style="background: linear-gradient(135deg, #F9F6F6, #8A7A80);"></span>
+                                        <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                                    </span>
+                                </summary>
+                                <div class="grid grid-cols-3 gap-3 pt-3" id="theme-swatch-list">
+                                    <button onclick="applyTheme('mauve')" data-theme-btn="mauve" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F9F6F6, #E1D9D9, #D5C9C9, #8A7A80, #796A70);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">藕粉霧</span>
+                                    </button>
+                                    <button onclick="applyTheme('lavender')" data-theme-btn="lavender" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F6EAF3, #E4D6E9, #CDC7E3, #B4A9D2, #A88DC0);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">薰衣草紫</span>
+                                    </button>
+                                    <button onclick="applyTheme('plumjam')" data-theme-btn="plumjam" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5E0DF, #E9B9C5, #DC7090, #303030);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">梅子果醬</span>
+                                    </button>
+                                    <button onclick="applyTheme('iceblue')" data-theme-btn="iceblue" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #B3D2EE, #86ACC3, #7790AC, #4B6775);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">冰藍玫瑰</span>
+                                    </button>
+                                    <button onclick="applyTheme('mocha')" data-theme-btn="mocha" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F3E9E3, #D7CEC7, #9C9090, #9C8B79);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">摩卡杏仁</span>
+                                    </button>
+                                    <button onclick="applyTheme('cloudmilk')" data-theme-btn="cloudmilk" class="theme-swatch flex flex-col items-center space-y-1">
+                                        <span class="swatch-circle w-12 h-12 rounded-full block border border-black/10" style="background: linear-gradient(135deg, #F5EEEE, #DBDBDB, #A7A3A2, #8B8B8B);"></span>
+                                        <span class="text-[10px] text-[var(--c-text-muted)]">雲霧奶蓋</span>
+                                    </button>
+                                </div>
+                            </details>
+
+                            <div class="border-t border-[var(--c-border)] pt-3 space-y-2">
+                                <label class="block text-xs text-[var(--c-text-muted)] font-bold"><i class="fa-solid fa-image mr-1.5 text-[var(--c-accent)]"></i>自訂個人頭像照片</label>
+                                <input type="file" id="setting-avatar-file" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-200">
+                                <button onclick="saveAvatarOnly()" class="w-full py-2 bg-[var(--c-accent)] text-white rounded-xl text-xs font-bold transition">儲存照片頭像</button>
+                            </div>
+                        </div>
+                    </details>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
@@ -551,7 +564,7 @@
         </main>
 
         <nav class="border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg rounded-t-3xl" style="background: color-mix(in srgb, #ffffff 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
-            <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>預算沙盤</span></button>
+            <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>個人預算</span></button>
             <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
             <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
             <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-gear text-lg"></i><span>設定</span></button>
@@ -839,6 +852,7 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
+            document.querySelectorAll('details[open]').forEach(d => d.removeAttribute('open'));
             ['jars', 'bills', 'chores', 'settings'].forEach(t => {
                 const btn = document.getElementById('nav-' + t);
                 if (t === tabId) { btn.classList.replace('text-gray-400', 'text-[var(--c-accent)]'); btn.classList.add('font-bold', 'active-nav'); }
@@ -1211,8 +1225,8 @@
             rewardsArr.forEach((reward, index) => {
                 const canA = sc.A >= reward.cost;
                 const canB = sc.B >= reward.cost;
-                const itemDiv = document.createElement('div'); itemDiv.className = "p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2 flex flex-col";
-                itemDiv.innerHTML = `<div class="text-center"><p class="font-bold text-sm text-gray-700 leading-snug">${reward.name}</p><span class="inline-block mt-1 text-xs text-pink-500 bg-white px-1.5 py-0.5 rounded-md border border-pink-200 font-bold">${reward.cost} 點</span></div><div class="space-y-1.5 mt-auto pt-1"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="w-full px-2 py-1 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-700' : 'bg-gray-50 text-gray-300 cursor-not-allowed'}">👸 ${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="w-full px-2 py-1 text-xs font-bold rounded-xl shadow-sm ${canB ? 'bg-pink-400 hover:bg-pink-500 text-white' : 'bg-gray-100 text-gray-300 cursor-not-allowed'}">🤴 ${cloudState.nameB} 兌換</button></div>`;
+                const itemDiv = document.createElement('div'); itemDiv.className = "p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm space-y-2 flex flex-col";
+                itemDiv.innerHTML = `<div class="text-center pb-1"><p class="font-black text-base text-[var(--c-text)] leading-snug">${reward.name}</p><span class="inline-block mt-1.5 text-sm font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-full border border-pink-200">🎁 ${reward.cost} 點</span></div><div class="space-y-1.5 mt-auto pt-2 border-t border-dashed border-gray-200"><button onclick="redeemReward(${index}, 'A')" ${canA ? '' : 'disabled'} class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border shadow-sm ${canA ? 'bg-white hover:bg-pink-50 text-gray-600 border-gray-200' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">👸 ${cloudState.nameA} 兌換</button><button onclick="redeemReward(${index}, 'B')" ${canB ? '' : 'disabled'} class="w-full px-2 py-1.5 text-xs font-bold rounded-xl border shadow-sm ${canB ? 'bg-white hover:bg-pink-50 text-gray-600 border-gray-200' : 'bg-gray-50 text-gray-300 cursor-not-allowed border-gray-100'}">🤴 ${cloudState.nameB} 兌換</button></div>`;
                 listEl.appendChild(itemDiv);
             });
             const logEl = document.getElementById('redeem-log');
