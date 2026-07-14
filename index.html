@@ -297,9 +297,12 @@
                             <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                         </summary>
                         <div id="piggybank-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
-                        <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
-                            <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            <input type="number" id="piggy-new-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <div class="space-y-2 pt-3 border-t border-[var(--c-border)] mt-2">
+                            <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="number" id="piggy-new-amount" placeholder="目前金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <input type="number" id="piggy-new-goal" placeholder="目標金額（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            </div>
                         </div>
                         <button onclick="addPiggyBank()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">確認儲存</button>
                     </details>
@@ -391,6 +394,11 @@
                             <p id="unsettled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
                         </div>
                     </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] mb-3"><i class="fa-solid fa-chart-column mr-2 text-[var(--c-accent)]"></i>近半年花費趨勢</h2>
+                    <div id="bills-trend-chart" class="flex items-end justify-between gap-1.5 h-20 px-1"></div>
                 </div>
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
@@ -719,6 +727,23 @@
                 el.classList.add('leaving');
                 setTimeout(() => el.remove(), 320);
             }, duration);
+        }
+        function showUndoToast(msg, undoFn, duration = 5000) {
+            const wrap = document.getElementById('toast-wrap');
+            if (!wrap) return;
+            const el = document.createElement('div');
+            el.className = 'toast info';
+            el.innerHTML = `<i class="fa-solid fa-circle-info t-ic"></i><span>${msg}</span><button type="button" style="margin-left:6px;padding:3px 11px;border-radius:999px;background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:12px;border:none;cursor:pointer;white-space:nowrap;">復原</button>`;
+            wrap.appendChild(el);
+            let done = false;
+            const finish = () => { if (done) return; done = true; el.classList.add('leaving'); setTimeout(() => el.remove(), 320); };
+            const timer = setTimeout(finish, duration);
+            el.querySelector('button').onclick = () => {
+                if (done) return;
+                clearTimeout(timer);
+                undoFn();
+                finish();
+            };
         }
 
         let _modalResolve = null;
@@ -1116,6 +1141,35 @@
             const unsettledTotalEl = document.getElementById('unsettled-total-amount');
             if (settledTotalEl) settledTotalEl.innerText = `NT$ ${Math.round(summary.settledTotal).toLocaleString()}`;
             if (unsettledTotalEl) unsettledTotalEl.innerText = `NT$ ${Math.round(summary.unsettledTotal).toLocaleString()}`;
+
+            renderBillsTrend();
+        }
+
+        function renderBillsTrend() {
+            const el = document.getElementById('bills-trend-chart');
+            if (!el) return;
+            const bills = cloudState.bills || [];
+            const now = new Date();
+            const months = [];
+            for (let i = 5; i >= 0; i--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push(`${d.getFullYear()}-${pad2(d.getMonth() + 1)}`);
+            }
+            const nowYm = currentYM();
+            const sums = months.map(ym => bills.filter(b => ymOf(b.date) === ym).reduce((s, b) => s + (Number(b.amount) || 0), 0));
+            const maxAmt = Math.max(1, ...sums);
+            el.innerHTML = months.map((ym, i) => {
+                const amt = sums[i];
+                const h = amt > 0 ? Math.max(6, Math.round((amt / maxAmt) * 64)) : 3;
+                const m = Number(ym.split('-')[1]);
+                const isCurrent = ym === nowYm;
+                const label = amt >= 10000 ? Math.round(amt / 1000) + 'k' : (amt > 0 ? amt.toLocaleString() : '');
+                return `<div class="flex flex-col items-center flex-1 min-w-0">
+                    <span class="text-[9px] font-bold text-[var(--c-text-muted)] mb-1 truncate">${label}</span>
+                    <div class="w-full rounded-t-md transition-all" style="height:${h}px;background:${isCurrent ? 'var(--c-accent)' : 'var(--c-border-strong)'};opacity:${isCurrent ? 1 : 0.5};"></div>
+                    <span class="text-[9px] mt-1 font-bold ${isCurrent ? 'text-[var(--c-accent)]' : 'text-[var(--c-text-muted)]'}">${m}月</span>
+                </div>`;
+            }).join('');
         }
 
         function computeSettlementSummary() {
@@ -1144,11 +1198,17 @@
             amountInput.value = '';
             showToast("已記錄這筆結算，雲端同步完成 ☁️", "ok");
         }
-        async function deleteSettlement(id) {
-            if (await showConfirm("要刪除這筆結算紀錄嗎？", { title: "刪除結算紀錄", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.settlements = (cloudState.settlements || []).filter(s => s.id !== id);
-                db.set(cloudState); showToast("已刪除結算紀錄", "info");
-            }
+        function deleteSettlement(id) {
+            const idx = (cloudState.settlements || []).findIndex(s => s.id === id);
+            if (idx === -1) return;
+            const removed = cloudState.settlements[idx];
+            cloudState.settlements.splice(idx, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除結算紀錄", () => {
+                if (!cloudState.settlements) cloudState.settlements = [];
+                cloudState.settlements.splice(idx, 0, removed);
+                db.set(cloudState);
+            });
         }
 
         function addBill() {
@@ -1167,11 +1227,17 @@
             document.getElementById('bill-amount').value = '';
             showToast("已記一筆，雲端同步完成 ☁️", "ok");
         }
-        async function deleteBill(id) {
-            if (await showConfirm("要刪除這筆帳目嗎？", { title: "刪除帳目", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.bills = (cloudState.bills || []).filter(b => b.id !== id);
-                db.set(cloudState); showToast("已刪除這筆帳目", "info");
-            }
+        function deleteBill(id) {
+            const idx = (cloudState.bills || []).findIndex(b => b.id === id);
+            if (idx === -1) return;
+            const removed = cloudState.bills[idx];
+            cloudState.bills.splice(idx, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除這筆帳目", () => {
+                if (!cloudState.bills) cloudState.bills = [];
+                cloudState.bills.splice(idx, 0, removed);
+                db.set(cloudState);
+            });
         }
         async function clearAllBills() {
             if (await showConfirm("將清空<b>全部月份</b>的雙人帳目，這個動作無法復原。", { title: "清空所有帳目", icon: "fa-trash-can", okText: "全部清空", danger: true })) {
@@ -1191,7 +1257,13 @@
                 ? '<p class="col-span-2 text-xs text-gray-400 text-center py-2">還沒有存錢筒，從下方新增第一個吧 🪙</p>'
                 : items.map(p => {
                     const amt = Number(p.amount) || 0;
-                    return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p></div>`;
+                    const goal = Number(p.goal) || 0;
+                    let progressHtml = '';
+                    if (goal > 0) {
+                        const pct = Math.min(100, Math.round((amt / goal) * 100));
+                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-[9px] text-[var(--c-text-muted)] mt-1 font-bold">已存 ${pct}%（目標 $${goal.toLocaleString()}元）</p></div>`;
+                    }
+                    return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p>${progressHtml}</div>`;
                 }).join('');
             renderPiggyBankDefs();
         }
@@ -1202,35 +1274,73 @@
                 ? '<p class="text-xs text-gray-400 text-center py-2">還沒有存錢筒項目，從下方新增第一個吧</p>'
                 : items.map(p => {
                     const amt = Number(p.amount) || 0;
-                    return `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><span class="font-bold text-sm text-gray-700">${p.name}</span><div class="flex items-center gap-2"><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">$${amt.toLocaleString()}</span><button onclick="editPiggyBank('${p.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deletePiggyBank('${p.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
+                    const goal = Number(p.goal) || 0;
+                    const goalBadge = goal > 0 ? `<span class="text-[10px] text-[var(--c-text-muted)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">目標 $${goal.toLocaleString()}</span>` : '';
+                    return `<div class="flex items-center justify-between p-2.5 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100"><span class="font-bold text-sm text-gray-700">${p.name}</span><div class="flex items-center gap-2"><span class="text-xs text-[var(--c-accent)] bg-white px-1.5 py-0.5 rounded-md border border-gray-200">$${amt.toLocaleString()}</span>${goalBadge}<button onclick="editPiggyBank('${p.id}')" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button><button onclick="deletePiggyBank('${p.id}')" class="text-gray-300 hover:text-red-500 px-1"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;
                 }).join('');
         }
         function addPiggyBank() {
             const nameInput = document.getElementById('piggy-new-name');
             const amountInput = document.getElementById('piggy-new-amount');
+            const goalInput = document.getElementById('piggy-new-goal');
             const name = nameInput.value.trim();
-            const amount = Number(amountInput.value) || 0;
+            const amount = Math.max(0, Number(amountInput.value) || 0);
+            const goal = Math.max(0, Number(goalInput.value) || 0);
             if (!name) return showToast("請先輸入存錢筒名稱", "err");
             if (!cloudState.piggyBanks) cloudState.piggyBanks = [];
-            cloudState.piggyBanks.push({ id: genId(), name, amount });
+            cloudState.piggyBanks.push({ id: genId(), name, amount, goal });
             db.set(cloudState);
-            nameInput.value = ''; amountInput.value = '';
+            nameInput.value = ''; amountInput.value = ''; goalInput.value = '';
             showToast("已新增存錢筒 🪙", "ok");
         }
-        async function deletePiggyBank(id) {
-            if (await showConfirm("要刪除這個存錢筒嗎？", { title: "刪除存錢筒", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.piggyBanks = (cloudState.piggyBanks || []).filter(p => p.id !== id);
-                db.set(cloudState); showToast("已刪除存錢筒", "info");
-            }
+        function deletePiggyBank(id) {
+            const idx = (cloudState.piggyBanks || []).findIndex(p => p.id === id);
+            if (idx === -1) return;
+            const removed = cloudState.piggyBanks[idx];
+            cloudState.piggyBanks.splice(idx, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除存錢筒", () => {
+                if (!cloudState.piggyBanks) cloudState.piggyBanks = [];
+                cloudState.piggyBanks.splice(idx, 0, removed);
+                db.set(cloudState);
+            });
         }
         async function editPiggyBank(id) {
             const item = (cloudState.piggyBanks || []).find(p => p.id === id);
             if (!item) return;
-            const res = await showEditModal({ title: "修改存錢筒", icon: "fa-piggy-bank", nameLabel: "存錢筒名稱", nameVal: item.name, valLabel: "目前金額", valVal: item.amount, valMin: 0 });
+            const res = await showPiggyEditModal(item);
             if (res === null) return;
             item.name = res.name || item.name;
-            item.amount = Number(res.val) || 0;
+            item.amount = Math.max(0, Number(res.amount) || 0);
+            item.goal = Math.max(0, Number(res.goal) || 0);
             db.set(cloudState); showToast("存錢筒已更新", "ok");
+        }
+        function showPiggyEditModal(item) {
+            return new Promise(resolve => {
+                _modalResolve = resolve;
+                const panel = document.getElementById('modal-panel');
+                panel.innerHTML = `
+                    <div class="modal-ic"><i class="fa-solid fa-piggy-bank"></i></div>
+                    <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-4">修改存錢筒</h3>
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">存錢筒名稱</label>
+                    <input id="pb-edit-name" class="modal-input mb-3" value="${escAttr(item.name)}">
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">目前金額</label>
+                    <input id="pb-edit-amount" type="number" min="0" class="modal-input mb-3" value="${Number(item.amount) || 0}">
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">目標金額（選填，0＝不設定）</label>
+                    <input id="pb-edit-goal" type="number" min="0" class="modal-input mb-5" value="${Number(item.goal) || 0}">
+                    <div class="flex gap-2.5">
+                        <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
+                        <button onclick="_submitPiggyEdit()" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--c-btn-text)] btn-primary">儲存</button>
+                    </div>`;
+                document.getElementById('modal-root').classList.add('show');
+                setTimeout(() => { const n = document.getElementById('pb-edit-name'); if (n) n.focus(); }, 60);
+            });
+        }
+        function _submitPiggyEdit() {
+            const name = document.getElementById('pb-edit-name').value.trim();
+            const amount = document.getElementById('pb-edit-amount').value;
+            const goal = document.getElementById('pb-edit-goal').value;
+            closeModal({ name, amount, goal });
         }
         function renamePiggyBankTitle() {
             const panel = document.getElementById('modal-panel');
@@ -1332,11 +1442,17 @@
             }
             showToast("已記錄完成 ⚡️", "ok");
         }
-        async function deleteChoreLog(id) {
-            if (await showConfirm("要刪除這筆完成紀錄嗎？（分數會一起扣回）", { title: "刪除紀錄", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.choreLog = (cloudState.choreLog || []).filter(e => e.id !== id);
-                db.set(cloudState); showToast("已刪除完成紀錄", "info");
-            }
+        function deleteChoreLog(id) {
+            const idx = (cloudState.choreLog || []).findIndex(e => e.id === id);
+            if (idx === -1) return;
+            const removed = cloudState.choreLog[idx];
+            cloudState.choreLog.splice(idx, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除完成紀錄（分數已扣回）", () => {
+                if (!cloudState.choreLog) cloudState.choreLog = [];
+                cloudState.choreLog.splice(idx, 0, removed);
+                db.set(cloudState);
+            });
         }
         function editChoreLog(id) {
             const entry = (cloudState.choreLog || []).find(e => e.id === id);
@@ -1445,24 +1561,31 @@
             const nameInput = document.getElementById('reward-new-name');
             const costInput = document.getElementById('reward-new-cost');
             const name = nameInput.value.trim();
-            const cost = Number(costInput.value) || 1;
+            const cost = Number(costInput.value);
             if (!name) return showToast("請先輸入獎勵內容", "err");
+            if (!cost || cost <= 0) return showToast("所需點數要大於 0 喔", "err");
             if (!cloudState.rewards) cloudState.rewards = [];
             cloudState.rewards.push({ name, cost });
             db.set(cloudState);
             nameInput.value = ''; costInput.value = '8';
             showToast("已加入獎勵商店 🎁", "ok");
         }
-        async function deleteReward(index) {
-            if (await showConfirm("要刪除這個獎勵嗎？", { title: "刪除獎勵", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.rewards.splice(index, 1); db.set(cloudState); showToast("已刪除獎勵", "info");
-            }
+        function deleteReward(index) {
+            const removed = cloudState.rewards[index];
+            if (!removed) return;
+            cloudState.rewards.splice(index, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除獎勵", () => {
+                cloudState.rewards.splice(index, 0, removed);
+                db.set(cloudState);
+            });
         }
         async function editReward(index) {
             const reward = cloudState.rewards[index];
-            const res = await showEditModal({ title: "修改獎勵", icon: "fa-gift", nameLabel: "獎勵內容", nameVal: reward.name, valLabel: "所需點數", valVal: reward.cost });
+            const res = await showEditModal({ title: "修改獎勵", icon: "fa-gift", nameLabel: "獎勵內容", nameVal: reward.name, valLabel: "所需點數", valVal: reward.cost, valMin: 1 });
             if (res === null) return;
-            cloudState.rewards[index] = { name: res.name || reward.name, cost: Number(res.val) || reward.cost };
+            const newCost = Number(res.val);
+            cloudState.rewards[index] = { name: res.name || reward.name, cost: (newCost && newCost > 0) ? newCost : reward.cost };
             db.set(cloudState); showToast("獎勵已更新", "ok");
         }
 
@@ -1470,24 +1593,31 @@
             const nameInput = document.getElementById('chore-new-name');
             const ptsInput = document.getElementById('chore-new-pts');
             const name = nameInput.value.trim();
-            const pts = Number(ptsInput.value) || 1;
+            const pts = Number(ptsInput.value);
             if (!name) return showToast("請先輸入家務名稱", "err");
+            if (!pts || pts <= 0) return showToast("完成點數要大於 0 喔", "err");
             if (!cloudState.chores) cloudState.chores = [];
             cloudState.chores.push({ name, pts });
             db.set(cloudState);
             nameInput.value = ''; ptsInput.value = '1';
             showToast("已新增家務項目", "ok");
         }
-        async function deleteChore(index) {
-            if (await showConfirm("要刪除這個家務項目嗎？", { title: "刪除家務", icon: "fa-trash-can", okText: "刪除", danger: true })) {
-                cloudState.chores.splice(index, 1); db.set(cloudState); showToast("已刪除家務項目", "info");
-            }
+        function deleteChore(index) {
+            const removed = cloudState.chores[index];
+            if (!removed) return;
+            cloudState.chores.splice(index, 1);
+            db.set(cloudState);
+            showUndoToast("已刪除家務項目", () => {
+                cloudState.chores.splice(index, 0, removed);
+                db.set(cloudState);
+            });
         }
         async function editChore(index) {
             const chore = cloudState.chores[index];
-            const res = await showEditModal({ title: "修改家務", icon: "fa-list-check", nameLabel: "家務名稱", nameVal: chore.name, valLabel: "完成點數", valVal: chore.pts });
+            const res = await showEditModal({ title: "修改家務", icon: "fa-list-check", nameLabel: "家務名稱", nameVal: chore.name, valLabel: "完成點數", valVal: chore.pts, valMin: 1 });
             if (res === null) return;
-            cloudState.chores[index] = { name: res.name || chore.name, pts: Number(res.val) || chore.pts };
+            const newPts = Number(res.val);
+            cloudState.chores[index] = { name: res.name || chore.name, pts: (newPts && newPts > 0) ? newPts : chore.pts };
             db.set(cloudState); showToast("家務已更新", "ok");
         }
 
@@ -1546,7 +1676,7 @@
             });
         }
         bindEnter(['bill-desc', 'bill-amount'], addBill);
-        bindEnter(['piggy-new-name', 'piggy-new-amount'], addPiggyBank);
+        bindEnter(['piggy-new-name', 'piggy-new-amount', 'piggy-new-goal'], addPiggyBank);
         bindEnter(['settle-new-amount'], addSettlement);
         bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
         bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
