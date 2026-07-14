@@ -1139,7 +1139,7 @@
                 ? '<p class="col-span-2 text-xs text-gray-400 text-center py-2">還沒有存錢筒，從下方新增第一個吧 🪙</p>'
                 : items.map(p => {
                     const amt = Number(p.amount) || 0;
-                    return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}</p><p class="text-[10px] text-[var(--c-text-muted)] -mt-0.5">元</p></div>`;
+                    return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p></div>`;
                 }).join('');
             renderPiggyBankDefs();
         }
