@@ -86,6 +86,40 @@
         .text-gray-700 { color: var(--c-text) !important; }
         .border-gray-100 { border-color: var(--c-border-light) !important; }
         .border-gray-200 { border-color: var(--c-border) !important; }
+        /* 修正三個深色主題（苔痕／未來熔銀／耀金黑曜）中綠色（已結算）／
+           琥珀色（未結算）徽章對比不足看不清楚的問題：Tailwind 的 emerald-50/
+           amber-50 等是寫死的淺色固定色碼，沒有跟著主題變數走，在深色底下
+           文字幾乎融進背景，改為深色主題專屬的半透明底色＋亮色文字 */
+        [data-theme="mosswood"] .bg-emerald-50,
+        [data-theme="moltensilver"] .bg-emerald-50,
+        [data-theme="blackgold"] .bg-emerald-50 {
+            background-color: rgba(16, 185, 129, 0.16) !important;
+        }
+        [data-theme="mosswood"] .border-emerald-100,
+        [data-theme="moltensilver"] .border-emerald-100,
+        [data-theme="blackgold"] .border-emerald-100 {
+            border-color: rgba(16, 185, 129, 0.38) !important;
+        }
+        [data-theme="mosswood"] .text-emerald-600,
+        [data-theme="moltensilver"] .text-emerald-600,
+        [data-theme="blackgold"] .text-emerald-600 {
+            color: #6EE7B7 !important;
+        }
+        [data-theme="mosswood"] .bg-amber-50,
+        [data-theme="moltensilver"] .bg-amber-50,
+        [data-theme="blackgold"] .bg-amber-50 {
+            background-color: rgba(245, 158, 11, 0.18) !important;
+        }
+        [data-theme="mosswood"] .border-amber-100,
+        [data-theme="moltensilver"] .border-amber-100,
+        [data-theme="blackgold"] .border-amber-100 {
+            border-color: rgba(245, 158, 11, 0.4) !important;
+        }
+        [data-theme="mosswood"] .text-amber-600,
+        [data-theme="moltensilver"] .text-amber-600,
+        [data-theme="blackgold"] .text-amber-600 {
+            color: #FCD34D !important;
+        }
         /* 修正輸入框文字看不見的問題：強制輸入框使用主題輸入底色＋主題文字色，
            不再吃到瀏覽器預設白底或 Tailwind 的 color:inherit */
         input, select, textarea {
@@ -132,8 +166,8 @@
         .shadow-sm { box-shadow: 0 2px 14px rgba(74,62,67,0.06), 0 1px 3px rgba(74,62,67,0.05) !important; }
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
-        nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
-        #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
+        nav { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important; }
+        #app { padding-bottom: calc(8rem + env(safe-area-inset-bottom)) !important; }
 
         /* ====== 全螢幕融合版面：header／nav 直接用頁面本身色調做半透明毛玻璃，
            不再疊加額外色塊漸層，避免產生突兀的色塊；滑動時內容從毛玻璃下透出，
@@ -145,10 +179,11 @@
             -webkit-backdrop-filter: blur(22px) saturate(1.4);
         }
         nav {
-            background: color-mix(in srgb, var(--c-bg) 68%, transparent) !important;
-            backdrop-filter: blur(22px) saturate(1.4);
-            -webkit-backdrop-filter: blur(22px) saturate(1.4);
+            background: color-mix(in srgb, var(--c-bg) 72%, transparent) !important;
+            backdrop-filter: blur(26px) saturate(1.6);
+            -webkit-backdrop-filter: blur(26px) saturate(1.6);
             border-radius: 0 !important;
+            box-shadow: inset 0 1px 0 color-mix(in srgb, var(--c-text) 10%, transparent) !important;
         }
 
 
