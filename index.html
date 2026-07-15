@@ -120,6 +120,14 @@
         [data-theme="blackgold"] .text-amber-600 {
             color: #FCD34D !important;
         }
+        /* 修正「全部累積已結算／未結算」在深色主題下看不見的問題：
+           bg-white/60 是固定的半透明白底，跟深色主題的淺色文字疊在一起
+           對比嚴重不足，改成半透明的深色卡片底 */
+        [data-theme="mosswood"] .bg-white\/60,
+        [data-theme="moltensilver"] .bg-white\/60,
+        [data-theme="blackgold"] .bg-white\/60 {
+            background-color: color-mix(in srgb, var(--c-card) 70%, transparent) !important;
+        }
         /* 修正輸入框文字看不見的問題：強制輸入框使用主題輸入底色＋主題文字色，
            不再吃到瀏覽器預設白底或 Tailwind 的 color:inherit */
         input, select, textarea {
@@ -156,7 +164,7 @@
         @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.99);} to { opacity: 1; transform: translateY(0) scale(1);} }
         @keyframes popIn { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
         .nav-btn.active-nav i { animation: popIn .3s ease; }
-        .nav-btn { padding: 6px 14px; border-radius: 16px; transition: background-color .25s ease, color .2s ease, transform .2s ease; position: relative; }
+        .nav-btn { padding: 4px 12px; border-radius: 16px; transition: background-color .25s ease, color .2s ease, transform .2s ease; position: relative; }
         .nav-btn.active-nav { background: var(--c-card-alt); transform: translateY(-1px); }
         .theme-swatch { transition: transform .15s ease; }
         .theme-swatch:active { transform: scale(0.9); }
@@ -166,8 +174,8 @@
         .shadow-sm { box-shadow: 0 2px 14px rgba(74,62,67,0.06), 0 1px 3px rgba(74,62,67,0.05) !important; }
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
-        nav { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important; }
-        #app { padding-bottom: calc(8rem + env(safe-area-inset-bottom)) !important; }
+        nav { padding-bottom: calc(0.35rem + env(safe-area-inset-bottom)) !important; }
+        #app { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)) !important; }
 
         /* ====== 全螢幕融合版面：header／nav 直接用頁面本身色調做半透明毛玻璃，
            不再疊加額外色塊漸層，避免產生突兀的色塊；滑動時內容從毛玻璃下透出，
@@ -700,11 +708,11 @@
             </div>
         </main>
 
-        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50">
-            <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>個人預算</span></button>
-            <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
-            <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
-            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-gear text-lg"></i><span>設定</span></button>
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-1.5 z-50">
+            <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-0.5"><i class="fa-solid fa-chart-pie text-base"></i><span>個人預算</span></button>
+            <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-0.5"><i class="fa-solid fa-receipt text-base"></i><span>雙人記帳</span></button>
+            <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-0.5"><i class="fa-solid fa-broom text-base"></i><span>家務對抗</span></button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-0.5"><i class="fa-solid fa-gear text-base"></i><span>設定</span></button>
         </nav>
     </div>
 
@@ -1313,7 +1321,7 @@
                     let progressHtml = '';
                     if (goal > 0) {
                         const pct = Math.min(100, Math.round((amt / goal) * 100));
-                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-xs text-[var(--c-text-muted)] mt-1.5 font-bold">已存 ${pct}%（目標 $${goal.toLocaleString()}元）</p></div>`;
+                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-xs text-[var(--c-text-muted)] mt-1.5 font-bold whitespace-nowrap">已存${pct}%（目標$${goal.toLocaleString()}）</p></div>`;
                     }
                     return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p>${progressHtml}</div>`;
                 }).join('');
