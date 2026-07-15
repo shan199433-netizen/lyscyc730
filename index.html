@@ -166,7 +166,7 @@
         .nav-btn.active-nav i { animation: popIn .3s ease; }
         .nav-btn { padding: 4px 4px; border-radius: 16px; transition: color .2s ease, transform .2s ease; position: relative; background: none !important; }
         .nav-btn.active-nav { transform: translateY(-1px); }
-        .nav-icon-wrap { display: inline-flex; align-items: center; justify-content: center; padding: 3px 14px; border-radius: 999px; transition: background-color .25s ease; }
+        .nav-icon-wrap { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; transition: background-color .25s ease; }
         .nav-btn.active-nav .nav-icon-wrap { background: color-mix(in srgb, var(--c-accent) 20%, var(--c-card-alt)); }
         .nav-label { font-size: 10px; margin-top: 1px; display: block; }
         .theme-swatch { transition: transform .15s ease; }
@@ -177,8 +177,8 @@
         .shadow-sm { box-shadow: 0 2px 14px rgba(74,62,67,0.06), 0 1px 3px rgba(74,62,67,0.05) !important; }
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
-        #nav-outer { padding-bottom: calc(0.4rem + env(safe-area-inset-bottom)) !important; }
-        #app { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)) !important; }
+        #nav-outer { padding-bottom: calc(0.15rem + env(safe-area-inset-bottom)) !important; }
+        #app { padding-bottom: calc(6rem + env(safe-area-inset-bottom)) !important; }
 
         /* ====== 全螢幕融合版面：header 用半透明毛玻璃貼齊頂部；
            底部導覽列改成懸浮膠囊卡片（不貼邊、四周留白、圓角＋陰影），
@@ -713,7 +713,7 @@
 
         <nav id="nav-outer" class="fixed bottom-0 left-0 right-0 z-50 px-3">
             <div class="max-w-md mx-auto">
-                <div id="nav-pill" class="flex justify-around items-center py-1">
+                <div id="nav-pill" class="flex justify-around items-center py-0.5">
                     <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-chart-pie text-base"></i></span><span class="nav-label">個人預算</span></button>
                     <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-receipt text-base"></i></span><span class="nav-label">雙人記帳</span></button>
                     <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-broom text-base"></i></span><span class="nav-label">家務對抗</span></button>
@@ -1328,7 +1328,7 @@
                     let progressHtml = '';
                     if (goal > 0) {
                         const pct = Math.min(100, Math.round((amt / goal) * 100));
-                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-xs text-[var(--c-text-muted)] mt-1.5 font-bold whitespace-nowrap">已存${pct}%（目標$${goal.toLocaleString()}）</p></div>`;
+                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-[10px] text-[var(--c-text-muted)] mt-1.5 font-bold whitespace-nowrap overflow-hidden text-ellipsis w-full">已存${pct}%（目標$${goal.toLocaleString()}）</p></div>`;
                     }
                     return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p>${progressHtml}</div>`;
                 }).join('');
