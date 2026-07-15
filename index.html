@@ -135,6 +135,32 @@
         nav { padding-bottom: calc(0.75rem + env(safe-area-inset-top)) !important; }
         #app { padding-bottom: calc(8rem + env(safe-area-inset-top)) !important; }
 
+        /* ====== 全螢幕融合版面：移除頭尾硬邊框，改用半透明毛玻璃＋漸層淡出，
+           讓內容滑動時自然從頂端／底端淡出，取代原本明顯的兩條橫框線 ====== */
+        header, nav { border: none !important; box-shadow: none !important; }
+        header {
+            background: color-mix(in srgb, var(--c-card) 78%, transparent) !important;
+            backdrop-filter: blur(18px) saturate(1.1);
+            -webkit-backdrop-filter: blur(18px) saturate(1.1);
+        }
+        header::after {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; bottom: -32px;
+            height: 32px;
+            background: linear-gradient(to bottom, color-mix(in srgb, var(--c-card-alt) 45%, transparent), transparent);
+            pointer-events: none;
+        }
+        nav::before {
+            content: "";
+            position: absolute;
+            left: 0; right: 0; top: -32px;
+            height: 32px;
+            background: linear-gradient(to top, color-mix(in srgb, var(--c-bg) 45%, transparent), transparent);
+            pointer-events: none;
+        }
+
+
         input:focus, select:focus, textarea:focus {
             outline: none !important;
             border-color: var(--c-accent) !important;
@@ -247,7 +273,7 @@
 
     <div id="app" class="max-w-md mx-auto min-h-screen bg-[var(--c-bg)] shadow-lg relative flex flex-col" style="background: linear-gradient(180deg, var(--c-card-alt) 0%, var(--c-bg) 220px); display:none;">
         
-        <header class="px-5 py-4 border-b border-[var(--c-border)] flex items-center justify-between sticky top-0 z-30 shadow-sm relative overflow-hidden" style="background: linear-gradient(180deg, var(--c-card), var(--c-card-alt));">
+        <header class="px-5 py-4 flex items-center justify-between sticky top-0 z-30 relative">
             <div class="flex items-center space-x-3">
                 <div class="w-11 h-11 rounded-full overflow-hidden bg-white flex items-center justify-center relative shadow-sm" style="box-shadow: 0 0 0 2px var(--c-bg), 0 0 0 4px var(--c-accent);">
                     <img id="app-avatar-img" src="" class="w-full h-full object-cover hidden">
@@ -648,7 +674,7 @@
             </div>
         </main>
 
-        <nav class="border-t border-[var(--c-border)] fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 shadow-lg rounded-t-3xl" style="background: color-mix(in srgb, var(--c-card) 88%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto flex justify-around py-3 z-50 rounded-t-3xl relative" style="background: color-mix(in srgb, var(--c-card) 82%, transparent); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1);">
             <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center space-y-1"><i class="fa-solid fa-chart-pie text-lg"></i><span>個人預算</span></button>
             <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-receipt text-lg"></i><span>雙人記帳</span></button>
             <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center space-y-1"><i class="fa-solid fa-broom text-lg"></i><span>家務對抗</span></button>
@@ -1261,7 +1287,7 @@
                     let progressHtml = '';
                     if (goal > 0) {
                         const pct = Math.min(100, Math.round((amt / goal) * 100));
-                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-[9px] text-[var(--c-text-muted)] mt-1 font-bold">已存 ${pct}%（目標 $${goal.toLocaleString()}元）</p></div>`;
+                        progressHtml = `<div class="mt-2"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:linear-gradient(90deg, var(--c-accent-dark), var(--c-accent));"></div></div><p class="text-xs text-[var(--c-text-muted)] mt-1.5 font-bold">已存 ${pct}%（目標 $${goal.toLocaleString()}元）</p></div>`;
                     }
                     return `<div class="p-3 bg-[var(--c-list-bg)] rounded-2xl border border-gray-100 shadow-sm text-center"><p class="font-bold text-sm text-[var(--c-text)] leading-snug break-words">${p.name}</p><p class="text-lg font-black text-[var(--c-accent-dark)] mt-1">$${amt.toLocaleString()}元</p>${progressHtml}</div>`;
                 }).join('');
