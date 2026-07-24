@@ -178,8 +178,10 @@
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
         #nav-outer {
-            bottom: calc(env(safe-area-inset-bottom) + 2px) !important;
-            padding-bottom: 0 !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            padding-bottom: env(safe-area-inset-bottom) !important;
         }
         #app { padding-bottom: calc(6rem + env(safe-area-inset-bottom)) !important; }
 
@@ -196,7 +198,7 @@
             background: color-mix(in srgb, var(--c-card) 68%, transparent);
             backdrop-filter: blur(24px) saturate(1.6);
             -webkit-backdrop-filter: blur(24px) saturate(1.6);
-            border-radius: 32px;
+            border-radius: 26px 26px 0 0;
             border: 1px solid color-mix(in srgb, var(--c-card) 40%, transparent);
             box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.10);
         }
@@ -715,7 +717,7 @@
             </div>
         </main>
 
-        <nav id="nav-outer" class="fixed bottom-0 left-0 right-0 z-50 px-5">
+        <nav id="nav-outer" class="fixed bottom-0 left-0 right-0 z-50">
             <div class="max-w-md mx-auto">
                 <div id="nav-pill" class="flex justify-around items-center py-1.5">
                     <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-chart-pie text-base"></i></span><span class="nav-label">個人預算</span></button>
