@@ -701,11 +701,14 @@
                                 <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                             </summary>
                             <div class="space-y-2 pt-2">
+                                <div id="anniv-manage-list" class="space-y-0.5 text-xs border-b border-[var(--c-border)] pb-2 mb-1"></div>
                                 <input type="text" id="anniv-new-name" placeholder="紀念日名稱（如：交往紀念日、生日）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <div class="flex gap-2 items-center">
-                                    <input type="date" id="anniv-new-date" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
-                                    <label class="flex items-center gap-1 text-xs text-[var(--c-text-muted)] whitespace-nowrap flex-shrink-0"><input type="checkbox" id="anniv-new-repeat" checked class="w-4 h-4"> 每年提醒</label>
+                                <input type="date" id="anniv-new-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <div class="flex gap-4 text-xs text-[var(--c-text-muted)]">
+                                    <label class="flex items-center gap-1"><input type="radio" name="anniv-mode" id="anniv-mode-down" value="down" checked onchange="toggleAnnivModeUI()" class="w-3.5 h-3.5"> 倒數</label>
+                                    <label class="flex items-center gap-1"><input type="radio" name="anniv-mode" id="anniv-mode-up" value="up" onchange="toggleAnnivModeUI()" class="w-3.5 h-3.5"> 正數</label>
                                 </div>
+                                <label id="anniv-repeat-wrap" class="flex items-center gap-1 text-xs text-[var(--c-text-muted)]"><input type="checkbox" id="anniv-new-repeat" checked class="w-4 h-4"> 每年提醒</label>
                                 <button onclick="addAnniversary()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入紀念日</button>
                             </div>
                         </details>
@@ -714,6 +717,13 @@
             </div>
 
             <div id="tab-settings" class="tab-content space-y-4">
+
+                <div class="subnav">
+                    <button onclick="switchSubTab('settings','shared')" id="subnav-settings-shared" class="subnav-btn active">🤝 共同設定</button>
+                    <button onclick="switchSubTab('settings','personal')" id="subnav-settings-personal" class="subnav-btn">🙋 個人設定</button>
+                </div>
+
+                <div id="subtab-settings-shared" class="subtab-content active space-y-4">
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <details class="group/basic">
@@ -740,6 +750,9 @@
                         </div>
                     </details>
                 </div>
+                </div>
+
+                <div id="subtab-settings-personal" class="subtab-content space-y-4">
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
                     <details class="group/personal">
@@ -843,6 +856,7 @@
                         <button onclick="addLocalJarItem()" class="w-full py-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">加入我的個人預算盤</button>
                     </div>
                     <div id="manage-jar-items-list" class="space-y-1 text-xs border-t pt-2 max-h-48 overflow-y-auto no-scrollbar"></div>
+                </div>
                 </div>
             </div>
         </main>
@@ -1063,6 +1077,7 @@
         function ymOf(dateStr) { return dateStr ? String(dateStr).slice(0, 7) : null; }
         function fmtMonthLabel(ym) { const [y, m] = ym.split('-'); return `${y}年${Number(m)}月`; }
         function fmtMD(dateStr) { if (!dateStr) return ''; const p = String(dateStr).split('-'); return `${Number(p[1])}/${Number(p[2])}`; }
+        function fmtYMD(dateStr) { if (!dateStr) return ''; const p = String(dateStr).split('-'); return `${p[0]}年${Number(p[1])}月${Number(p[2])}日`; }
         function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
         function populateMonthSelect(selectEl, monthsPresent, selected) {
             if (!selectEl) return selected;
@@ -1331,47 +1346,90 @@
             const original = new Date(dateStr + 'T00:00:00');
             return Math.round((today - original) / 86400000);
         }
+        function elapsedYMD(dateStr) {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const start = new Date(dateStr + 'T00:00:00');
+            let y = today.getFullYear() - start.getFullYear();
+            let m = today.getMonth() - start.getMonth();
+            let d = today.getDate() - start.getDate();
+            if (d < 0) { m -= 1; d += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+            if (m < 0) { y -= 1; m += 12; }
+            return { y, m, d };
+        }
+        function fmtElapsed(dateStr) {
+            const e = elapsedYMD(dateStr);
+            let str = '';
+            if (e.y > 0) str += `${e.y}年`;
+            if (e.m > 0) str += `${e.m}個月`;
+            str += (str ? '又' : '') + `${e.d}天`;
+            return str;
+        }
         function renderAnniversaries() {
             const container = document.getElementById('anniv-list');
             if (!container) return;
             const list = cloudState.anniversaries || [];
             if (list.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 italic text-center py-1">還沒有加入紀念日</p>`; return; }
-            const withDays = list.map(a => ({ ...a, _d: daysUntilAnniversary(a.date, a.repeatYearly), _since: daysSinceAnniversary(a.date) }));
+            const withDays = list.map(a => {
+                const mode = a.countMode || 'down';
+                const repeatYearly = mode === 'up' ? false : a.repeatYearly;
+                return { ...a, _mode: mode, _d: daysUntilAnniversary(a.date, repeatYearly), _since: daysSinceAnniversary(a.date) };
+            });
             withDays.sort((a, b) => {
                 const ka = a._d >= 0 ? a._d : 100000 - a._d;
                 const kb = b._d >= 0 ? b._d : 100000 - b._d;
                 return ka - kb;
             });
-            container.innerHTML = withDays.map(a => {
-                let label, color;
-                if (a._d === 0) { label = '🎉 就是今天'; color = 'text-pink-500'; }
-                else if (a._d > 0) { label = `還有 ${a._d} 天`; color = 'text-[var(--c-accent-dark)]'; }
-                else { label = `已過 ${Math.abs(a._d)} 天`; color = 'text-gray-400'; }
-                const sinceHtml = a._since >= 0 ? `<p class="text-[11px] font-bold text-pink-400 mt-0.5">💕 已經 ${a._since} 天了</p>` : '';
-                return `<div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--c-card-alt)]">
-                    <div class="min-w-0">
-                        <p class="text-sm font-bold text-[var(--c-text)] truncate">${escAttr(a.name)}</p>
-                        <p class="text-[11px] text-[var(--c-text-muted)]">${fmtMD(a.date)}${a.repeatYearly ? ' · 每年提醒' : ''}</p>
-                        ${sinceHtml}
-                    </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <span class="text-xs font-black ${color} whitespace-nowrap">${label}</span>
-                        <button onclick="deleteAnniversary('${a.id}')" class="text-gray-300 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button>
+            container.innerHTML = withDays.map((a, idx) => {
+                let label, colorVar;
+                if (a._mode === 'up') {
+                    label = `已經 ${fmtElapsed(a.date)}了`;
+                    colorVar = 'var(--c-accent-dark)';
+                } else if (a._d === 0) { label = '🎉 就是今天'; colorVar = 'var(--c-accent)'; }
+                else if (a._d > 0) { label = `還有 ${a._d} 天`; colorVar = 'var(--c-accent-dark)'; }
+                else { label = `已過 ${Math.abs(a._d)} 天`; colorVar = 'var(--c-text-muted)'; }
+                const subLabel = a._mode === 'up' ? ' · 正數' : (a.repeatYearly ? ' · 每年提醒' : '');
+                const hue = (idx * 55) % 360;
+                return `<div class="p-2.5 rounded-xl bg-[var(--c-card-alt)]" style="filter: hue-rotate(${hue}deg)">
+                    <div class="flex items-center justify-between">
+                        <div class="min-w-0">
+                            <p class="text-sm font-bold text-[var(--c-text)] truncate">${escAttr(a.name)}</p>
+                            <p class="text-[11px] text-[var(--c-text-muted)]">${fmtYMD(a.date)}${subLabel}</p>
+                        </div>
+                        <span class="text-xs font-black whitespace-nowrap flex-shrink-0" style="color:${colorVar}">${label}</span>
                     </div>
                 </div>`;
             }).join('');
+            const manageContainer = document.getElementById('anniv-manage-list');
+            if (manageContainer) {
+                if (withDays.length === 0) { manageContainer.innerHTML = ''; }
+                else {
+                    manageContainer.innerHTML = withDays.map(a => `<div class="flex items-center justify-between py-1.5">
+                        <span class="truncate text-[var(--c-text)]">${escAttr(a.name)}（${fmtYMD(a.date)}・${a._mode === 'up' ? '正數' : '倒數'}）</span>
+                        <button onclick="deleteAnniversary('${a.id}')" class="text-gray-300 hover:text-red-400 flex-shrink-0 ml-2"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>`).join('');
+                }
+            }
+        }
+        function toggleAnnivModeUI() {
+            const isUp = document.getElementById('anniv-mode-up').checked;
+            const wrap = document.getElementById('anniv-repeat-wrap');
+            if (wrap) wrap.style.display = isUp ? 'none' : 'flex';
         }
         function addAnniversary() {
             const nameEl = document.getElementById('anniv-new-name');
             const name = nameEl.value.trim();
             const dateEl = document.getElementById('anniv-new-date');
             const date = dateEl.value;
-            const repeatYearly = document.getElementById('anniv-new-repeat').checked;
+            const isUp = document.getElementById('anniv-mode-up').checked;
+            const countMode = isUp ? 'up' : 'down';
+            const repeatYearly = isUp ? false : document.getElementById('anniv-new-repeat').checked;
             if (!name || !date) return showToast("請輸入名稱與日期", "err");
             if (!cloudState.anniversaries) cloudState.anniversaries = [];
-            cloudState.anniversaries.push({ id: genId(), name, date, repeatYearly });
+            cloudState.anniversaries.push({ id: genId(), name, date, repeatYearly, countMode });
             db.set(cloudState);
             nameEl.value = ''; dateEl.value = '';
+            document.getElementById('anniv-mode-down').checked = true;
+            toggleAnnivModeUI();
             showToast("紀念日已加入", "ok");
         }
         function deleteAnniversary(id) {
