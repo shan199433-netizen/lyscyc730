@@ -1389,8 +1389,9 @@
                 else { label = `已過 ${Math.abs(a._d)} 天`; colorVar = 'var(--c-text-muted)'; }
                 const subLabel = a._mode === 'up' ? ' · 正數' : (a.repeatYearly ? ' · 每年提醒' : '');
                 const hue = (idx * 55) % 360;
-                return `<div class="p-2.5 rounded-xl bg-[var(--c-card-alt)]" style="filter: hue-rotate(${hue}deg)">
-                    <div class="flex items-center justify-between">
+                return `<div class="relative rounded-xl overflow-hidden bg-[var(--c-card-alt)]">
+                    <div class="absolute inset-0" style="background:var(--c-accent); filter: hue-rotate(${hue}deg); opacity:0.32;"></div>
+                    <div class="relative flex items-center justify-between p-2.5">
                         <div class="min-w-0">
                             <p class="text-sm font-bold text-[var(--c-text)] truncate">${escAttr(a.name)}</p>
                             <p class="text-[11px] text-[var(--c-text-muted)]">${fmtYMD(a.date)}${subLabel}</p>
