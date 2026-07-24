@@ -164,11 +164,18 @@
         @keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.99);} to { opacity: 1; transform: translateY(0) scale(1);} }
         @keyframes popIn { 0% { transform: scale(.85); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
         .nav-btn.active-nav i { animation: popIn .3s ease; }
-        .nav-btn { padding: 4px 4px; border-radius: 16px; transition: color .2s ease, transform .2s ease; position: relative; background: none !important; }
+        .nav-btn { padding: 2px 4px; border-radius: 16px; transition: color .2s ease, transform .2s ease; position: relative; background: none !important; }
         .nav-btn.active-nav { transform: translateY(-1px); }
         .nav-icon-wrap { display: inline-flex; align-items: center; justify-content: center; padding: 2px 14px; border-radius: 999px; transition: background-color .25s ease; }
         .nav-btn.active-nav .nav-icon-wrap { background: color-mix(in srgb, var(--c-accent) 20%, var(--c-card-alt)); }
         .nav-label { font-size: 10px; margin-top: 1px; display: block; }
+        .cal-chips { display: flex; flex-direction: column; align-items: center; gap: 1px; width: 100%; padding: 0 2px; }
+        .cal-chip { display: block; width: 100%; max-width: 100%; font-size: 8px; line-height: 1.5; font-weight: 700; padding: 0 2px; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cal-chip-more { font-size: 8px; font-weight: 700; opacity: 0.8; }
+        .cal-color-swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform .1s; }
+        .cal-color-swatch:active { transform: scale(0.88); }
+        .cal-color-swatch.cal-color-active { border-color: #fff; box-shadow: 0 0 0 2px var(--c-text); }
+        .cal-color-swatch.cal-color-active::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 900; }
         .theme-swatch { transition: transform .15s ease; }
         .theme-swatch:active { transform: scale(0.9); }
         .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 5px var(--c-accent); }
@@ -178,10 +185,8 @@
         .shadow-lg { box-shadow: 0 6px 24px rgba(74,62,67,0.09), 0 2px 6px rgba(74,62,67,0.06) !important; }
         header { padding-top: calc(1rem + env(safe-area-inset-top)) !important; }
         #nav-outer {
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            padding-bottom: env(safe-area-inset-bottom) !important;
+            bottom: calc(env(safe-area-inset-bottom) + 4px) !important;
+            padding-bottom: 0 !important;
         }
         #app { padding-bottom: calc(6rem + env(safe-area-inset-bottom)) !important; }
 
@@ -198,7 +203,7 @@
             background: color-mix(in srgb, var(--c-card) 68%, transparent);
             backdrop-filter: blur(24px) saturate(1.6);
             -webkit-backdrop-filter: blur(24px) saturate(1.6);
-            border-radius: 26px 26px 0 0;
+            border-radius: 26px;
             border: 1px solid color-mix(in srgb, var(--c-card) 40%, transparent);
             box-shadow: 0 10px 30px rgba(0,0,0,0.18), 0 2px 10px rgba(0,0,0,0.10);
         }
@@ -583,6 +588,89 @@
                 </div>
             </div>
 
+            <div id="tab-life" class="tab-content space-y-4">
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <div class="flex items-center justify-between">
+                        <button onclick="changeCalMonth(-1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                        <h2 id="cal-month-label" class="font-black text-sm text-[var(--c-text)]"><i class="fa-solid fa-calendar-days mr-1.5 text-[var(--c-accent)]"></i></h2>
+                        <button onclick="changeCalMonth(1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[var(--c-text-muted)]">
+                        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                    </div>
+                    <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+
+                    <div class="border-t border-[var(--c-border)] pt-3">
+                        <h3 id="cal-selected-label" class="font-bold text-sm text-[var(--c-text)] mb-2"></h3>
+                        <div id="cal-day-events" class="space-y-1.5 mb-3"></div>
+                        <details class="group">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增這天的行程</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="space-y-2 pt-2">
+                                <input type="text" id="cal-event-title" placeholder="標題（如：昀辰休假、看醫生）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <div class="flex gap-2 items-center">
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">從</label>
+                                        <input type="date" id="cal-event-start" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">到</label>
+                                        <input type="date" id="cal-event-end" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-1">分類顏色</label>
+                                    <div id="cal-event-color-picker" class="flex gap-2 flex-wrap"></div>
+                                    <input type="hidden" id="cal-event-color" value="">
+                                </div>
+                                <select id="cal-event-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                                <input type="text" id="cal-event-note" placeholder="備註（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <button onclick="addCalendarEvent()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入行程</button>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b border-[var(--c-border)] pb-2"><i class="fa-solid fa-heart mr-2 text-pink-400"></i>紀念日</h2>
+                    <div id="anniv-list" class="space-y-2"></div>
+                    <details class="group border-t border-[var(--c-border)] pt-2">
+                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                            <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增／管理紀念日</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="space-y-2 pt-2">
+                            <input type="text" id="anniv-new-name" placeholder="紀念日名稱（如：交往紀念日、生日）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            <div class="flex gap-2 items-center">
+                                <input type="date" id="anniv-new-date" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
+                                <label class="flex items-center gap-1 text-xs text-[var(--c-text-muted)] whitespace-nowrap flex-shrink-0"><input type="checkbox" id="anniv-new-repeat" checked class="w-4 h-4"> 每年提醒</label>
+                            </div>
+                            <button onclick="addAnniversary()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入紀念日</button>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                    <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
+                        <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>共同待辦／購物清單</h2>
+                        <button onclick="clearCompletedTodos()" class="text-[11px] text-[var(--c-text-muted)] font-bold underline flex-shrink-0">清除已完成</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" id="todo-new-text" placeholder="要買什麼／要做什麼？" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
+                        <select id="todo-new-cat" class="w-[86px] flex-shrink-0 p-2 text-sm border rounded border-[var(--c-border)] bg-white">
+                            <option value="shopping">🛒 購物</option>
+                            <option value="todo">✅ 待辦</option>
+                            <option value="other">📌 其他</option>
+                        </select>
+                    </div>
+                    <button onclick="addTodo()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">新增</button>
+                    <div id="todo-list" class="space-y-3 pt-1"></div>
+                </div>
+            </div>
+
             <div id="tab-settings" class="tab-content space-y-4">
 
                 <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
@@ -717,12 +805,13 @@
             </div>
         </main>
 
-        <nav id="nav-outer" class="fixed bottom-0 left-0 right-0 z-50">
+        <nav id="nav-outer" class="fixed bottom-0 left-0 right-0 z-50 px-4">
             <div class="max-w-md mx-auto">
-                <div id="nav-pill" class="flex justify-around items-center py-1.5">
+                <div id="nav-pill" class="flex justify-around items-center py-1">
                     <button onclick="switchTab('jars')" id="nav-jars" class="nav-btn active-nav text-xs text-[var(--c-accent)] font-bold flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-chart-pie text-base"></i></span><span class="nav-label">個人預算</span></button>
                     <button onclick="switchTab('bills')" id="nav-bills" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-receipt text-base"></i></span><span class="nav-label">雙人記帳</span></button>
                     <button onclick="switchTab('chores')" id="nav-chores" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-broom text-base"></i></span><span class="nav-label">家務對抗</span></button>
+                    <button onclick="switchTab('life')" id="nav-life" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-calendar-days text-base"></i></span><span class="nav-label">生活共享</span></button>
                     <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn text-xs text-gray-400 flex flex-col items-center"><span class="nav-icon-wrap"><i class="fa-solid fa-gear text-base"></i></span><span class="nav-label">設定</span></button>
                 </div>
             </div>
@@ -919,7 +1008,8 @@
                 { name: "對方洗碗一整週 🍽️", cost: 15 }
             ],
             redeemLog: [], choreLog: [], settledMonths: {}, settlements: [],
-            piggyBanks: [], piggyBankTitle: "🪙 艾姍存錢筒"
+            piggyBanks: [], piggyBankTitle: "🪙 艾姍存錢筒",
+            todos: [], calendarEvents: [], anniversaries: []
         };
 
         let billsMonth = null, choreMonth = null;
@@ -954,6 +1044,298 @@
         }
 
         function saveLocal() { localStorage.setItem('shanshan_local_v70', JSON.stringify(localState)); }
+
+        /* ====== 生活共享：紀念日 / 共同行事曆 / 共同待辦購物清單 ====== */
+        let calView = { y: new Date().getFullYear(), m: new Date().getMonth() };
+        let calSelectedDate = todayISO();
+        const CAL_COLORS = ['#f59e0b', '#7c9a6e', '#f472b6', '#60a5fa', '#a78bfa', '#ef4444', '#38bdf8', '#94a3b8'];
+        function calEventColor(e) {
+            if (e.color) return e.color;
+            const legacy = { leave: '#f59e0b', event: '#7c9a6e', other: '#f472b6' };
+            return legacy[e.type] || CAL_COLORS[0];
+        }
+        function calColorSwatchesHtml(containerId, hiddenId, selected) {
+            return CAL_COLORS.map(c => `<button type="button" data-color="${c}" class="cal-color-swatch${c === selected ? ' cal-color-active' : ''}" style="background:${c}" onclick="selectCalColor('${hiddenId}','${containerId}','${c}')"></button>`).join('');
+        }
+        function selectCalColor(hiddenId, containerId, color) {
+            const hidden = document.getElementById(hiddenId);
+            if (hidden) hidden.value = color;
+            const container = document.getElementById(containerId);
+            if (container) container.querySelectorAll('.cal-color-swatch').forEach(el => el.classList.toggle('cal-color-active', el.dataset.color === color));
+        }
+
+        function changeCalMonth(delta) {
+            calView.m += delta;
+            if (calView.m < 0) { calView.m = 11; calView.y--; }
+            if (calView.m > 11) { calView.m = 0; calView.y++; }
+            renderCalendar();
+        }
+        function selectCalendarDay(dateStr) { calSelectedDate = dateStr; renderCalendar(); }
+        function eventsOnDate(dateStr) { return (cloudState.calendarEvents || []).filter(e => e.date === dateStr); }
+
+        function renderCalendar() {
+            const label = document.getElementById('cal-month-label');
+            if (label) label.innerHTML = `<i class="fa-solid fa-calendar-days mr-1.5 text-[var(--c-accent)]"></i>${calView.y}年 ${calView.m + 1}月`;
+            const grid = document.getElementById('cal-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const firstDay = new Date(calView.y, calView.m, 1);
+            const startWeekday = (firstDay.getDay() + 6) % 7; // 0 = Monday
+            const daysInMonth = new Date(calView.y, calView.m + 1, 0).getDate();
+            const todayStr = todayISO();
+            for (let i = 0; i < startWeekday; i++) grid.appendChild(document.createElement('div'));
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${calView.y}-${pad2(calView.m + 1)}-${pad2(d)}`;
+                const isToday = dateStr === todayStr;
+                const isSelected = dateStr === calSelectedDate;
+                const evs = eventsOnDate(dateStr);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => selectCalendarDay(dateStr);
+                let cls = "relative rounded-xl text-xs font-bold flex flex-col items-center justify-start pt-1.5 pb-1 gap-0.5 transition min-h-[54px] overflow-hidden ";
+                if (isSelected) cls += "bg-[var(--c-accent)] text-white";
+                else if (isToday) cls += "border-2 border-[var(--c-accent)] text-[var(--c-accent-dark)]";
+                else cls += "text-[var(--c-text)] hover:bg-[var(--c-card-alt)]";
+                btn.className = cls;
+                let chipsHtml = '';
+                if (evs.length > 0) {
+                    const shown = evs.slice(0, 2);
+                    const chips = shown.map(e => {
+                        const c = calEventColor(e);
+                        const style = isSelected
+                            ? `background:rgba(255,255,255,0.28);color:#fff;`
+                            : `background:${c};color:#fff;`;
+                        return `<span class="cal-chip" style="${style}" title="${escAttr(e.title)}">${escAttr(e.title)}</span>`;
+                    }).join('');
+                    const more = evs.length > 2 ? `<span class="cal-chip-more" style="color:${isSelected ? '#fff' : 'var(--c-text-muted)'}">+${evs.length - 2}</span>` : '';
+                    chipsHtml = `<div class="cal-chips">${chips}${more}</div>`;
+                }
+                btn.innerHTML = `<span>${d}</span>${chipsHtml}`;
+                grid.appendChild(btn);
+            }
+            renderDayEvents();
+        }
+
+        function renderDayEvents() {
+            const label = document.getElementById('cal-selected-label');
+            const parts = calSelectedDate.split('-');
+            if (label) label.innerText = `📌 ${Number(parts[1])}/${Number(parts[2])} 的行程`;
+            const startEl = document.getElementById('cal-event-start');
+            const endEl = document.getElementById('cal-event-end');
+            if (startEl && !startEl.value) startEl.value = calSelectedDate;
+            if (endEl && !endEl.value) endEl.value = calSelectedDate;
+            const listEl = document.getElementById('cal-day-events');
+            if (!listEl) return;
+            const evs = eventsOnDate(calSelectedDate);
+            if (evs.length === 0) { listEl.innerHTML = `<p class="text-[11px] text-gray-400 italic">這天還沒有安排</p>`; return; }
+            listEl.innerHTML = evs.map(e => {
+                const c = calEventColor(e);
+                const who = e.who === 'A' ? cloudState.nameA : e.who === 'B' ? cloudState.nameB : '兩人';
+                return `<div class="flex items-start justify-between gap-2 p-2.5 rounded-xl bg-[var(--c-card-alt)]">
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-[var(--c-text)] break-words"><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 flex-shrink-0" style="background:${c}"></span>${escAttr(e.title)}</p>
+                        <p class="text-[11px] text-[var(--c-text-muted)]">${who}${e.note ? ' · ' + escAttr(e.note) : ''}</p>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <button onclick="openEditCalendarEvent('${e.id}')" class="text-gray-300 hover:text-[var(--c-accent)]"><i class="fa-solid fa-pen text-xs"></i></button>
+                        <button onclick="deleteCalendarEvent('${e.id}')" class="text-gray-300 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function dateRangeISO(startStr, endStr) {
+            const out = [];
+            let cur = new Date(startStr + 'T00:00:00');
+            const end = new Date(endStr + 'T00:00:00');
+            if (isNaN(cur) || isNaN(end) || cur > end) return out;
+            while (cur <= end) {
+                out.push(`${cur.getFullYear()}-${pad2(cur.getMonth() + 1)}-${pad2(cur.getDate())}`);
+                cur.setDate(cur.getDate() + 1);
+            }
+            return out;
+        }
+        function addCalendarEvent() {
+            const titleEl = document.getElementById('cal-event-title');
+            const title = titleEl.value.trim();
+            const color = document.getElementById('cal-event-color').value || CAL_COLORS[0];
+            const who = document.getElementById('cal-event-who').value;
+            const noteEl = document.getElementById('cal-event-note');
+            const note = noteEl.value.trim();
+            const startEl = document.getElementById('cal-event-start');
+            const endEl = document.getElementById('cal-event-end');
+            const startDate = startEl.value || calSelectedDate;
+            const endDate = endEl.value || startDate;
+            if (!title) return showToast("請輸入標題", "err");
+            const dates = dateRangeISO(startDate, endDate);
+            if (dates.length === 0) return showToast("日期範圍不正確", "err");
+            if (!cloudState.calendarEvents) cloudState.calendarEvents = [];
+            dates.forEach(dateStr => {
+                cloudState.calendarEvents.push({ id: genId(), date: dateStr, title, color, who, note });
+            });
+            db.set(cloudState);
+            titleEl.value = ''; noteEl.value = '';
+            showToast(dates.length > 1 ? `已加入 ${dates.length} 天的行程` : "行程已加入", "ok");
+            renderCalendar();
+        }
+        function deleteCalendarEvent(id) {
+            cloudState.calendarEvents = (cloudState.calendarEvents || []).filter(e => e.id !== id);
+            db.set(cloudState);
+        }
+        function openEditCalendarEvent(id) {
+            const ev = (cloudState.calendarEvents || []).find(e => e.id === id);
+            if (!ev) return;
+            _modalResolve = null;
+            const panel = document.getElementById('modal-panel');
+            panel.innerHTML = `
+                <div class="modal-ic"><i class="fa-solid fa-pen"></i></div>
+                <h3 class="text-center font-bold text-base text-[var(--c-text)] mb-4">編輯行程</h3>
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">標題</label>
+                <input id="edit-cal-title" class="modal-input mb-3" value="${escAttr(ev.title)}">
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">分類顏色</label>
+                <div id="edit-cal-color-picker" class="flex gap-2 flex-wrap mb-3"></div>
+                <input type="hidden" id="edit-cal-color" value="${escAttr(calEventColor(ev))}">
+                <div class="mb-3">
+                    <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">誰</label>
+                    <select id="edit-cal-who" class="modal-input">
+                        <option value="A" ${ev.who === 'A' ? 'selected' : ''}>${cloudState.nameA}</option>
+                        <option value="B" ${ev.who === 'B' ? 'selected' : ''}>${cloudState.nameB}</option>
+                        <option value="TOGETHER" ${ev.who === 'TOGETHER' ? 'selected' : ''}>兩人</option>
+                    </select>
+                </div>
+                <label class="block text-xs font-bold text-[var(--c-text-muted)] mb-1">備註</label>
+                <input id="edit-cal-note" class="modal-input mb-5" value="${escAttr(ev.note || '')}">
+                <div class="flex gap-2.5">
+                    <button onclick="closeModal(null)" class="flex-1 py-2.5 rounded-2xl text-sm font-bold border border-[var(--c-border)] bg-white text-[var(--c-text-muted)]">取消</button>
+                    <button onclick="_submitCalEdit('${id}')" class="flex-1 py-2.5 rounded-2xl text-sm font-bold text-[var(--c-btn-text)] btn-primary">儲存</button>
+                </div>`;
+            document.getElementById('modal-root').classList.add('show');
+            document.getElementById('edit-cal-color-picker').innerHTML = calColorSwatchesHtml('edit-cal-color-picker', 'edit-cal-color', calEventColor(ev));
+            setTimeout(() => { const n = document.getElementById('edit-cal-title'); if (n) n.focus(); }, 60);
+        }
+        function _submitCalEdit(id) {
+            const ev = (cloudState.calendarEvents || []).find(e => e.id === id);
+            if (!ev) { closeModal(null); return; }
+            const title = document.getElementById('edit-cal-title').value.trim();
+            if (!title) { showToast("標題不能空白", "err"); return; }
+            ev.title = title;
+            ev.color = document.getElementById('edit-cal-color').value;
+            delete ev.type;
+            ev.who = document.getElementById('edit-cal-who').value;
+            ev.note = document.getElementById('edit-cal-note').value.trim();
+            db.set(cloudState);
+            document.getElementById('modal-root').classList.remove('show');
+            showToast("行程已更新", "ok");
+        }
+
+        function renderTodos() {
+            const container = document.getElementById('todo-list');
+            if (!container) return;
+            const todos = cloudState.todos || [];
+            const cats = [{ key: 'shopping', label: '🛒 購物' }, { key: 'todo', label: '✅ 待辦' }, { key: 'other', label: '📌 其他' }];
+            let html = '';
+            cats.forEach(cat => {
+                const items = todos.filter(t => (t.category || 'other') === cat.key);
+                if (items.length === 0) return;
+                const sorted = [...items].sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
+                html += `<div><p class="text-xs font-bold text-[var(--c-text-muted)] mb-1.5">${cat.label}（${items.filter(i => !i.done).length}/${items.length}）</p><div class="space-y-1.5">`;
+                sorted.forEach(item => {
+                    html += `<div class="flex items-center gap-2 p-2 rounded-xl bg-[var(--c-card-alt)] ${item.done ? 'opacity-50' : ''}">
+                        <button onclick="toggleTodo('${item.id}')" class="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${item.done ? 'bg-[var(--c-accent)] border-[var(--c-accent)]' : 'border-gray-300 bg-white'}">${item.done ? '<i class="fa-solid fa-check text-white text-[10px]"></i>' : ''}</button>
+                        <span class="flex-1 text-sm min-w-0 break-words ${item.done ? 'line-through text-gray-400' : 'text-[var(--c-text)]'}">${escAttr(item.text)}</span>
+                        <button onclick="deleteTodo('${item.id}')" class="text-gray-300 hover:text-red-400 flex-shrink-0"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>`;
+                });
+                html += `</div></div>`;
+            });
+            if (!html) html = `<p class="text-[11px] text-gray-400 italic text-center py-2">目前清單是空的，新增一筆吧！</p>`;
+            container.innerHTML = html;
+        }
+        function addTodo() {
+            const input = document.getElementById('todo-new-text');
+            const text = input.value.trim();
+            const category = document.getElementById('todo-new-cat').value;
+            if (!text) return showToast("請輸入內容", "err");
+            if (!cloudState.todos) cloudState.todos = [];
+            cloudState.todos.push({ id: genId(), text, category, done: false });
+            db.set(cloudState);
+            input.value = '';
+        }
+        function toggleTodo(id) {
+            const item = (cloudState.todos || []).find(t => t.id === id);
+            if (item) { item.done = !item.done; db.set(cloudState); }
+        }
+        function deleteTodo(id) {
+            cloudState.todos = (cloudState.todos || []).filter(t => t.id !== id);
+            db.set(cloudState);
+        }
+        function clearCompletedTodos() {
+            cloudState.todos = (cloudState.todos || []).filter(t => !t.done);
+            db.set(cloudState);
+            showToast("已清除完成項目", "info");
+        }
+
+        function daysUntilAnniversary(dateStr, repeatYearly) {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            let target = new Date(dateStr + 'T00:00:00');
+            if (repeatYearly) {
+                target = new Date(today.getFullYear(), target.getMonth(), target.getDate());
+                if (target < today) target = new Date(today.getFullYear() + 1, target.getMonth(), target.getDate());
+            }
+            return Math.round((target - today) / 86400000);
+        }
+        function daysSinceAnniversary(dateStr) {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const original = new Date(dateStr + 'T00:00:00');
+            return Math.round((today - original) / 86400000);
+        }
+        function renderAnniversaries() {
+            const container = document.getElementById('anniv-list');
+            if (!container) return;
+            const list = cloudState.anniversaries || [];
+            if (list.length === 0) { container.innerHTML = `<p class="text-[11px] text-gray-400 italic text-center py-1">還沒有加入紀念日</p>`; return; }
+            const withDays = list.map(a => ({ ...a, _d: daysUntilAnniversary(a.date, a.repeatYearly), _since: daysSinceAnniversary(a.date) }));
+            withDays.sort((a, b) => {
+                const ka = a._d >= 0 ? a._d : 100000 - a._d;
+                const kb = b._d >= 0 ? b._d : 100000 - b._d;
+                return ka - kb;
+            });
+            container.innerHTML = withDays.map(a => {
+                let label, color;
+                if (a._d === 0) { label = '🎉 就是今天'; color = 'text-pink-500'; }
+                else if (a._d > 0) { label = `還有 ${a._d} 天`; color = 'text-[var(--c-accent-dark)]'; }
+                else { label = `已過 ${Math.abs(a._d)} 天`; color = 'text-gray-400'; }
+                const sinceHtml = a._since >= 0 ? `<p class="text-[11px] font-bold text-pink-400 mt-0.5">💕 已經 ${a._since} 天了</p>` : '';
+                return `<div class="flex items-center justify-between p-2.5 rounded-xl bg-[var(--c-card-alt)]">
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-[var(--c-text)] truncate">${escAttr(a.name)}</p>
+                        <p class="text-[11px] text-[var(--c-text-muted)]">${fmtMD(a.date)}${a.repeatYearly ? ' · 每年提醒' : ''}</p>
+                        ${sinceHtml}
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <span class="text-xs font-black ${color} whitespace-nowrap">${label}</span>
+                        <button onclick="deleteAnniversary('${a.id}')" class="text-gray-300 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        function addAnniversary() {
+            const nameEl = document.getElementById('anniv-new-name');
+            const name = nameEl.value.trim();
+            const dateEl = document.getElementById('anniv-new-date');
+            const date = dateEl.value;
+            const repeatYearly = document.getElementById('anniv-new-repeat').checked;
+            if (!name || !date) return showToast("請輸入名稱與日期", "err");
+            if (!cloudState.anniversaries) cloudState.anniversaries = [];
+            cloudState.anniversaries.push({ id: genId(), name, date, repeatYearly });
+            db.set(cloudState);
+            nameEl.value = ''; dateEl.value = '';
+            showToast("紀念日已加入", "ok");
+        }
+        function deleteAnniversary(id) {
+            cloudState.anniversaries = (cloudState.anniversaries || []).filter(a => a.id !== id);
+            db.set(cloudState);
+        }
 
         const themeGradients = {
             mosswood: "linear-gradient(135deg, #F4F1EA, #B0D183, #6A8E4E, #1E2E27)",
@@ -990,6 +1372,9 @@
                 if(!data.settlements) data.settlements = [];
                 if(!data.piggyBanks) data.piggyBanks = [];
                 if(!data.piggyBankTitle) data.piggyBankTitle = "🪙 艾姍存錢筒";
+                if(!data.todos) data.todos = [];
+                if(!data.calendarEvents) data.calendarEvents = [];
+                if(!data.anniversaries) data.anniversaries = [];
                 if (data.settledMonths) {
                     let migratedAny = false;
                     Object.keys(data.settledMonths).forEach(ym => {
@@ -1037,12 +1422,13 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             document.querySelectorAll('details[open]').forEach(d => d.removeAttribute('open'));
-            ['jars', 'bills', 'chores', 'settings'].forEach(t => {
+            ['jars', 'bills', 'chores', 'life', 'settings'].forEach(t => {
                 const btn = document.getElementById('nav-' + t);
                 if (t === tabId) { btn.classList.replace('text-gray-400', 'text-[var(--c-accent)]'); btn.classList.add('font-bold', 'active-nav'); }
                 else { btn.classList.replace('text-[var(--c-accent)]', 'text-gray-400'); btn.classList.remove('font-bold', 'active-nav'); }
             });
             if(tabId === 'settings') renderLocalJarItems();
+            if(tabId === 'life') { renderCalendar(); renderTodos(); renderAnniversaries(); }
             window.scrollTo(0, 0);
         }
 
@@ -1737,7 +2123,18 @@
             if(selectPayer) {
                 selectPayer.innerHTML = `<option value="A">👸 由 ${cloudState.nameA} 支付</option><option value="B">🤴 由 ${cloudState.nameB} 支付</option>`;
             }
+            const selectCalWho = document.getElementById('cal-event-who');
+            if(selectCalWho) {
+                selectCalWho.innerHTML = `<option value="A">${cloudState.nameA}</option><option value="B">${cloudState.nameB}</option><option value="TOGETHER">兩人</option>`;
+            }
+            const calColorPicker = document.getElementById('cal-event-color-picker');
+            const calColorHidden = document.getElementById('cal-event-color');
+            if (calColorPicker && calColorHidden) {
+                if (!calColorHidden.value) calColorHidden.value = CAL_COLORS[0];
+                calColorPicker.innerHTML = calColorSwatchesHtml('cal-event-color-picker', 'cal-event-color', calColorHidden.value);
+            }
             calcJars(); renderBills(); renderChores(); renderPiggyBanks();
+            renderCalendar(); renderTodos(); renderAnniversaries();
         }
         document.getElementById('total-income').value = localState.income; calcJars();
         applyTheme(localState.theme || 'mauve');
@@ -1754,6 +2151,9 @@
         bindEnter(['chore-new-name', 'chore-new-pts'], addChore);
         bindEnter(['reward-new-name', 'reward-new-cost'], addReward);
         bindEnter(['manage-item-name', 'manage-item-cost'], addLocalJarItem);
+        bindEnter(['todo-new-text'], addTodo);
+        bindEnter(['anniv-new-name'], addAnniversary);
+        bindEnter(['cal-event-title', 'cal-event-note'], addCalendarEvent);
         document.querySelectorAll('input[type="number"]').forEach(el => {
             el.addEventListener('focus', () => { requestAnimationFrame(() => el.select()); });
         });
