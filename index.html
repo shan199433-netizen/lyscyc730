@@ -178,6 +178,11 @@
         .cal-color-swatch.cal-color-active::after { content: '✓'; color: #fff; font-size: 12px; font-weight: 900; }
         .theme-swatch { transition: transform .15s ease; }
         .theme-swatch:active { transform: scale(0.9); }
+        .subnav { display: flex; gap: 4px; padding: 4px; background: var(--c-card-alt); border-radius: 999px; margin-bottom: 14px; position: sticky; top: 0; z-index: 5; }
+        .subnav-btn { flex: 1; text-align: center; padding: 8px 2px; border-radius: 999px; font-size: 12px; font-weight: 700; color: var(--c-text-muted); transition: background-color .25s ease, color .25s ease, transform .2s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .subnav-btn.active { background: var(--c-accent); color: var(--c-btn-text); box-shadow: 0 3px 10px color-mix(in srgb, var(--c-accent) 45%, transparent); transform: translateY(-1px); }
+        .subtab-content { display: none; }
+        .subtab-content.active { display: block; animation: cardIn .35s cubic-bezier(.16,1,.3,1) backwards; }
         .theme-swatch.selected .swatch-circle { box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 5px var(--c-accent); }
         button, .btn-pop { transition: transform .12s ease, background-color .2s ease, box-shadow .2s ease; }
         button:active, .btn-pop:active { transform: scale(0.97); }
@@ -355,140 +360,153 @@
             </div>
 
             <div id="tab-bills" class="tab-content space-y-4">
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
-                        <h2 id="piggybank-title-text" class="font-black text-base text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
-                        <button onclick="renamePiggyBankTitle()" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button>
-                    </div>
-                    <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-4">
-                        <p class="text-sm text-[var(--c-label)] font-bold tracking-wide">目前已累計總存款</p>
-                        <p id="piggybank-total" class="text-2xl font-black text-[var(--c-accent)] mt-1">$0元</p>
-                    </div>
-                    <div id="piggybank-list" class="grid grid-cols-2 gap-2"></div>
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-plus mr-2 text-[var(--c-accent)]"></i>新增／管理存錢筒項目</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div id="piggybank-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
-                        <div class="space-y-2 pt-3 border-t border-[var(--c-border)] mt-2">
-                            <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="number" id="piggy-new-amount" placeholder="目前金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <input type="number" id="piggy-new-goal" placeholder="目標金額（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            </div>
-                        </div>
-                        <button onclick="addPiggyBank()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">確認儲存</button>
-                    </details>
+
+                <div class="subnav">
+                    <button onclick="switchSubTab('bills','record')" id="subnav-bills-record" class="subnav-btn active">💰 記帳</button>
+                    <button onclick="switchSubTab('bills','settle')" id="subnav-bills-settle" class="subnav-btn">🧮 結算</button>
+                    <button onclick="switchSubTab('bills','piggy')" id="subnav-bills-piggy" class="subnav-btn">🐷 存錢筒</button>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="space-y-3 pt-3">
-                            <div class="flex gap-2">
-                                <div class="flex-1 min-w-0">
-                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">項目說明</label>
-                                    <input type="text" id="bill-desc" placeholder="如：買保健食品、7月基金" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">金額 (NT$)</label>
-                                    <input type="number" id="bill-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
-                                </div>
-                            </div>
-
-                            <div class="flex gap-2">
-                                <div class="flex-1 min-w-0">
-                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢支付？</label>
-                                    <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
-                                    <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
-                                        <option value="half">👥 共同花費</option>
-                                        <option value="full">👤 幫對方付</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天的開銷？</label>
-                                <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
-                            </div>
-                            
-                            <button onclick="addBill()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
-                        </div>
-                    </details>
-                </div>
-
-                <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm space-y-1">
-                    <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-0.5">雙人即時對帳計算機</h3>
-                    <p id="bill-month-label-text" class="text-xs font-bold text-[var(--c-text-muted)]"></p>
-                    <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)] leading-snug">雲端帳目載入中...</p>
-                    <div id="settle-badge-area" class="pt-1.5"></div>
-
-                    <div class="grid grid-cols-2 gap-2 pt-2.5 text-left">
-                        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5">
-                            <p class="text-[10px] text-emerald-600 font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i>本月已結算</p>
-                            <p id="month-settled-amount" class="text-sm font-black text-emerald-600 mt-0.5">NT$ 0</p>
-                        </div>
-                        <div class="bg-amber-50 border border-amber-100 rounded-xl p-2.5">
-                            <p class="text-[10px] text-amber-600 font-bold flex items-center gap-1"><i class="fa-solid fa-hourglass-half"></i>本月剩餘未結算</p>
-                            <p id="month-unsettled-amount" class="text-sm font-black text-amber-600 mt-0.5">NT$ 0</p>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 text-left space-y-2">
-                        <details class="group">
-                            <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
-                                <span class="text-[11px] font-bold text-[var(--c-label)]">➕ 新增一筆結算紀錄</span>
+                <div id="subtab-bills-record" class="subtab-content active space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                        <details class="group" open data-keep-open>
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)] flex items-center"><i class="fa-solid fa-pen-to-square mr-2 text-[var(--c-accent)]"></i>新增雙人開銷</span>
                                 <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                             </summary>
-                            <div class="space-y-2 pt-2">
+                            <div class="space-y-3 pt-3">
                                 <div class="flex gap-2">
-                                    <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
-                                    <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">項目說明</label>
+                                        <input type="text" id="bill-desc" placeholder="如：買保健食品、7月基金" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">金額 (NT$)</label>
+                                        <input type="number" id="bill-amount" placeholder="金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)] focus:outline-none">
+                                    </div>
                                 </div>
-                                <button onclick="addSettlement()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+
+                                <div class="flex gap-2">
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰先掏錢支付？</label>
+                                        <select id="bill-payer" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white"></select>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">這筆錢怎麼分？</label>
+                                        <select id="bill-split-type" class="w-full p-2 text-xs border rounded border-[var(--c-border)] bg-white">
+                                            <option value="half">👥 共同花費</option>
+                                            <option value="full">👤 幫對方付</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天的開銷？</label>
+                                    <input type="date" id="bill-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
+                                </div>
+
+                                <button onclick="addBill()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">送出記帳 (秒同步☁️)</button>
                             </div>
                         </details>
-                        <div id="settlement-list" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar text-xs pt-0.5"></div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 pt-2 text-left">
-                        <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
-                            <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積已結算</p>
-                            <p id="settled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
-                        </div>
-                        <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
-                            <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積未結算</p>
-                            <p id="unsettled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
-                        </div>
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                        <h2 class="font-bold text-sm text-[var(--c-text)] mb-3"><i class="fa-solid fa-chart-column mr-2 text-[var(--c-accent)]"></i>近半年花費趨勢</h2>
+                        <div id="bills-trend-chart" class="flex items-end justify-between gap-1.5 h-20 px-1"></div>
                     </div>
-                </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] mb-3"><i class="fa-solid fa-chart-column mr-2 text-[var(--c-accent)]"></i>近半年花費趨勢</h2>
-                    <div id="bills-trend-chart" class="flex items-end justify-between gap-1.5 h-20 px-1"></div>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap">📅 帳目明細</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="pt-3 space-y-3">
-                            <div class="flex justify-between items-center gap-2">
-                                <select id="bills-month" onchange="billsMonth=this.value; renderBills()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
-                                <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline whitespace-nowrap ml-auto"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm">
+                        <details class="group">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)] whitespace-nowrap">📅 帳目明細</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="pt-3 space-y-3">
+                                <div class="flex justify-between items-center gap-2">
+                                    <select id="bills-month" onchange="billsMonth=this.value; renderBills()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
+                                    <button onclick="clearAllBills()" class="text-xs text-red-500 hover:underline whitespace-nowrap ml-auto"><i class="fa-solid fa-trash-can mr-1"></i>清除全部</button>
+                                </div>
+                                <div id="bills-list" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar text-sm"></div>
                             </div>
-                            <div id="bills-list" class="space-y-2 max-h-64 overflow-y-auto no-scrollbar text-sm"></div>
+                        </details>
+                    </div>
+                </div>
+
+                <div id="subtab-bills-settle" class="subtab-content space-y-4">
+                    <div class="bg-[var(--c-card-alt)] p-4 rounded-2xl border border-[var(--c-border-strong)] text-center shadow-sm space-y-1">
+                        <h3 class="text-xs font-bold text-[var(--c-label)] uppercase tracking-wider mb-0.5">雙人即時對帳計算機</h3>
+                        <p id="bill-month-label-text" class="text-xs font-bold text-[var(--c-text-muted)]"></p>
+                        <p id="bill-status-text" class="text-sm font-bold text-[var(--c-text)] leading-snug">雲端帳目載入中...</p>
+                        <div id="settle-badge-area" class="pt-1.5"></div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2.5 text-left">
+                            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5">
+                                <p class="text-[10px] text-emerald-600 font-bold flex items-center gap-1"><i class="fa-solid fa-circle-check"></i>本月已結算</p>
+                                <p id="month-settled-amount" class="text-sm font-black text-emerald-600 mt-0.5">NT$ 0</p>
+                            </div>
+                            <div class="bg-amber-50 border border-amber-100 rounded-xl p-2.5">
+                                <p class="text-[10px] text-amber-600 font-bold flex items-center gap-1"><i class="fa-solid fa-hourglass-half"></i>本月剩餘未結算</p>
+                                <p id="month-unsettled-amount" class="text-sm font-black text-amber-600 mt-0.5">NT$ 0</p>
+                            </div>
                         </div>
-                    </details>
+
+                        <div class="pt-3 text-left space-y-2">
+                            <details class="group">
+                                <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                                    <span class="text-[11px] font-bold text-[var(--c-label)]">➕ 新增一筆結算紀錄</span>
+                                    <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                                </summary>
+                                <div class="space-y-2 pt-2">
+                                    <div class="flex gap-2">
+                                        <input type="number" id="settle-new-amount" placeholder="這次結算金額 (NT$)" class="flex-1 p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white focus:outline-none">
+                                        <input type="date" id="settle-new-date" class="w-[130px] p-2 text-sm border rounded-xl border-[var(--c-border)] bg-white">
+                                    </div>
+                                    <button onclick="addSettlement()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold"><i class="fa-solid fa-plus mr-1"></i>記一筆結算</button>
+                                </div>
+                            </details>
+                            <div id="settlement-list" class="space-y-1.5 max-h-40 overflow-y-auto no-scrollbar text-xs pt-0.5"></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 pt-2 text-left">
+                            <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
+                                <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積已結算</p>
+                                <p id="settled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
+                            </div>
+                            <div class="bg-white/60 border border-[var(--c-border)] rounded-xl p-2.5">
+                                <p class="text-[10px] text-[var(--c-text-muted)] font-bold flex items-center gap-1"><i class="fa-solid fa-layer-group"></i>全部累積未結算</p>
+                                <p id="unsettled-total-amount" class="text-sm font-black text-[var(--c-text)] mt-0.5">NT$ 0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subtab-bills-piggy" class="subtab-content space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
+                            <h2 id="piggybank-title-text" class="font-black text-base text-[var(--c-text)]">🪙 艾姍存錢筒</h2>
+                            <button onclick="renamePiggyBankTitle()" class="text-gray-300 hover:text-[var(--c-accent)] px-1"><i class="fa-solid fa-pen text-xs"></i></button>
+                        </div>
+                        <div class="text-center bg-[var(--c-card-alt)] rounded-2xl py-4">
+                            <p class="text-sm text-[var(--c-label)] font-bold tracking-wide">目前已累計總存款</p>
+                            <p id="piggybank-total" class="text-2xl font-black text-[var(--c-accent)] mt-1">$0元</p>
+                        </div>
+                        <div id="piggybank-list" class="grid grid-cols-2 gap-2"></div>
+                        <details class="group border-t border-[var(--c-border)] pt-2">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-plus mr-2 text-[var(--c-accent)]"></i>新增／管理存錢筒項目</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div id="piggybank-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
+                            <div class="space-y-2 pt-3 border-t border-[var(--c-border)] mt-2">
+                                <input type="text" id="piggy-new-name" placeholder="存錢筒名稱（如：出國旅遊基金）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="piggy-new-amount" placeholder="目前金額" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                    <input type="number" id="piggy-new-goal" placeholder="目標金額（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                </div>
+                            </div>
+                            <button onclick="addPiggyBank()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">確認儲存</button>
+                        </details>
+                    </div>
                 </div>
             </div>
 
@@ -511,163 +529,187 @@
                     <p class="text-[11px] text-[var(--c-text-muted)] mt-2">目前可用點數 = 完成家務總點數 − 已兌換點數</p>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>登記完成的家務⚡️</h2>
-                    <div>
-                        <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天？</label>
-                        <input type="date" id="chorelog-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
-                    </div>
-                    <div class="flex gap-2">
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰做的？</label>
-                            <select id="chorelog-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">做了什麼家務？</label>
-                            <select id="chorelog-chore" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
-                        </div>
-                    </div>
-                    <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">記錄完成</button>
-
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
-                            <span class="text-sm font-bold text-[var(--c-text)] whitespace-nowrap"><i class="fa-solid fa-clipboard-check mr-2 text-[var(--c-accent)]"></i>完成紀錄</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="space-y-2 pt-2">
-                            <select id="chorelog-month" onchange="choreMonth=this.value; renderChoreLog()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
-                            <div id="chorelog-list" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-sm"></div>
-                        </div>
-                    </details>
+                <div class="subnav">
+                    <button onclick="switchSubTab('chores','log')" id="subnav-chores-log" class="subnav-btn active">✅ 登記家務</button>
+                    <button onclick="switchSubTab('chores','rewards')" id="subnav-chores-rewards" class="subnav-btn">🎁 兌換獎勵</button>
+                    <button onclick="switchSubTab('chores','manage')" id="subnav-chores-manage" class="subnav-btn">🛠️ 管理</button>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-gift mr-2 text-pink-400"></i>獎勵兌換商店</h2>
-                    <div id="rewards-list" class="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto no-scrollbar"></div>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <details class="group">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-clock-rotate-left mr-2 text-[var(--c-accent)]"></i>兌換紀錄</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div id="redeem-log" class="space-y-1.5 pt-3 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
-                    </details>
-                </div>
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-xs text-[var(--c-text-muted)] uppercase tracking-wide">🛠️ 新增／管理</h2>
-
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-gift mr-2 text-[var(--c-accent)]"></i>新增／管理獎勵項目</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div id="reward-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
-                        <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
-                            <input type="text" id="reward-new-name" placeholder="獎勵內容（如：按摩10分鐘 💆）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            <input type="number" id="reward-new-cost" placeholder="點數" value="8" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                <div id="subtab-chores-log" class="subtab-content active space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-circle-check mr-2 text-green-500"></i>登記完成的家務⚡️</h2>
+                        <div>
+                            <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">哪一天？</label>
+                            <input type="date" id="chorelog-date" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white">
                         </div>
-                        <button onclick="addReward()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">加入獎勵商店</button>
-                    </details>
-
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增／管理家務項目</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div id="chore-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
-                        <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
-                            <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <div class="flex gap-2">
+                            <div class="flex-1 min-w-0">
+                                <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">誰做的？</label>
+                                <select id="chorelog-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <label class="block text-[11px] text-[var(--c-text-muted)] font-bold mb-1">做了什麼家務？</label>
+                                <select id="chorelog-chore" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                            </div>
                         </div>
-                        <button onclick="addChore()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
-                        <p class="text-[10px] text-[var(--c-text-muted)] mt-2">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
-                    </details>
-                </div>
-            </div>
+                        <button onclick="addChoreLog()" class="btn-primary w-full py-2.5 text-[var(--c-btn-text)] rounded-xl text-sm font-bold">記錄完成</button>
 
-            <div id="tab-life" class="tab-content space-y-4">
-
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between">
-                        <button onclick="changeCalMonth(-1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                        <h2 id="cal-month-label" class="font-black text-sm text-[var(--c-text)]"><i class="fa-solid fa-calendar-days mr-1.5 text-[var(--c-accent)]"></i></h2>
-                        <button onclick="changeCalMonth(1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                    </div>
-                    <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[var(--c-text-muted)]">
-                        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
-                    </div>
-                    <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
-
-                    <div class="border-t border-[var(--c-border)] pt-3">
-                        <h3 id="cal-selected-label" class="font-bold text-sm text-[var(--c-text)] mb-2"></h3>
-                        <div id="cal-day-events" class="space-y-1.5 mb-3"></div>
-                        <details class="group">
-                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                                <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增這天的行程</span>
+                        <details class="group border-t border-[var(--c-border)] pt-2">
+                            <summary class="flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                                <span class="text-sm font-bold text-[var(--c-text)] whitespace-nowrap"><i class="fa-solid fa-clipboard-check mr-2 text-[var(--c-accent)]"></i>完成紀錄</span>
                                 <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
                             </summary>
                             <div class="space-y-2 pt-2">
-                                <input type="text" id="cal-event-title" placeholder="標題（如：昀辰休假、看醫生）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <div class="flex gap-2 items-center">
-                                    <div class="flex-1 min-w-0">
-                                        <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">從</label>
-                                        <input type="date" id="cal-event-start" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">到</label>
-                                        <input type="date" id="cal-event-end" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-1">分類顏色</label>
-                                    <div id="cal-event-color-picker" class="flex gap-2 flex-wrap"></div>
-                                    <input type="hidden" id="cal-event-color" value="">
-                                </div>
-                                <select id="cal-event-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
-                                <input type="text" id="cal-event-note" placeholder="備註（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                                <button onclick="addCalendarEvent()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入行程</button>
+                                <select id="chorelog-month" onchange="choreMonth=this.value; renderChoreLog()" class="text-xs p-1.5 border rounded-lg border-[var(--c-border)] bg-white font-bold text-[var(--c-accent-dark)]"></select>
+                                <div id="chorelog-list" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar text-sm"></div>
                             </div>
                         </details>
                     </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <h2 class="font-bold text-sm text-[var(--c-text)] border-b border-[var(--c-border)] pb-2"><i class="fa-solid fa-heart mr-2 text-pink-400"></i>紀念日</h2>
-                    <div id="anniv-list" class="space-y-2"></div>
-                    <details class="group border-t border-[var(--c-border)] pt-2">
-                        <summary class="flex items-center justify-between cursor-pointer list-none select-none">
-                            <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增／管理紀念日</span>
-                            <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
-                        </summary>
-                        <div class="space-y-2 pt-2">
-                            <input type="text" id="anniv-new-name" placeholder="紀念日名稱（如：交往紀念日、生日）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
-                            <div class="flex gap-2 items-center">
-                                <input type="date" id="anniv-new-date" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
-                                <label class="flex items-center gap-1 text-xs text-[var(--c-text-muted)] whitespace-nowrap flex-shrink-0"><input type="checkbox" id="anniv-new-repeat" checked class="w-4 h-4"> 每年提醒</label>
-                            </div>
-                            <button onclick="addAnniversary()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入紀念日</button>
-                        </div>
-                    </details>
+                <div id="subtab-chores-rewards" class="subtab-content space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <h2 class="font-bold text-sm text-[var(--c-text)] border-b pb-2"><i class="fa-solid fa-gift mr-2 text-pink-400"></i>獎勵兌換商店</h2>
+                        <div id="rewards-list" class="grid grid-cols-2 gap-2 max-h-72 overflow-y-auto no-scrollbar"></div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <details class="group">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-clock-rotate-left mr-2 text-[var(--c-accent)]"></i>兌換紀錄</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div id="redeem-log" class="space-y-1.5 pt-3 max-h-48 overflow-y-auto no-scrollbar text-xs"></div>
+                        </details>
+                    </div>
                 </div>
 
-                <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
-                    <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
-                        <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>共同待辦／購物清單</h2>
-                        <button onclick="clearCompletedTodos()" class="text-[11px] text-[var(--c-text-muted)] font-bold underline flex-shrink-0">清除已完成</button>
+                <div id="subtab-chores-manage" class="subtab-content space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <h2 class="font-bold text-xs text-[var(--c-text-muted)] uppercase tracking-wide">🛠️ 新增／管理</h2>
+
+                        <details class="group border-t border-[var(--c-border)] pt-2">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-gift mr-2 text-[var(--c-accent)]"></i>新增／管理獎勵項目</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div id="reward-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
+                            <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
+                                <input type="text" id="reward-new-name" placeholder="獎勵內容（如：按摩10分鐘 💆）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <input type="number" id="reward-new-cost" placeholder="點數" value="8" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            </div>
+                            <button onclick="addReward()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">加入獎勵商店</button>
+                        </details>
+
+                        <details class="group border-t border-[var(--c-border)] pt-2">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>新增／管理家務項目</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div id="chore-def-list" class="space-y-2 pt-3 max-h-60 overflow-y-auto no-scrollbar"></div>
+                            <div class="grid grid-cols-3 gap-2 border-t border-[var(--c-border)] pt-3 mt-2">
+                                <input type="text" id="chore-new-name" placeholder="家務名稱（如：擦窗戶 🪟）" class="col-span-2 w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <input type="number" id="chore-new-pts" placeholder="點數" value="1" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                            </div>
+                            <button onclick="addChore()" class="w-full py-2 mt-2 bg-[var(--c-accent)] text-[var(--c-btn-text)] rounded-xl text-xs font-bold transition">➕ 新增家務項目</button>
+                            <p class="text-[10px] text-[var(--c-text-muted)] mt-2">這裡設定的家務會出現在上方「登記完成」的下拉選單，每筆完成紀錄會記下當時的點數。</p>
+                        </details>
                     </div>
-                    <div class="flex gap-2">
-                        <input type="text" id="todo-new-text" placeholder="要買什麼／要做什麼？" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
-                        <select id="todo-new-cat" class="w-[86px] flex-shrink-0 p-2 text-sm border rounded border-[var(--c-border)] bg-white">
-                            <option value="shopping">🛒 購物</option>
-                            <option value="todo">✅ 待辦</option>
-                            <option value="other">📌 其他</option>
-                        </select>
+                </div>
+            </div>
+
+            <div id="tab-life" class="tab-content space-y-4">
+
+                <div class="subnav">
+                    <button onclick="switchSubTab('life','calendar')" id="subnav-life-calendar" class="subnav-btn active">📅 行事曆</button>
+                    <button onclick="switchSubTab('life','todo')" id="subnav-life-todo" class="subnav-btn">📝 待辦／購物</button>
+                    <button onclick="switchSubTab('life','anniv')" id="subnav-life-anniv" class="subnav-btn">💕 紀念日</button>
+                </div>
+
+                <div id="subtab-life-calendar" class="subtab-content active space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <button onclick="changeCalMonth(-1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-left text-xs"></i></button>
+                            <h2 id="cal-month-label" class="font-black text-sm text-[var(--c-text)]"><i class="fa-solid fa-calendar-days mr-1.5 text-[var(--c-accent)]"></i></h2>
+                            <button onclick="changeCalMonth(1)" class="w-8 h-8 rounded-full bg-[var(--c-card-alt)] text-[var(--c-text)] flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-chevron-right text-xs"></i></button>
+                        </div>
+                        <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-[var(--c-text-muted)]">
+                            <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                        </div>
+                        <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+
+                        <div class="border-t border-[var(--c-border)] pt-3">
+                            <h3 id="cal-selected-label" class="font-bold text-sm text-[var(--c-text)] mb-2"></h3>
+                            <div id="cal-day-events" class="space-y-1.5 mb-3"></div>
+                            <details class="group">
+                                <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                    <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增這天的行程</span>
+                                    <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                                </summary>
+                                <div class="space-y-2 pt-2">
+                                    <input type="text" id="cal-event-title" placeholder="標題（如：昀辰休假、看醫生）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                    <div class="flex gap-2 items-center">
+                                        <div class="flex-1 min-w-0">
+                                            <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">從</label>
+                                            <input type="date" id="cal-event-start" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-0.5">到</label>
+                                            <input type="date" id="cal-event-end" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-[var(--c-text-muted)] mb-1">分類顏色</label>
+                                        <div id="cal-event-color-picker" class="flex gap-2 flex-wrap"></div>
+                                        <input type="hidden" id="cal-event-color" value="">
+                                    </div>
+                                    <select id="cal-event-who" class="w-full p-2 text-sm border rounded border-[var(--c-border)] bg-white"></select>
+                                    <input type="text" id="cal-event-note" placeholder="備註（選填）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                    <button onclick="addCalendarEvent()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入行程</button>
+                                </div>
+                            </details>
+                        </div>
                     </div>
-                    <button onclick="addTodo()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">新增</button>
-                    <div id="todo-list" class="space-y-3 pt-1"></div>
+                </div>
+
+                <div id="subtab-life-todo" class="subtab-content space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <div class="flex items-center justify-between border-b border-[var(--c-border)] pb-2">
+                            <h2 class="font-bold text-sm text-[var(--c-text)]"><i class="fa-solid fa-list-check mr-2 text-[var(--c-accent)]"></i>共同待辦／購物清單</h2>
+                            <button onclick="clearCompletedTodos()" class="text-[11px] text-[var(--c-text-muted)] font-bold underline flex-shrink-0">清除已完成</button>
+                        </div>
+                        <input type="text" id="todo-new-text" placeholder="要買什麼／要做什麼？" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                        <div class="flex gap-2">
+                            <select id="todo-new-cat" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)] bg-white">
+                                <option value="shopping">🛒 購物</option>
+                                <option value="todo">✅ 待辦</option>
+                                <option value="other">📌 其他</option>
+                            </select>
+                            <button onclick="addTodo()" class="btn-primary px-5 py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold flex-shrink-0 whitespace-nowrap">新增</button>
+                        </div>
+                        <div id="todo-list" class="space-y-3 pt-1"></div>
+                    </div>
+                </div>
+
+                <div id="subtab-life-anniv" class="subtab-content space-y-4">
+                    <div class="bg-white p-4 rounded-2xl border border-[var(--c-border)] shadow-sm space-y-3">
+                        <h2 class="font-bold text-sm text-[var(--c-text)] border-b border-[var(--c-border)] pb-2"><i class="fa-solid fa-heart mr-2 text-pink-400"></i>紀念日</h2>
+                        <div id="anniv-list" class="space-y-2"></div>
+                        <details class="group border-t border-[var(--c-border)] pt-2">
+                            <summary class="flex items-center justify-between cursor-pointer list-none select-none">
+                                <span class="text-xs font-bold text-[var(--c-accent-dark)]"><i class="fa-solid fa-plus mr-1"></i>新增／管理紀念日</span>
+                                <i class="fa-solid fa-chevron-down text-xs text-gray-300 transition-transform group-open:rotate-180"></i>
+                            </summary>
+                            <div class="space-y-2 pt-2">
+                                <input type="text" id="anniv-new-name" placeholder="紀念日名稱（如：交往紀念日、生日）" class="w-full p-2 text-sm border rounded border-[var(--c-border)]">
+                                <div class="flex gap-2 items-center">
+                                    <input type="date" id="anniv-new-date" class="flex-1 min-w-0 p-2 text-sm border rounded border-[var(--c-border)]">
+                                    <label class="flex items-center gap-1 text-xs text-[var(--c-text-muted)] whitespace-nowrap flex-shrink-0"><input type="checkbox" id="anniv-new-repeat" checked class="w-4 h-4"> 每年提醒</label>
+                                </div>
+                                <button onclick="addAnniversary()" class="btn-primary w-full py-2 text-[var(--c-btn-text)] rounded-xl text-xs font-bold">加入紀念日</button>
+                            </div>
+                        </details>
+                    </div>
                 </div>
             </div>
 
@@ -1421,7 +1463,7 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
-            document.querySelectorAll('details[open]').forEach(d => d.removeAttribute('open'));
+            document.querySelectorAll('details[open]:not([data-keep-open])').forEach(d => d.removeAttribute('open'));
             ['jars', 'bills', 'chores', 'life', 'settings'].forEach(t => {
                 const btn = document.getElementById('nav-' + t);
                 if (t === tabId) { btn.classList.replace('text-gray-400', 'text-[var(--c-accent)]'); btn.classList.add('font-bold', 'active-nav'); }
@@ -1429,6 +1471,19 @@
             });
             if(tabId === 'settings') renderLocalJarItems();
             if(tabId === 'life') { renderCalendar(); renderTodos(); renderAnniversaries(); }
+            window.scrollTo(0, 0);
+        }
+
+        function switchSubTab(parentTab, subId) {
+            const scope = document.getElementById('tab-' + parentTab);
+            if (!scope) return;
+            scope.querySelectorAll('.subtab-content').forEach(el => el.classList.remove('active'));
+            const target = document.getElementById(`subtab-${parentTab}-${subId}`);
+            if (target) target.classList.add('active');
+            scope.querySelectorAll('.subnav-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById(`subnav-${parentTab}-${subId}`);
+            if (btn) btn.classList.add('active');
+            document.querySelectorAll('details[open]:not([data-keep-open])').forEach(d => d.removeAttribute('open'));
             window.scrollTo(0, 0);
         }
 
